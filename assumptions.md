@@ -1,1 +1,3 @@
-# let's start typing out our assumptions from the spec...
+## Data assumptions
+*  unique email addresses so emails can be used as user ID
+*  user IDs must be unique values
