@@ -7,7 +7,12 @@ data = {
             'u_id' : "0000" ,
         }
     },
-    'channels' : [],
+    'channels' : {
+        'u_id' : "name"
+    },
+    'messages' : {
+        'channel' : ['history'],
+    }
 }
 
 # example register function
