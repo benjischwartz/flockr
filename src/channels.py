@@ -1,4 +1,5 @@
 def channels_list(token):
+    #TODO check token given is a valid string
     return {
         'channels': [
         	{

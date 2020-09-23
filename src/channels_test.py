@@ -3,22 +3,22 @@
 # whereas channel, singular, are user actions within the channel
 # TODO change asserts to exceptions --> meaningful errors
 
-import channels
+from channels import channels_listall, channels_list, channels_create
 import pytest
 from error import InputError
 
 # check return values are valid types
 # add more to check the dict key values
 def test_return_type():
-    assert type(channels.channels_list("randtoken")) is dict
-    assert type(channels.channels_listall("randtoken")) is dict
-    assert type(channels.channels_create("randtoken", "somename", True)) is dict
+    assert type(channels_list("randtoken")) is dict
+    assert type(channels_listall("randtoken")) is dict
+    assert type(channels_create("randtoken", "somename", True)) is dict
 
 # check channels_create adds to the total channels
 def test_channels_create():
-    numChannelsbefore = len(channels.channels_listall("randtoken"))
-    channels.channels_create("randtoken", "somename", True)
-    numChannelsafter = len(channels.channels_listall("randtoken"))
+    numChannelsbefore = len(channels_listall("randtoken"))
+    channels_create("randtoken", "somename", True)
+    numChannelsafter = len(channels_listall("randtoken"))
     assert(numChannelsbefore == numChannelsafter - 1)
     #TODO: test public/private toggle
 
