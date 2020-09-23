@@ -23,6 +23,6 @@ def test_channels_create():
     #TODO: test public/private toggle
 
 # check if user can view only appropriate lists they have joined
-def test_channels_list_user_view:
+def test_channels_list_user_view():
     # create user and compare channels_list result with channels_list_all
     assert True
