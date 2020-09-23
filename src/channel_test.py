@@ -8,7 +8,9 @@ from error import InputError
 
 # check channel_invite
 # This test is meant to check if an inputError is given if the channel_id is 
-# invalid
+# invalid; INCOMPLETE
+# Note: "result['token'] may not be valid python but my intention was to get
+# the token and u_id values that were returned from auth_register 
 def test_channel_invite_except:
     result = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
     randChannel_id = channels_create(result['token'], 'randChannel', True)
