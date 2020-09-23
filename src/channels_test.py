@@ -19,10 +19,18 @@ def test_channels_create():
     numChannelsbefore = len(channels_listall("randtoken"))
     channels_create("randtoken", "somename", True)
     numChannelsafter = len(channels_listall("randtoken"))
-    assert(numChannelsbefore == numChannelsafter - 1)
+    if (numChannelsbefore != numChannelsafter - 1):
+        raise Exception(f"Error, channel create does not actually add a new channel to total")
     #TODO: test public/private toggle
 
 # check if user can view only appropriate lists they have joined
 def test_channels_list_user_view():
     # create user and compare channels_list result with channels_list_all
     assert True
+
+
+##### try catch exceptions test
+try:
+    test_channels_create()
+except Exception:
+    print("Create new Channel function not working/implemented")
