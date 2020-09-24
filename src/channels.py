@@ -1,5 +1,26 @@
+# import data.py from parent folder
+import data
+
 def channels_list(token):
-    #TODO check token given is a valid string
+    
+    returnList = []
+    returnDict = dict()
+    
+    # from data create return structure requestes
+    for key, value in data.data['channels'].items():
+        eachDict = dict()
+        eachDict['channel_id'] = key
+        eachDict['name'] = value
+        returnList.append(eachDict)
+
+    # once channel list is created, package it up for return
+    returnDict['channels'] = returnList
+    
+    # return in format specified
+    return returnDict
+
+    #TODO when requirement is released, check token given is a valid string
+    ### below return is source suggested format
     return {
         'channels': [
         	{

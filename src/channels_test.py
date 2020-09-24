@@ -10,9 +10,9 @@ from error import InputError
 # check return values are valid types
 # add more to check the dict key values
 def test_return_type():
-    assert type(channels_list("randtoken")) is dict
-    assert type(channels_listall("randtoken")) is dict
-    assert type(channels_create("randtoken", "somename", True)) is dict
+    assert(type(channels_list("randtoken")) is dict) 
+    assert(type(channels_listall("randtoken")) is dict)
+    assert(type(channels_create("randtoken", "somename", True)) is dict)
 
 # check if user can view only appropriate lists they have joined
 def test_channels_list_user_view():
