@@ -5,6 +5,8 @@ from error import InputError
 
 
 def channels_list(token):
+    #TODO: add ACCESS ERROR if token is invalid
+
     # init empty data structs for return
     returnList = []
     returnDict = dict()
@@ -42,6 +44,7 @@ def channels_list(token):
     }
 
 def channels_listall(token):
+    #TODO: add ACCESS ERROR if token is invalid
         
     returnList = []
     returnDict = dict()
@@ -68,6 +71,9 @@ def channels_listall(token):
     }
 
 def channels_create(token, name, is_public):
+    #TODO: add ACCESS ERROR if token is invalid
+
+    
     ## Input error if channel name is too long
     if len(name) > 20:
         raise InputError("channel name cannot be greater than 20 characters")
