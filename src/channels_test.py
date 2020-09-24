@@ -17,7 +17,15 @@ def test_return_type():
 # TODO: check if user can view only appropriate lists they have joined
 def test_channels_list_user_view():
     # create user and compare channels_list result with channels_list_all
-    assert True, "not implemented: channels_list restict only to users within each channel"
+    #STEP 1: ADDING USER
+    result_register = auth_register("z1234@unsw.edu.au", "password1234", "Jane", "Citizen")
+    assert type(result_register) is dict, "User Added"
+    #STEP 2: LOGGING IN
+    result_login = auth_login("z1234@unsw.edu.au", "password1234")
+    assert type(result_register) is dict, "User Logged In"
+    #STEP 3: CHECKING IF THE CHANNEL LISTS MATCH
+    assert channels_list(result_login["token"]) == channels_listall(result_login["token"]), "Channel Lists Match"
+    #assert True, "not implemented: channels_list restict only to users within each channel"
 
 
 # check channels_create adds to the total channel
