@@ -39,6 +39,13 @@ def channel_messages(token, channel_id, start):
 def channel_leave(token, channel_id):
     return {
         #Key Data: Current Members
+        'all_members': [
+            {
+                'u_id': 1,
+                'name_first': 'Hayden',
+                'name_last': 'Jacobs',
+            }
+        ],
     }
 
 def channel_join(token, channel_id):
@@ -48,9 +55,23 @@ def channel_join(token, channel_id):
 def channel_addowner(token, channel_id, u_id):
     return {
         #Key Data: Current Members
+        'all_members': [
+            {
+                'u_id': 1,
+                'name_first': 'Hayden',
+                'name_last': 'Jacobs',
+            }
+        ],
     }
 
 def channel_removeowner(token, channel_id, u_id):
     return {
         #Key Data: Current Owners
+        'owner_members': [
+            {
+                'u_id': 1,
+                'name_first': 'Hayden',
+                'name_last': 'Jacobs',
+            }
+        ],
     }
