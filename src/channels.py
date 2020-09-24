@@ -56,6 +56,8 @@ def channels_listall(token):
         eachDict['name'] = value
         returnList.append(eachDict)
 
+    #print(returnList)
+
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
     
@@ -96,4 +98,5 @@ def channels_create(token, name, is_public):
         }
 
     
-    
+## Testing if can access the data    
+#channels_listall("string")
