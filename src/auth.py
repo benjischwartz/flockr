@@ -5,12 +5,12 @@ from error import InputError
 def auth_login(email, password):
     # check if email is registered
     # login = False
-    # for user in data['users']:
+    # for user in data.items():
     #     if user['email'] == email:
     #         if user['password'] == password:
     #             login = True
     #             return {
-    #                 'u_id': 1,       ## need to correct this
+    #                 'u_id': 1,       ## need to correct this --> this is just email
     #                 'token': '12345', ## for iteration 1, tokens can just be email or id
     #             }
     # return InputError
