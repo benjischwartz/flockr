@@ -98,5 +98,5 @@ def channels_create(token, name, is_public):
         }
 
     
-## Testing if can access the data    
+## FOR Testing    
 #channels_listall("string")

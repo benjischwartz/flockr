@@ -1,26 +1,36 @@
-# example global variable(s) for milestone 1 data
-data = {
-    'users' : {
-        'email' : {
-            'name_first' : " ",
-            'name_last' : " ",
-            'u_id' : "0000" ,
-        }
-    },
 
-    'messages' : {
-        'channel' : ['history'],
-    }
-}
 users = {
     'email': {
-        'name_first' : " ",
-        'name_last' : " ",
-        'u_id' : "0023423" ,
+      'name_first' : " ",
+      'name_last' : " ",
+      'u_id' : "0023423"
     }
 }
 
 
+channel = {
+    'channel_id(int)' : {
+      'channel_name(str)' : " ",
+      'owner_members(str)': {
+        78978 : True,
+        223423 : True,
+        567 : True
+      },
+      'all_members(str)' : {
+        78978 : True,
+        223423 : True,
+        567 : True
+      },
+      'messages(str)' : {
+        'message(int)' : {
+          'u_id(int)' : " ",
+          'message_content' : " ",
+          'time' : " "
+        }
+      }
+  
+}      
+ 
 
 ######### channels dict: matches channel_id (int) to channel name (string)
 # i.e. key is the channel id integer and value is name of channel
@@ -30,6 +40,3 @@ channels = {
     2 : "dog",
     'totalChannels' : 2,
 }
-
-
-
