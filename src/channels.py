@@ -1,8 +1,8 @@
-# import data.py from parent folder
+# import data.py from same directory
+# TODO: add ability to import from parent folder
 from data import channels
 from channel import channel_details
 from error import InputError
-
 
 def channels_list(token):
     #TODO: add ACCESS ERROR if token is invalid
