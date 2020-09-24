@@ -1,17 +1,27 @@
 # import data.py from parent folder
-import data
+from data import channels
+from channel import channel_details
+
 
 def channels_list(token):
-    
+    # init empty data structs for return
     returnList = []
     returnDict = dict()
     
-    # from data create return structure requestes
-    for key, value in data.data['channels'].items():
+    # from data create return structure requests
+    for key, value in channels.items():
         eachDict = dict()
         eachDict['channel_id'] = key
         eachDict['name'] = value
-        returnList.append(eachDict)
+        #TODO restrict view to channels only user has
+        # assumption for now: token == u_id
+        # call channel_details to check which channels
+        # this user is a part of
+        checkAccessDict = channel_details(token, key)
+        if token in checkAccessDict['all_members']:
+            ## TODO match with channel data structure
+            # if token matches with a valid id, add to list
+            returnList.append(eachDict)
 
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
@@ -19,7 +29,7 @@ def channels_list(token):
     # return in format specified
     return returnDict
 
-    #TODO when requirement is released, check token given is a valid string
+    
     ### below return is source suggested format
     return {
         'channels': [
@@ -31,6 +41,22 @@ def channels_list(token):
     }
 
 def channels_listall(token):
+        
+    returnList = []
+    returnDict = dict()
+    
+    # from data create return structure requestes
+    for key, value in channels.items():
+        eachDict = dict()
+        eachDict['channel_id'] = key
+        eachDict['name'] = value
+        returnList.append(eachDict)
+
+    # once channel list is created, package it up for return
+    returnDict['channels'] = returnList
+    
+    # return in format specified
+    return returnDict
     return {
         'channels': [
         	{

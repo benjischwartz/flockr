@@ -7,20 +7,35 @@ data = {
             'u_id' : "0000" ,
         }
     },
-    'channels' : {
-        'channel_id' : "name",
-    },
+
     'messages' : {
         'channel' : ['history'],
     }
 }
+users = {
+    'email': {
+        'name_first' : " ",
+        'name_last' : " ",
+        'u_id' : "0023423" ,
+    }
+}
 
-# example register function
-# login can look up dict using email as key for quick
-def register(email, password, name_first, name_last):
-    userInfo = dict()
-    userInfo['password'] = password
-    userInfo['name_first'] = name_first
-    userInfo['name_last'] = name_last
-    # TODO generate and add unique id
-    data['users'][email] = userInfo
+
+
+######### channels dict: matches channel_id (int) to channel name (string)
+# i.e. key is the channel id integer and value is name of channel
+# starter channels: one named "cat", other named "dog"
+channels = {
+    1 : "cat",
+    2 : "dog",
+}
+
+###### TESTING: channels_list user testing  #####
+channel_1 = {
+    'users' : [],
+    'owners' : []
+}
+channel_1['users'].append("004")
+channel_1['users'].append("123")
+channel_1['owners'].append("002")
+
