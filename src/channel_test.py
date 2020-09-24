@@ -15,7 +15,13 @@ def test_channel_invite_except:
     result = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
     randChannel_id = channels_create(result['token'], 'randChannel', True)
     invalidChannel_id = 18
-    assert invalidChannel_id != randChannel_id
+    if invalidChannel_id == randChannel_id:
+        invalidChannel_id = 19
     with pytest.raises(InputError) as e:
-        assert channel_invite(result['token'], randomChannel_id, result['u_id'])
+        assert channel_invite(result['token'], invalidChannel_id, result['u_id'])
+    # InputError also if u_id is not valid 
+    
+    # Accesserror when token is invalid 
+    
+    # Accesserror when the authorised user is not already a member of the channel
     
