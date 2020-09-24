@@ -28,14 +28,8 @@ users = {
 channels = {
     1 : "cat",
     2 : "dog",
+    'totalChannels' : 2,
 }
 
-###### TESTING: channels_list user testing  #####
-channel_1 = {
-    'users' : [],
-    'owners' : []
-}
-channel_1['users'].append("004")
-channel_1['users'].append("123")
-channel_1['owners'].append("002")
+
 

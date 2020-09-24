@@ -1,6 +1,7 @@
 # import data.py from parent folder
 from data import channels
 from channel import channel_details
+from error import InputError
 
 
 def channels_list(token):
@@ -67,13 +68,26 @@ def channels_listall(token):
     }
 
 def channels_create(token, name, is_public):
-    ## start testing exceptions
-    numChannelsbefore = len(channels_listall("randtoken"))
-    ## do something to actually create channel
-    numChannelsafter = len(channels_listall("randtoken"))
+    ## Input error if channel name is too long
+    if len(name) > 20:
+        raise InputError("channel name cannot be greater than 20 characters")
+
+
+    
+    ## get the next channel_id value and add to channels dict
+    numChannelsbefore = channels['totalChannels']
+    newChannel_id = channels['totalChannels'] + 1
+    channels[newChannel_id] = name
+    channels['totalChannels'] += 1
+    numChannelsafter = channels['totalChannels']
     if (numChannelsbefore != numChannelsafter - 1):
         raise Exception(f"Error, channel create does not actually add a new channel to total")
+        return
     ## end testing exceptions
-    return {
-        'channel_id': 1,
-    }
+    else: 
+        return {
+            'channel_id': newChannel_id,
+        }
+
+    
+    
