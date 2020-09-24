@@ -1,3 +1,4 @@
+# this is a redundant comment
 # example global variable(s) for milestone 1 data
 data = {
     'users' : {
