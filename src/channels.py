@@ -1,11 +1,12 @@
-# import data.py from same directory
-# TODO: add ability to import from parent folder
-from data import channel
+from data import channel, users
 from channel import channel_details
+from token import is_valid_token, user_id_given_token
 from error import InputError
 
 def channels_list(token):
-    #TODO: add ACCESS ERROR if token is invalid
+    # raise ACCESS ERROR if token is invalid
+    if is_valid_token == False:
+        raise AccessError("Token passed in is not valid")  
 
     # init empty data structs for return
     returnList = []
@@ -44,7 +45,9 @@ def channels_list(token):
     }
 
 def channels_listall(token):
-    #TODO: add ACCESS ERROR if token is invalid
+    # raise ACCESS ERROR if token is invalid
+    if is_valid_token == False:
+        raise AccessError("Token passed in is not valid")  
         
     returnList = []
     returnDict = dict()
@@ -73,10 +76,9 @@ def channels_listall(token):
     }
 
 def channels_create(token, name, is_public):
-    #TODO: add ACCESS ERROR if token is invalid
-    if
-
-    
+    # raise ACCESS ERROR if token is invalid
+    if is_valid_token == False:
+        raise AccessError("Token passed in is not valid")   
     ## Input error if channel name is too long
     if len(name) > 20:
         raise InputError("channel name cannot be greater than 20 characters")

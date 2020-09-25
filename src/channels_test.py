@@ -31,11 +31,12 @@ def test_channels_create_valid():
     # TODO: test only user when channel created is the user identified by the token
     assert Found == True, "channel_create has not added the new channel id to database"
 
-# TODO: check raises ACCESS ERROR if token is invalid for channel_create
+# check raises ACCESS ERROR if token is invalid for channel_create
 def test_channels_create_invalid_token():
+    # check string
     with pytest.raises(AccessError, m=r"Token passed in is not valid"):
-        channels_create(123, "name", False) 
-        # TODO add more cases of invalid token
+        channels_create("7897", "name", False)
+    # Expect this test to fail 
     with pytest.raises(AccessError, m=r"Token passed in is not valid"):
         channels_create("invalidtoken", "name", False)
 
@@ -59,3 +60,4 @@ def test_channels_create_private_public():
 
 #TODO: check listall 
 def test_channels_listall_view_public_only():
+    assert True
