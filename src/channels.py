@@ -13,18 +13,15 @@ def channels_list(token):
     returnDict = dict()
     
     # from data create return structure requests
-    for key, value in channels.items():
+    for key, value in channel.items():
         eachDict = dict()
         eachDict['channel_id'] = key
-        eachDict['name'] = value
-        #TODO restrict view to channels only user has
-        # assumption for now: token == u_id
-        # call channel_details to check which channels
-        # this user is a part of
+        eachDict['name'] = value['channel_name']
+        # check channel details to see if member is there
         checkAccessDict = channel_details(token, key)
-        if token in checkAccessDict['all_members']:
-            ## TODO match with channel data structure
-            # if token matches with a valid id, add to list
+        if int(token) in checkAccessDict['all_members']:
+            # if token matches with a valid user_id in channel members,
+            # add this channel info to list
             returnList.append(eachDict)
 
     # once channel list is created, package it up for return
@@ -32,17 +29,15 @@ def channels_list(token):
     
     # return in format specified
     return returnDict
-
-    
-    ### below return is source suggested format
-    return {
-        'channels': [
-        	{
-        		'channel_id': 1,
-        		'name': 'My Channel',
-        	}
-        ],
-    }
+    #### format for return ####
+    # return {
+    #     'channels': [
+    #     	{
+    #     		'channel_id': 1,
+    #     		'name': 'My Channel',
+    #     	}
+    #     ],
+    # }
 
 def channels_listall(token):
     # raise ACCESS ERROR if token is invalid
@@ -58,22 +53,21 @@ def channels_listall(token):
         eachDict['channel_id'] = key
         eachDict['name'] = value
         returnList.append(eachDict)
-
-    #print(returnList)
+    # For testing: print(returnList)
 
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
-    
-    # return in format specified
+
     return returnDict
-    return {
-        'channels': [
-        	{
-        		'channel_id': 1,
-        		'name': 'My Channel',
-        	}
-        ],
-    }
+    # return in format specified
+    # return {
+    #     'channels': [
+    #     	{
+    #     		'channel_id': 1,
+    #     		'name': 'My Channel',
+    #     	}
+    #     ],
+    # }
 
 def channels_create(token, name, is_public):
     # raise ACCESS ERROR if token is invalid
@@ -83,22 +77,31 @@ def channels_create(token, name, is_public):
     if len(name) > 20:
         raise InputError("channel name cannot be greater than 20 characters")
 
-
-    
-    ## get the next channel_id value and add to channels dict
-    numChannelsbefore = channels['totalChannels']
-    newChannel_id = channels['totalChannels'] + 1
-    channels[newChannel_id] = name
-    channels['totalChannels'] += 1
-    numChannelsafter = channels['totalChannels']
-    if (numChannelsbefore != numChannelsafter - 1):
-        raise Exception(f"Error, channel create does not actually add a new channel to total")
-        return
-    ## end testing exceptions
-    else: 
-        return {
-            'channel_id': newChannel_id,
+    # get the current number of channels in total
+    totalChannels = len(channel)
+    newChannel_id = totalChannels += 1
+    # if new channel id already a key in database,
+    # increment until it is unique
+    while newChannel_id in channel:
+        newChannel_id += 1
+    # create the channel: i.e add channel to the database
+    # with token user as owner and member
+    channel[newChannel_id] = {
+        'channel_name' : name,
+            'is_public' : is_public,
+            'owner_members': {
+                user_id_given_token(token) : True
+            },
+            'all_members' : {
+                user_id_given_token(token) : True
+            },
+            'messages' : {
+            }
         }
+    
+    return {
+        'channel_id': newChannel_id
+    }
 
     
 ## FOR Testing    
