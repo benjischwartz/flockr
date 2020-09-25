@@ -39,8 +39,35 @@ def test_channel_leave():
     #BRIAN
 def test_channel_join():
     #BRIAN
+    
 def test_channel_addowner():
     #ETHAN
+
+    #Registering User
+    register_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    assert type(register_result) is dict, "Test_Channel_1: User Sucessfully Registered"
+
+    #Logging In
+    login_result = auth_login('randemail@gmail.com','password1234')
+    assert type(login_result) is dict, "Test_Channel_2: User Sucessfully Logged In"
+
+    #Check if a Non-Member Can be Made Owner
+    channel_addowner(login_result['token'], 1, "randemail@gmail.com")
+    #TODO:Check if an error is returned as expected
+
+    #Add User to Channel (Adding User to Channel 1)
+    channel_join(login_result['token'], 1)
+    #TODO:Check if Successfully Joined
+
+    #Add User as Owner
+    channel_addowner(login_result['token'], 1, "randemail@gmail.com")
+    #TODO:Check if Owner Successfully Added
+
+
+    
+def test_channel_removeowner():
+    #ETHAN
+    
     #Registering User
     register_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
     assert type(register_result) is dict, "Test_Channel_1: User Sucessfully Registered"
@@ -51,15 +78,19 @@ def test_channel_addowner():
 
     #Add User to Channel (Adding User to Channel 1)
     channel_join(login_result['token'], 1)
-    ##TODO:Check if Successfully Joined
+    #TODO:Check if Successfully Joined
 
-    
+    #Remove Owner that is not an Owner
+    channel_removeowner(login_result['token'], 1, "randemail@gmail.com")
+    #TODO:Check if Error Message Returned as Expected
 
+    #Add User as Owner
+    channel_addowner(login_result['token'], 1, "randemail@gmail.com")
+    #TODO:Check if Owner Successfully Added
 
-    
-def test_channel_removeowner():
-    #ETHAN
-    register_result = auth_register('randemail@gmail.com', 'password', 'Jane', 'Citizen')
+    #Remove Owner that is an Owner
+    channel_removeowner(login_result['token'], 1, "randemail@gmail.com")
+    #TODO:Check if Owner Sucessfully Removed
     
         
     
