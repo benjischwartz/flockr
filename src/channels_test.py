@@ -53,11 +53,3 @@ def test_channels_list_user_view():
 def test_channels_create_too_long_name():
     with pytest.raises(InputError, match=r"channel name cannot be greater than 20 characters"):
         channels_create("something", "a_string_name_which_is_very_long_and_will_never_pass", True)
-    
-#TODO: check type of channel: public/private is value
-def test_channels_create_private_public():
-    assert True, "not implemented: distinction between public and private channels for channels_create"
-
-#TODO: check listall 
-def test_channels_listall_view_public_only():
-    assert True

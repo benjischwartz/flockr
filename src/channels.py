@@ -79,7 +79,7 @@ def channels_create(token, name, is_public):
 
     # get the current number of channels in total
     totalChannels = len(channel)
-    newChannel_id = totalChannels += 1
+    newChannel_id = totalChannels + 1
     # if new channel id already a key in database,
     # increment until it is unique
     while newChannel_id in channel:
