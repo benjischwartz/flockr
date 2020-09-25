@@ -1,7 +1,6 @@
 ## Data assumptions
-*  unique email addresses so emails can be used as user ID
-*  user IDs must be unique integers
-*  for milestone 1 we will be using emails as tokens
-    *i.e. tokens are valid emails within our user database
-    *we may use a separate user_id (e.g. hashable value) later
-    *then tokens may change from emails to user_id or a function thereof
+*  user IDs, i.e. u_id, must be unique integers
+*  for milestone 1 we will be using token str(u_id)
+
+## Channels.py assumptions
+* channels_list all will list all channels, whether private or public

@@ -1,6 +1,6 @@
 # import data.py from same directory
 # TODO: add ability to import from parent folder
-from data import channels
+from data import channel
 from channel import channel_details
 from error import InputError
 
@@ -74,6 +74,7 @@ def channels_listall(token):
 
 def channels_create(token, name, is_public):
     #TODO: add ACCESS ERROR if token is invalid
+    if
 
     
     ## Input error if channel name is too long
