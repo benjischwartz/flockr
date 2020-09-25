@@ -30,6 +30,8 @@ def test_channel_invite_except:
     
     # Accesserror when the authorised user is not already a member of the channel
 '''
+def test_channel_removeowner():
+    register_result = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
     
         
     
