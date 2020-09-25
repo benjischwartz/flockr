@@ -17,6 +17,12 @@ def test_register():
     #     pytest.raises(InputError) ("Login failed, register first")
     # with pytest.raises(InputError) as e:
     #     assert auth_login('didntusethis@gmail.com', '123abcd!@#') # Expect fail since never registered
+    
+    # from Michelle:
+    # with pytest.raises("InputError"):
+    # 1 / 0 --> will pass test
+    # nb: in auth.py itself, must raise "InputError" when unregistered user
+
     pass
 
 def test_logout():
