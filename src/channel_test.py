@@ -9,30 +9,53 @@ from error import InputError
 
 
 
-'''
+
 # check channel_invite
 # This test is meant to check if an inputError is given if the channel_id is 
 # invalid; INCOMPLETE
 # Note: "result['token'] may not be valid python but my intention was to get
 # the token and u_id values that were returned from auth_register 
 
-def test_channel_invite_except:
+# Tests for channel_invite function - Kesh
+    # function input: token, channel_id, u_id
+    # output - dictionary
+    
+    # check an InputError is raised when channel_id does not refer to a valid channel
+    
+    # check an InputError is raised when u_id does not refer to a vlid user
+    
+    # check that an AccessError has been raised when the user is not a member of the channel
+    
+def test_channel_invite_invalid_channel_id:
     #KESH
+
     result = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
     randChannel_id = channels_create(result['token'], 'randChannel', True)
     invalidChannel_id = 18
     if invalidChannel_id == randChannel_id:
         invalidChannel_id = 19
-    with pytest.raises(InputError) as e:
-        assert channel_invite(result['token'], invalidChannel_id, result['u_id'])
-    # InputError also if u_id is not valid 
+    #with pytest.raises(InputError) as e:
+        #assert channel_invite(result['token'], invalidChannel_id, result['u_id'])
+
+
+# Tests for channel_details function - KESH
+    # function input: token, channel_id
+    # output - dictionary
     
-    # Accesserror when token is invalid 
+    # check an InputError is raised when channel_id does not refer to a valid channel
+    # check that an AccessError has been raised when the user is not a member of the channel
     
-    # Accesserror when the authorised user is not already a member of the channel
-'''
+    
 def test_channel_details():
-    #KESH
+    
+
+# Tests for channel_messages function - KESH
+    # function input: token, channel_id, start
+    # output - dictionary
+    # check and InputError is raised when start is greater than the total number of messages in the channel
+    # check an InputError is raised when channel_id does not refer to a valid channel
+    # check that an AccessError has been raised when the user is not a member of the channel
+    
 def test_channel_messages():
     #KESH
 def test_channel_leave():
