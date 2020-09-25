@@ -12,16 +12,15 @@ from error import InputError
     # function input: token, channel_id, u_id
     # output - dictionary
     # token is the authorised user, u_id is for the person being invited,
-    # CASE 1 : the user invites themselve?? what should happen 
-    # instead of using functions, could create dictionaries with the return types
-    # that auth_register and channel_create are meant to give??
+    # CASE 1 : the user invites themselves?? what should happen 
     # CASE 2 : the authorised user invites someone that is already part of the channel
     # CASE 3: channels_create --> is_public is False?? What is meant to happen
         # create tests for channel_invite, channel_details
 
-#TODO: A successful channel_invite??
+# TODO: make a test checking that with valid input, channel_invite BEHAVES correctly
     # since the user is immediately add once invited, then we can check the channel_details or smth
-    # to see if they have been added (see Cece tests with for loop) 
+    # to see if they have been added (see Cece tests with for loop)
+   
 #TODO: return type
 def test_channel_invite_return_type():
     pass
@@ -62,19 +61,25 @@ def test_channel_invite_invalid_u_id():
         channel_invite(userOne['token'], randChannel_id['channel_id'], randu_id)
 
 
-# BAD TEST---> CHECK IF NECESSARY; IF NOT DELETE
-# check that an AccessError has been raised when the user is not a member of the channel
-def test_channel_invite_not_a_member():
+# BAD TEST---> CHECK IF this test is meaningul
+def test_channel_invite_no_channels_exist():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    # no channels exist  # JK THIS WOULD BE AN INPUT ERROR coz channel_id is invalid 
     with pytest.raises(AccessError):
         channel_invite(userOne['token'], 18 , randu_id)
 
 
-#TODO: A test where there is an AccessError where channels exist but the token person 
-# isnt in that channel and invites someone    
-    
+#TODO: If we assume that adding someone already in the channel causes problems eg. userOne is 
+# in the channel since they created it; then this test needs to be changed by 
+# adding a third user
+# check that an AccessError has been raised when the user is not a member of the channel    
+def test_channel_invite_not_a_member():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    with pytest.raises(AccessError):
+        channel_invite(userTwo['token'], randchannel_id , userTwo['u_id'])
+
+#-------------------------------------------------------------------------------        
 # Tests for channel_details function - KESH
     # function input: token, channel_id
     # output - dictionary
@@ -85,17 +90,15 @@ def test_channel_details_return_type():
 
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_details_invalid_channel_id():
-    # userOne is a dictionary containing token and u_id
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    # randchannel_id is a dictionary mapping channel_id to a number
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    # create a channel_id and then make sure it isn't valid
     invalidChannel_id = 18
     if invalidChannel_id == randChannel_id:
         invalidChannel_id = 19
     with pytest.raises(InputError):
         channel_details(userOne['token'], invalidChannel_id)
 
+# check and AccessError is raised when the user is not a member of the channel
 def test_channel_details_not_member():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
@@ -103,12 +106,14 @@ def test_channel_details_not_member():
     with pytest.raises(AccessError):
         channel_details(userTwo['token'], randChannel_id)
 
-# test that output of channel_details matches what is required
+# TODO: make a test checking that with valid input, channel_details returns correctly
 # could use channel_join/channel_invite to add a person and see if channel_details updates???    
 
+# ------------------------------------------------------------------------------
 # Tests for channel_messages function - KESH
     # function input: token, channel_id, start
     # output - dictionary
+    # WTH is start for these functions
 
 
 #TODO: return type
@@ -116,14 +121,30 @@ def test_channel_messages_return_type():
     pass 
 
 # check InputError is raised when start is greater than the total number of messages in the channel
+# is this test possible
 def test_channel_messages_start_too big():
     pass
 
+# TODO: make a test checking that with valid input, channel_messages returns correctly
+    
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_messages_invalid_channel_id():
-    
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    invalidChannel_id = 18
+    if invalidChannel_id == randChannel_id:
+        invalidChannel_id = 19
+    with pytest.raises(InputError):
+        channel_messages(userOne['token'], invalidChannel_id, 0)
+        # let start = 0 for 0 messages?
 
 # check that an AccessError has been raised when the user is not a member of the channel
+def test_channel_messages_not_member():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    with pytest.raises(AccessError):
+        channel_messages(userTwo['token'], randChannel_id, 0)
 
 #################################################################################
 def test_channel_leave():
