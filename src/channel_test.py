@@ -165,15 +165,23 @@ def test_channel_addowner():
 
     #Check if a Non-Member Can be Made Owner
     channel_addowner(login_result['token'], 1, "randemail@gmail.com")
-    #TODO:Check if an error is returned as expected
+    #Check if an error is returned as expected
+    with pytest.raises(AccessError):
+        pass
+    assert "Test_Channel_3: Correct AccessError Returned as Non-Member Can't Be Owner" in str(excinfo.value)
+    
 
     #Add User to Channel (Adding User to Channel 1)
     channel_join(login_result['token'], 1)
-    #TODO:Check if Successfully Joined
+    #Check if Successfully Joined
+    with pytest.raises(AccessError):
+        assert False, "Test_Channel_4: Check if User Sucessfully Added to Channel"
 
     #Add User as Owner
     channel_addowner(login_result['token'], 1, "randemail@gmail.com")
-    #TODO:Check if Owner Successfully Added
+    #Check if Owner Successfully Added
+    with pytest.raises(AccessError):
+        assert False, "Test_Channel_5: Check if Member User Sucessfully Added as Owner"
 
 
     
@@ -190,19 +198,27 @@ def test_channel_removeowner():
 
     #Add User to Channel (Adding User to Channel 1)
     channel_join(login_result['token'], 1)
-    #TODO:Check if Successfully Joined
+    #Check if Successfully Joined
+    with pytest.raises(AccessError):
+        assert False, "Test_Channel_3: Check if User Sucessfully Added to Channel"
 
     #Remove Owner that is not an Owner
     channel_removeowner(login_result['token'], 1, "randemail@gmail.com")
-    #TODO:Check if Error Message Returned as Expected
+    #Check if Error Message Returned as Expected
+    with pytest.raises(AccessError):
+        pass
+    assert "Test_Channel_4: Correct AccessError Returned as Non-Member Can't Be Owner" in str(excinfo.value)
 
     #Add User as Owner
     channel_addowner(login_result['token'], 1, "randemail@gmail.com")
-    #TODO:Check if Owner Successfully Added
+    #Check if Owner Successfully Added
+    with pytest.raises(AccessError):
+        assert False, "Test_Channel_5: Check if User Sucessfully Added to Channel"
 
     #Remove Owner that is an Owner
     channel_removeowner(login_result['token'], 1, "randemail@gmail.com")
-    #TODO:Check if Owner Sucessfully Removed
-    
+    #Check if Owner Sucessfully Removed
+    with pytest.raises(AccessError):
+        assert False, "Test_Channel_6: Check if User Sucessfully Removed From Channel"
         
     
