@@ -6,6 +6,8 @@ from channels import channels_create
 import pytest
 from error import InputError
 
+
+################################################################################
 # Tests for channel_invite function - Kesh
     # function input: token, channel_id, u_id
     # output - dictionary
@@ -107,17 +109,23 @@ def test_channel_details_not_member():
 # Tests for channel_messages function - KESH
     # function input: token, channel_id, start
     # output - dictionary
-    # check and InputError is raised when start is greater than the total number of messages in the channel
-    # check an InputError is raised when channel_id does not refer to a valid channel
-    # check that an AccessError has been raised when the user is not a member of the channel
-    
+
+
+#TODO: return type
 def test_channel_messages_return_type():
     pass 
 
+# check InputError is raised when start is greater than the total number of messages in the channel
+def test_channel_messages_start_too big():
+    pass
 
-    
+# check an InputError is raised when channel_id does not refer to a valid channel
+def test_channel_messages_invalid_channel_id():
     
 
+# check that an AccessError has been raised when the user is not a member of the channel
+
+#################################################################################
 def test_channel_leave():
     #BRIAN
 def test_channel_join():
