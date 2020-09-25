@@ -41,10 +41,25 @@ def test_channel_join():
     #BRIAN
 def test_channel_addowner():
     #ETHAN
-    register_result = auth_register('randemail@gmail.com', 'password', 'Hayden', 'Everest')
+    #Registering User
+    register_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    assert type(register_result) is dict, "Test_Channel_1: User Sucessfully Registered"
+
+    #Logging In
+    login_result = auth_login('randemail@gmail.com','password1234')
+    assert type(login_result) is dict, "Test_Channel_2: User Sucessfully Logged In"
+
+    #Add User to Channel (Adding User to Channel 1)
+    channel_join(login_result['token'], 1)
+    ##TODO:Check if Successfully Joined
+
+    
+
+
+    
 def test_channel_removeowner():
     #ETHAN
-    register_result = auth_register('randemail@gmail.com', 'password', 'Hayden', 'Everest')
+    register_result = auth_register('randemail@gmail.com', 'password', 'Jane', 'Citizen')
     
         
     
