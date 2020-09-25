@@ -17,6 +17,7 @@ from error import InputError
 # the token and u_id values that were returned from auth_register 
 
 def test_channel_invite_except:
+    #KESH
     result = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
     randChannel_id = channels_create(result['token'], 'randChannel', True)
     invalidChannel_id = 18
@@ -30,8 +31,20 @@ def test_channel_invite_except:
     
     # Accesserror when the authorised user is not already a member of the channel
 '''
+def test_channel_details():
+    #KESH
+def test_channel_messages():
+    #KESH
+def test_channel_leave():
+    #BRIAN
+def test_channel_join():
+    #BRIAN
+def test_channel_addowner():
+    #ETHAN
+    register_result = auth_register('randemail@gmail.com', 'password', 'Hayden', 'Everest')
 def test_channel_removeowner():
-    register_result = auth_register('validemail@gmail.com', '123abc!@#', 'Hayden', 'Everest')
+    #ETHAN
+    register_result = auth_register('randemail@gmail.com', 'password', 'Hayden', 'Everest')
     
         
     
