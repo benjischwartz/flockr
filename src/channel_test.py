@@ -48,7 +48,7 @@ def test_channel_invite_invalid_channel_id():
         # actually be invite a new user for this test (assume channel creator
         # automatically joins the channel they created)
         # If there is no channel in the system currently, then channel_invite
-        # should return AccessError (potential test?)
+        # should return inputError
 
 # check an InputError is raised when u_id does not refer to a valid user
 def test_channel_invite_invalid_u_id():
@@ -61,10 +61,10 @@ def test_channel_invite_invalid_u_id():
         channel_invite(userOne['token'], randChannel_id['channel_id'], randu_id)
 
 
-# BAD TEST---> CHECK IF this test is meaningul
+#TODO: BAD TEST---> CHECK IF this test is meaningul
 def test_channel_invite_no_channels_exist():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    with pytest.raises(AccessError):
+    with pytest.raises(inputError):
         channel_invite(userOne['token'], 18 , randu_id)
 
 
@@ -120,9 +120,9 @@ def test_channel_details_not_member():
 def test_channel_messages_return_type():
     pass 
 
-# check InputError is raised when start is greater than the total number of messages in the channel
+#TODO: check InputError is raised when start is greater than the total number of messages in the channel
 # is this test possible
-def test_channel_messages_start_too big():
+def test_channel_messages_start_too_big():
     pass
 
 # TODO: make a test checking that with valid input, channel_messages returns correctly
