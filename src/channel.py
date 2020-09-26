@@ -2,6 +2,7 @@ from data import channel, users
 
 
 def channel_invite(token, channel_id, u_id):
+    
     # check channel_id is a valid channel_id; if not raise inputError
     
     # check user with the token 'token' is actually part of the channel with id
@@ -23,7 +24,17 @@ def channel_details(token, channel_id):
         # for chan in channel
         # if chan == channel_id ??(might be better way to do this)'
     # check the channel with channel_id and see if the user is part of 
-    # channel; if not raise an accesserror is raised if the
+    # channel; if not raise an accesserror
+    
+    # create a dictionary called chnl_details
+    # find the name
+    # Loop: get the u_id of the owners
+        # get the first_name and last_name 
+        # add that to chnl_details
+    # get the u_id of all the members
+        # get the first_name and last_name 
+        # add that to channel_id
+        
     return {
         'name': 'Hayden',
         'owner_members': [
