@@ -1,6 +1,6 @@
 
 users = {
-    'u_id(int)': {
+    7 : {
     'name_first' : " ",
     'name_last' : " ",
     'email' : " "
@@ -9,7 +9,7 @@ users = {
 
 
 channel = {
-    'channel_id(int)' : {
+    1 : {
         'channel_name' : "name",
         'is_public' : False,
         'owner_members': {
@@ -23,8 +23,8 @@ channel = {
             567 : True
         },
         'messages' : {
-            'message(int)' : {
-              'u_id(int)' : " ",
+            1 : {
+              7 : "user's_name",
               'message_content' : " ",
               'time' : " "
             }

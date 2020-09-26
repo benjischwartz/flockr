@@ -44,10 +44,10 @@ def test_channels_create_invalid_token():
 # Check if user can view only appropriate lists they are a member of
 def test_channels_list_user_view():
     # create channels that has no users
-    emptyChannel = channels_create("adminToken", "validchannel", True)
-    userChannel = channels_create("thisUser", "validchannel", True)
+    emptyChannel = channels_create("100", "validchannel", True)
+    userChannel = channels_create("2", "validchannel", True)
     # create user and compare channels_list result with channels_list_all
-    assert channels_list("thisUser") != channels_listall(result_login["adminToken"]), "users can see all lists, even if not a member"
+    assert channels_list("2") != channels_listall(result_login["100"]), "users can see all lists, even if not a member"
    
 # check channels_create raises input error when name is too long
 def test_channels_create_too_long_name():
