@@ -13,12 +13,12 @@ def check(email):
 def auth_login(email, password):
     # check if email is registered
     login = False
-    for user in users.keys():
-        if user == email:            
-            if users[user]['password'] == password:
-                print("Login successful")
+    for emails in users.keys():
+        if email == emails:            
+            if users[email]['password'] == password:
+                # print("Login successful")
                 return {
-                    'u_id': email,  ## need to correct this
+                    'u_id': users[email]['u_id'],
                     'token': email, ## for iteration 1, tokens can just be email or id
                 }
     raise InputError ("Email not found or password not valid")
@@ -36,13 +36,18 @@ def auth_register(email, password, name_first, name_last):
         raise InputError ("Invalid email")
         
     # register a user
+    # create a unique user_id
+    totalUsers = len(users)
+    newU_id = totalUsers
+    
     users[email] = {
+            'u_id' : newU_id,
             'name_first' : name_first,
             'name_last' : name_last,
-            'email' : email,
             'password' : password
         }
     return {
-        'u_id' : email,
+        'u_id' : newU_id,
         'token' : email,
     }
+

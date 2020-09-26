@@ -1,10 +1,10 @@
 
 users = {
-    'u_id(int)': {
-    'name_first' : " ",
-    'name_last' : " ",
-    'email' : " ",
-    'password' : " "
+    'email': {
+        'u_id' : " ",
+        'name_first' : " ",
+        'name_last' : " ",
+        'password' : " "
     }
 }
 
