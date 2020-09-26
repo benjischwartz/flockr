@@ -34,12 +34,27 @@ def auth_register(email, password, name_first, name_last):
     # Check if valid email
     if (check(email) != "Valid Email"):
         raise InputError ("Invalid email")
-        
+
+    # Check if email already registered to a user
+    else:
+        for emails in users.keys():
+            if email == emails:
+                raise InputError("Email already belongs to a user")
+
+    # Check if first and last name are between 1 and 50 inclusive
+    if len(name_first) not in range(1, 50) or len(name_last) not in range(1,50):
+        raise InputError ("First and last name must be between 1 and 50 inclusive")
+    
+    #Check that password is at least 6 letters
+    if len(password) < 6:
+        raise InputError("Password too short")
+
     # register a user
     # create a unique user_id
     totalUsers = len(users)
     newU_id = totalUsers
-    
+
+    #For loop checking if id is in dictionary
     users[email] = {
             'u_id' : newU_id,
             'name_first' : name_first,
@@ -51,3 +66,4 @@ def auth_register(email, password, name_first, name_last):
         'token' : email,
     }
 
+# TODO: figure out how to successfully logout and invalidate token
