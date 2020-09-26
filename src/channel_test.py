@@ -1,7 +1,7 @@
 # test file for the channel functions
 
 from auth import auth_register
-from channel import channel_invite, channel_details, channel_messages
+from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join
 from channels import channels_create
 import pytest
 from error import InputError
@@ -147,11 +147,57 @@ def test_channel_messages_not_member():
         channel_messages(userTwo['token'], randChannel_id, 0)
 
 #################################################################################
-def test_channel_leave():
+#channel_leave (token, channel_id)
+def test_channel_leave_invalid_user():
     #BRIAN
-def test_channel_join():
-    #BRIAN
+    #check for access error when user isn't in the specified channel
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
+    user_login = auth_login('user@gmail.com', '123abc!@#')
+    leaver_login = auth_login('leaver@gmail.com', '123abc!@#')
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
     
+    with pytest.raises(AccessError):
+        channel_leave(leaver['token'], userchannel_id)
+        
+#------------------------------------------------------------------------------#
+    
+def test_channel_join_invalid_channel():
+    #BRIAN
+    #if the Channel id is invalid 
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    user_login = auth_login('user@gmail.com', '123abc!@#')
+    joiner_login = auth_login('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    invalid_id = 0
+    if userchannel_id == invalid_id:
+        invalid_id = 1
+    with pytest.raises(InputError):
+        channel_join(joiner['token'], invalid_id)
+        
+def test_channel_join_private_no_invite():
+    #if the channel is private, but no invite is given to the user
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    user_login = auth_login('user@gmail.com', '123abc!@#')
+    joiner_login = auth_login('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', False)    
+    channel_invite(user['token'], 'userchannel_id', joiner) = False
+    
+    with pytest.raises(AccessError):
+        channel_join(joiner['token'], userchannel_id)
+    
+def test_channel_join_already_in_channel():
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    user_login = auth_login('user@gmail.com', '123abc!@#')  
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    
+    with pytest.raises(InputError):
+    channel_join(joiner['token'], userchannel_id)
+    
+
+#################################################################################
 def test_channel_addowner():
     #ETHAN
 
