@@ -1,6 +1,22 @@
-
+## users is as u_int int as key ##
+## dummy data for testing
 users = {
+    1: {
+    'name_first' : " ",
+    'name_last' : " ",
+    'email' : " "
+    },
+    2 : {
+    'name_first' : " ",
+    'name_last' : " ",
+    'email' : " "
+    },
     7 : {
+    'name_first' : " ",
+    'name_last' : " ",
+    'email' : " "
+    },
+    100 : {
     'name_first' : " ",
     'name_last' : " ",
     'email' : " "

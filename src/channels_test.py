@@ -4,21 +4,21 @@
 
 from channels import channels_listall, channels_list, channels_create
 import pytest
-from error import InputError
+from error import InputError, AccessError
 
 # check return values are valid types
 # add more to check the dict key values
 def test_return_type():
-    assert(type(channels_list("validtoken")) is dict) 
-    assert(type(channels_listall("validtoken")) is dict)
-    assert(type(channels_create("validtoken", "somename", True)) is dict)
+    assert(type(channels_list("1")) is dict) 
+    assert(type(channels_listall("2")) is dict)
+    assert(type(channels_create("7", "somename", True)) is dict)
 
 # check channels create() adds a new channel
 # calls channels_listall to check
 def test_channels_create_valid():
     # test if channel is in channels list_all after
     # create public channel 
-    newChannel = channels_create("validtoken", "validchannel", True)
+    newChannel = channels_create("23", "validchannel", True)
     # check if channel id is in channels list
     # TODO??? check if channel id didn't aleady exist: i.e unique keys?
     Found = False
@@ -34,20 +34,20 @@ def test_channels_create_valid():
 # check raises ACCESS ERROR if token is invalid for channel_create
 def test_channels_create_invalid_token():
     # check string
-    with pytest.raises(AccessError, m=r"Token passed in is not valid"):
-        channels_create("7897", "name", False)
+    with pytest.raises(AccessError):
+        channels_create(123, "name", False)
     # Expect this test to fail 
     with pytest.raises(AccessError, m=r"Token passed in is not valid"):
-        channels_create("invalidtoken", "name", False)
+        assert channels_create("invalidtoken", "name", False)
 
 
 # Check if user can view only appropriate lists they are a member of
 def test_channels_list_user_view():
     # create channels that has no users
-    emptyChannel = channels_create("100", "validchannel", True)
-    userChannel = channels_create("2", "validchannel", True)
+    emptyChannel = channels_create("100", "validchannel1", True)
+    userChannel = channels_create("2", "validchannel2", True)
     # create user and compare channels_list result with channels_list_all
-    assert channels_list("2") != channels_listall(result_login["100"]), "users can see all lists, even if not a member"
+    assert channels_list("2") != channels_listall("100"), "users can see all lists, even if not a member"
    
 # check channels_create raises input error when name is too long
 def test_channels_create_too_long_name():
