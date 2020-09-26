@@ -73,8 +73,7 @@ def test_channel_invite_not_a_member():
         channel_invite(userTwo['token'], randchannel_id , userThree['u_id'])
 
 #TODO: InputError if you add yourself/ someone in the channel already (flock created an error)
-#TODO: AccessError if you someone not in the channel adds someone outside the channel
-    # is this test actually meaningful
+
 
 #-------------------------------------------------------------------------------        
 # Tests for channel_details function - KESH
