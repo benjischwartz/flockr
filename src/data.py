@@ -3,7 +3,8 @@ users = {
     'u_id(int)': {
     'name_first' : " ",
     'name_last' : " ",
-    'email' : " "
+    'email' : " ",
+    'password' : " "
     }
 }
 
