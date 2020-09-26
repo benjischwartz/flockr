@@ -4,9 +4,9 @@ from check_token import is_valid_token, user_id_given_token
 from error import InputError, AccessError
 
 def channels_list(token):
-    # raise ACCESS ERROR if token is invalid
-    if is_valid_token(token) == False:
-        raise AccessError("Token passed in is not valid")  
+    # # raise ACCESS ERROR if token is invalid
+    # if is_valid_token(token) == False:
+    #     raise AccessError("Token passed in is not valid")  
 
     # init empty data structs for return
     returnList = []
@@ -40,9 +40,9 @@ def channels_list(token):
     # }
 
 def channels_listall(token):
-    # raise ACCESS ERROR if token is invalid
-    if is_valid_token(token) == False:
-        raise AccessError("Token passed in is not valid")  
+    # # raise ACCESS ERROR if token is invalid
+    # if is_valid_token(token) == False:
+    #     raise AccessError("Token passed in is not valid")  
         
     returnList = []
     returnDict = dict()
@@ -70,9 +70,9 @@ def channels_listall(token):
     # }
 
 def channels_create(token, name, is_public):
-    # raise ACCESS ERROR if token is invalid
-    if is_valid_token(token) == False:
-        raise AccessError("Token passed in is not valid")   
+    # # raise ACCESS ERROR if token is invalid
+    # if is_valid_token(token) == False:
+    #     raise AccessError("Token passed in is not valid")   
     ## Input error if channel name is too long
     if len(name) > 20:
         raise InputError("channel name cannot be greater than 20 characters")
