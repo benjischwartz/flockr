@@ -9,22 +9,21 @@ users = {
 
 
 channel = {
-    1 : {
-        'channel_name' : "name",
-        'is_public' : False,
-        'owner_members': {
+    'channel_id(int)' : {
+        'channel_name(str)' : " ",
+        'owner_members(str)': {
             78978 : True,
             223423 : True,
             567 : True
         },
-        'all_members' : {
+        'all_members(str)' : {
             78978 : True,
             223423 : True,
             567 : True
         },
-        'messages' : {
-            1 : {
-              7 : "user's_name",
+        'messages(str)' : {
+            'message(int)' : {
+              'u_id(int)' : " ",
               'message_content' : " ",
               'time' : " "
             }
