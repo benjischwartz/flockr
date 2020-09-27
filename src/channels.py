@@ -19,7 +19,7 @@ def channels_list(token):
         eachDict['name'] = value['channel_name']
         # check channel details to see if member is there
         checkAccessDict = channel_details(token, key)
-        if int(token) in checkAccessDict['all_members']:
+        if  user_id_given_token(token) in checkAccessDict['all_members']:
             # if token matches with a valid user_id in channel members,
             # add this channel info to list
             returnList.append(eachDict)
@@ -59,7 +59,7 @@ def channels_listall(token):
     returnDict['channels'] = returnList
 
     return returnDict
-    # return in format specified
+    #### format for return ####
     # return {
     #     'channels': [
     #     	{
@@ -70,9 +70,9 @@ def channels_listall(token):
     # }
 
 def channels_create(token, name, is_public):
-    # # raise ACCESS ERROR if token is invalid
-    # if is_valid_token(token) == False:
-    #     raise error.AccessError("Token passed in is not valid")   
+    # raise ACCESS ERROR if token is invalid
+    if is_valid_token(token) == False:
+        raise error.AccessError("Token passed in is not valid")   
     # Input error if channel name is too long
     if len(name) > 20:
         raise error.InputError("channel name cannot be greater than 20 characters")
@@ -102,7 +102,7 @@ def channels_create(token, name, is_public):
     return {
         'channel_id': newChannel_id
     }
-
-    
-## FOR Testing    
-#channels_listall("string")
+    #### format for return ####
+    # return {
+    #     'channel_id': newChannel_id
+    # }

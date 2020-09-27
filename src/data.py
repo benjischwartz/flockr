@@ -1,25 +1,20 @@
 ## users is as u_int int as key ##
 ## dummy data for testing
 users = {
-    1: {
+    "first@example.com" : {
     'name_first' : " ",
     'name_last' : " ",
-    'email' : " "
+    'u_id' : 1
     },
-    2 : {
+    "second@example.com" : {
     'name_first' : " ",
     'name_last' : " ",
-    'email' : " "
+    'u_id' : 2
     },
-    7 : {
+    "third@example.com" : {
     'name_first' : " ",
     'name_last' : " ",
-    'email' : " "
-    },
-    100 : {
-    'name_first' : " ",
-    'name_last' : " ",
-    'email' : " "
+    'u_id' : 3
     }
 }
 

@@ -6,21 +6,18 @@ from data import users
 
 def is_valid_token(token):
     '''
-    returns true or false if u_id is in user database
+    returns true or false if token, email, is in user database
     '''
-    if type(token) is str and token.isnumeric():
-        intToken = int(token)
-        if token in users:
-            return True
+    if token in users:
+        return True
     return False
 
 def user_id_given_token(token):
     '''
-    returns None if u_id is not found in user database
-    otherwise returns the u_id(int)
+    returns the u_id if the user is in the database
+    otherwise returns None if u_id is not found
     '''
-    if type(token) is str and token.isnumeric():
-        intToken = int(token)
-        if token in users:
-            return intToken
+    if token in users:
+        user_id = users[token]['u_id']
+        return user_id
     return None
