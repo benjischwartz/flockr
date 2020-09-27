@@ -2,7 +2,7 @@ users = {
     'email': {
     'name_first' : " ",
     'name_last' : " ",
-    'user_id' : " ",
+    'u_id' : " ",
     'password' : " "
     }
 }
