@@ -4,24 +4,6 @@ from check_token import is_valid_token, user_id_given_token
 import error
 
 
-## TESTING: clearing user data and putting own
-## dummy data for in
-users.clear()
-users["first@example.com"] = {
-    'name_first' : " ",
-    'name_last' : " ",
-    'u_id' : 1
-    }
-users["second@example.com"] = {
-    'name_first' : " ",
-    'name_last' : " ",
-    'u_id' : 2
-    }
-users["third@example.com"] = {
-    'name_first' : " ",
-    'name_last' : " ",
-    'u_id' : 3
-    }
 
 
 def channels_list(token):

@@ -8,6 +8,27 @@ from error import InputError, AccessError
 
 
 
+## TESTING: clearing user data and putting own
+## dummy data for in 
+from data import users
+users.clear()
+users["first@example.com"] = {
+    'name_first' : " ",
+    'name_last' : " ",
+    'u_id' : 1
+    }
+users["second@example.com"] = {
+    'name_first' : " ",
+    'name_last' : " ",
+    'u_id' : 2
+    }
+users["third@example.com"] = {
+    'name_first' : " ",
+    'name_last' : " ",
+    'u_id' : 3
+    }
+
+
 # check return values are valid types
 # add more to check the dict key values
 def test_return_type():
