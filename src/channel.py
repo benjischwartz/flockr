@@ -77,8 +77,36 @@ def channel_join(token, channel_id):
 
 def channel_addowner(token, channel_id, u_id):
     return {
+        'owner_members': [
+            {
+                'u_id': 1,
+                'name_first': 'Hayden',
+                'name_last': 'Jacobs',
+            }
+        ],
+        'all_members': [
+            {
+                'u_id': 1,
+                'name_first': 'Hayden',
+                'name_last': 'Jacobs',
+            }
+        ]
     }
 
 def channel_removeowner(token, channel_id, u_id):
     return {
+        'owner_members': [
+            {
+                'u_id': 1,
+                'name_first': 'Hayden',
+                'name_last': 'Jacobs',
+            }
+        ],
+        'all_members': [
+            {
+                'u_id': 1,
+                'name_first': 'Hayden',
+                'name_last': 'Jacobs',
+            }
+        ]
     }
