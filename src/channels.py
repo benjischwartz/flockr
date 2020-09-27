@@ -5,6 +5,28 @@ import error
 
 
 
+## TESTING DATA CLEAR: clearing data and putting own
+## dummy data for testing
+# clear users
+users.clear()
+users["first@example.com"] = {
+    'name_first' : " ",
+    'name_last' : " ",
+    'u_id' : 1
+    }
+users["second@example.com"] = {
+    'name_first' : " ",
+    'name_last' : " ",
+    'u_id' : 2
+    }
+users["third@example.com"] = {
+    'name_first' : " ",
+    'name_last' : " ",
+    'u_id' : 3
+    }
+# clear channels
+channel.clear()
+
 
 def channels_list(token):
     # # raise ACCESS ERROR if token is invalid

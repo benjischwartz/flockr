@@ -7,29 +7,6 @@ import pytest
 from error import InputError, AccessError
 
 
-## TESTING DATA CLEAR: clearing data and putting own
-## dummy data for testing
-from data import users, channel
-# clear users
-users.clear()
-users["first@example.com"] = {
-    'name_first' : " ",
-    'name_last' : " ",
-    'u_id' : 1
-    }
-users["second@example.com"] = {
-    'name_first' : " ",
-    'name_last' : " ",
-    'u_id' : 2
-    }
-users["third@example.com"] = {
-    'name_first' : " ",
-    'name_last' : " ",
-    'u_id' : 3
-    }
-# clear channels
-channel.clear()
-
 # check return values are valid types
 # add more to check the dict key values
 def test_return_type():
@@ -79,13 +56,4 @@ def test_channels_list_user_view():
 def test_channels_create_too_long_name():
     with pytest.raises(InputError, match=r"channel name cannot be greater than 20 characters"):
         channels_create("third@example.com", "a_string_name_which_is_very_long_and_will_never_pass", True)
-
-# Test when channel created is the the creating user is first owner and member
-def test_channels_create_user_member_owner():
-    userChannel = channels_create("first@example.com", "validchannel2", True)
-    # print(userChannel["channel_id"])
-    assert len(channel[5]['owner_members']) == 1
-    assert users["first@example.com"]['u_id'] in channel[5]['owner_members']
-    assert len(channel[5]['all_members']) == 1
-    assert users["first@example.com"]['u_id'] in channel[5]['all_members']
 
