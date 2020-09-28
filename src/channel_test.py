@@ -254,13 +254,14 @@ def test_channel_removeowner():
 
     #Remove Owner that is not an Owner
     #Check if Error Message Returned as Expected
-    with pytest.raises(AccessError):
+    with pytest.raises(AccessError, Exception):
         assert channel_removeowner(login_result['token'], randChannel_id['channel_id'], "randemail@gmail.com"), "Test_Channel_4: Correct AccessError Returned as Non-Member Can't Be Owner"
 
     #Add User as Owner
     channel_addowner(login_result['token'], randChannel_id['channel_id'], "randemail@gmail.com")
 
     #Remove Owner that is an Owner
-    channel_removeowner(register_result['token'], randChannel_id['channel_id'], "randemail@gmail.com")
+    with pytest.raises(Exception):
+        assert channel_removeowner(register_result['token'], randChannel_id['channel_id'], "randemail@gmail.com"), "Thre should be an error as no other owners."
   
     
