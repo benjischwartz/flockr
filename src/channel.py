@@ -112,7 +112,7 @@ def channel_removeowner(token, channel_id, u_id):
 
     #If there are no other owners (ASSUMPTION)
     if (len(channel['owner_members']) <= 1):
-        raise error("There must be at least one other owner in order to remove an owner")
+        raise Exception("There must be at least one other owner in order to remove an owner")
 
     #REMOVING OWNER FROM THE LIST OF USERS
     channel['owner_members'].pop(u_id)
