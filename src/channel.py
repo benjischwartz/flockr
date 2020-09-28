@@ -1,4 +1,5 @@
 from data import channel, users
+import error
 
 
 def channel_invite(token, channel_id, u_id):
