@@ -79,7 +79,7 @@ def channel_join(token, channel_id):
 def channel_addowner(token, channel_id, u_id):
     #ETHAN
     #ERROR CHECKING
-    if channel.has_key(channel_id) == false():
+    if channel.has_key(channel_id) == False:
         #If Channel ID is invalid
         raise error.InputError("Channel ID is invalid")
     elif u_id in channel_owner.keys():
@@ -99,7 +99,7 @@ def channel_addowner(token, channel_id, u_id):
 def channel_removeowner(token, channel_id, u_id):
     #ETHAN
     #ERROR CHECKING
-    if channel.has_key(channel_id) == false():
+    if channel.has_key(channel_id) == False:
         #If Channel ID is invalid
         raise error.InputError("Channel ID is invalid")
     elif u_id in channel_owner.keys():
