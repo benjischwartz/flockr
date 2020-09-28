@@ -1,10 +1,10 @@
 # test file for the channel functions
 
 from auth import auth_register, auth_login, auth_logout
-from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join
+from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_create
 import pytest
-from error import InputError
+from error import InputError, AccessError
 
 
 ################################################################################
@@ -70,7 +70,7 @@ def test_channel_invite_not_a_member():
     userThree = auth_register('seconduser@gmail.com', '456abc!@#', 'Third', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(AccessError):
-        channel_invite(userTwo['token'], randchannel_id , userThree['u_id'])
+        channel_invite(userTwo['token'], randChannel_id , userThree['u_id'])
 
 #TODO: InputError if you add yourself/ someone in the channel already (flock created an error)
 
