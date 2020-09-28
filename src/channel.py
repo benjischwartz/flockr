@@ -81,7 +81,7 @@ def channel_addowner(token, channel_id, u_id):
     if channel.has_key(channel_id) == false():
         #If Channel ID is invalid
         raise InputError
-    elif u_id is in channel_owner.keys():
+    elif u_id in channel_owner.keys():
         #If User ID is already an owner of the channel
         raise InputError
     
@@ -101,7 +101,7 @@ def channel_removeowner(token, channel_id, u_id):
     if channel.has_key(channel_id) == false():
         #If Channel ID is invalid
         raise InputError
-    elif u_id is in channel_owner.keys():
+    elif u_id in channel_owner.keys():
         #If User ID is already an owner of the channel
         raise InputError
     
