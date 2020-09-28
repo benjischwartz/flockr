@@ -86,7 +86,7 @@ def channel_addowner(token, channel_id, u_id):
         raise InputError
     
     #If current token is not an owner of the channel
-    if token is not in channel_owner.keys():
+    if channel_owner.has_key(token) == False:
         raise AccessError
 
     #Adding the User to the List of Owners
@@ -119,7 +119,7 @@ def channel_removeowner(token, channel_id, u_id):
         raise InputError
     
     #If current token is not an owner of the channel
-    if token is not in channel_owner.keys():
+    if channel_owner.has_key(token) == False:
         raise AccessError
 
     #Removing the User From List of Owners
