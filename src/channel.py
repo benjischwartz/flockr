@@ -127,16 +127,16 @@ def channel_join(token, channel_id):
 def channel_addowner(token, channel_id, u_id):
     #ETHAN
     #ERROR CHECKING
-    if channel.has_key(channel_id) == False:
+    if channel_id not in channel:
         #If Channel ID is invalid
-        raise error.InputError("Channel ID is invalid")
+        raise InputError("Channel ID is invalid")
     if u_id in channel['owner_members'].keys():
         #If User ID is already an owner of the channel
-        raise error.InputError("User is already an owner")
+        raise InputError("User is already an owner")
     
     #If current token is not an owner of the channel
     if channel['owner_members'].has_key(token) == False:
-        raise error.AccessError("You are not an owner")
+        raise AccessError("You are not an owner")
 
     #ADDING THE USER TO THE LIST OF OWNERS
     channel['owner_members'][u_id] = True
@@ -147,16 +147,16 @@ def channel_addowner(token, channel_id, u_id):
 def channel_removeowner(token, channel_id, u_id):
     #ETHAN
     #ERROR CHECKING
-    if channel.has_key(channel_id) == False:
+    if channel_id not in channel:
         #If Channel ID is invalid
-        raise error.InputError("Channel ID is invalid")
+        raise InputError("Channel ID is invalid")
     if u_id in channel['owner_members'].keys():
         #If User ID is already an owner of the channel
-        raise error.InputError("User is already an owner")
+        raise InputError("User is already an owner")
     
     #If current token is not an owner of the channel
     if channel['owner_members'].has_key(token) == False:
-        raise error.AccessError("You are not an owner")
+        raise AccessError("You are not an owner")
 
     #If there are no other owners (ASSUMPTION)
     if (len(channel['owner_members']) <= 1):
