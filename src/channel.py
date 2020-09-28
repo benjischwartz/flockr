@@ -29,7 +29,7 @@ def channel_invite(token, channel_id, u_id):
     # check user with u_id 'u_id' is not part of the channel with channel_id         
     authorised = False
     already_in = False
-    if channel_id in channel:
+    if str(channel_id) in channel.keys():
         for member in channel[channel_id]['all_members'].keys():
             if member == token_u_id:
                 authorised = True
