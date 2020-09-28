@@ -78,7 +78,7 @@ def channel_join(token, channel_id):
 def channel_addowner(token, channel_id, u_id):
     #ETHAN
     #ERROR CHECKING
-    if channel_id is not in channel.keys():
+    if channel.has_key(channel_id) == false():
         #If Channel ID is invalid
         raise InputError
     elif u_id is in channel_owner.keys():
@@ -92,26 +92,13 @@ def channel_addowner(token, channel_id, u_id):
     #Adding the User to the List of Owners
     channel_owner[u_id] = True
     return {
-        'owner_members': [
-            {
-                'u_id': 1,
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-            }
-        ],
-        'all_members': [
-            {
-                'u_id': 1,
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-            }
-        ]
+
     }
 
 def channel_removeowner(token, channel_id, u_id):
     #ETHAN
     #ERROR CHECKING
-    if channel_id is not in channel.keys():
+    if channel.has_key(channel_id) == false():
         #If Channel ID is invalid
         raise InputError
     elif u_id is in channel_owner.keys():
@@ -126,18 +113,5 @@ def channel_removeowner(token, channel_id, u_id):
     channel_owner.pop(u_id)
 
     return {
-        'owner_members': [
-            {
-                'u_id': 1,
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-            }
-        ],
-        'all_members': [
-            {
-                'u_id': 1,
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-            }
-        ]
+
     }
