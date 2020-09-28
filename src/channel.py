@@ -1,4 +1,5 @@
-from data import users, token, channel
+
+from data import users, tokens, channel
 from error import InputError, AccessError
 
 
@@ -11,15 +12,17 @@ def channel_invite(token, channel_id, u_id):
             # if token == emails:
                 # token_u_id = users[token]['u_id'] else etc
     
-    # check user with u_id 'u_id' is a valid user; if they aren't raise an inputerror 
+    # check user with u_id 'u_id' is a valid user; if they aren't raise an inputerror
+    valid_user = False
     for user in users.keys():
         if u_id == users[user]['u_id']:
+            valid_user = True
             break
-        else 
-            raise InputError ("This user is not a valid user")
+    
+    if valid_user == False:
+        raise InputError ("This user is not a valid user")
 
 
-               
     # check channel_id is a valid channel_id; if not raise inputError
     # check user with the token 'token' is actually part of the channel with id
     # 'channel_id'; if they aren't raise an accesserror
@@ -27,15 +30,15 @@ def channel_invite(token, channel_id, u_id):
     authorised = False
     already_in = False
     if channel_id in channel:
-        for member in channel[channel_id]['all_members']
+        for member in channel[channel_id]['all_members'].keys():
             if member == token_u_id:
                 authorised = True
-            if member == u_id
+            if member == u_id:
                 already_in = True
     else:
         raise InputError ("Channel_id passed is not valid")
     
-    if authorised:
+    if authorised == False:
         raise AccessError ("This user is not authorised to invite to this channel")
             
     if already_in:
@@ -47,14 +50,30 @@ def channel_invite(token, channel_id, u_id):
     }
 
 def channel_details(token, channel_id):
-
-    # check that the person is a valid user??? 
-    # check that the channel is valid 
-        # for chan in channel
-        # if chan == channel_id ??(might be better way to do this)'
-    # check the channel with channel_id and see if the user is part of 
-    # channel; if not raise an accesserror
+    # get the u_id of the person with the token
+    # token is email in this case so
+    # check that the person is a valid user - implement later
+    token_u_id = users[token]['u_id']
     
+    # check that the channel is valid 
+    authorised = False
+    if channel_id in channel:
+        for member in channel[channel_id]['all_members'].keys():
+            if member == token_u_id:
+                authorised = True
+                break
+    else:
+        raise InputError ("Channel_id passed is not valid")
+                
+    if authorised == False:
+        raise AccessError ("This user is not authorised to view the details of this channel")
+                
+    chnl_details = {}
+    chnl_name = channel[channel_id]['channel_name']
+    chnl_details = [name : chnl_name]
+    chnl_details = ['owner_members' : []]
+    for member in channel[channel_id]['owner_members']:
+        
     # create a dictionary called chnl_details
     # find the name
     # Loop: get the u_id of the owners
