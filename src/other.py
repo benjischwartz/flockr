@@ -1,3 +1,10 @@
+from data import users, tokens, channel
+
+def clear():
+    users.clear()
+    tokens.clear()
+    channel.clear()
+
 def users_all(token):
     return {
         'users': [
