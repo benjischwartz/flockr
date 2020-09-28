@@ -50,6 +50,7 @@ def channel_invite(token, channel_id, u_id):
     }
 
 def channel_details(token, channel_id):
+    '''
     # get the u_id of the person with the token
     # token is email in this case so
     # check that the person is a valid user - implement later
@@ -82,7 +83,7 @@ def channel_details(token, channel_id):
     # get the u_id of all the members
         # get the first_name and last_name 
         # add that to channel_id
-        
+    '''        
     return {
         'name': 'Hayden',
         'owner_members': [

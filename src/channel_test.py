@@ -16,7 +16,7 @@ from other import clear
     # CASE 3: channels_create --> is_public is False?? What is meant to happen
         # create tests for channel_invite, channel_details
 
-
+'''
 # check that when given valid input, randChannel_id does add the person and 
 # returns the correct output
 def test_channel_invite_correct_return():
@@ -29,7 +29,7 @@ def test_channel_invite_correct_return():
         'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
         'name_first' : 'Second', 'name_last': 'User'}
 
-
+'''
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_invite_invalid_channel_id():
     clear()
@@ -81,7 +81,7 @@ def test_channel_invite_not_a_member():
 
 #TODO:  add yourself/ someone in the channel already
 
-
+'''
 #-------------------------------------------------------------------------------        
 # Tests for channel_details function - KESH
     # function input: token, channel_id
@@ -150,7 +150,7 @@ def test_channel_messages_not_member():
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(AccessError):
         channel_messages(userTwo['token'], randChannel_id, 0)
-
+'''
 #################################################################################
 #channel_leave (token, channel_id)
 def test_channel_leave_invalid_user():
@@ -271,5 +271,5 @@ def test_channel_removeowner():
     except:
         #Check if Owner Sucessfully Removed
         assert False, "Test_Channel_6: Check if User Sucessfully Removed From Channel"
-     
+  
     
