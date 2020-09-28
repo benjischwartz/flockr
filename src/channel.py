@@ -1,5 +1,6 @@
 from data import channel, users
 import error
+from auth import auth_login, auth_logout, auth_register
 
 
 def channel_invite(token, channel_id, u_id):
