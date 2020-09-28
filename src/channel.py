@@ -1,18 +1,36 @@
-from data import channel, users
-import error
+from data import users, token, channel
+from error import InputError, AccessError
 
 
 def channel_invite(token, channel_id, u_id):
+    # get the u_id of the person with the token
+    # token is email in this case so
+    token_u_id = users[token]['u_id']
+    # check that the user has a token and is valid
+        #for emails in users.key():
+            # if token == emails:
+                # token_u_id = users[token]['u_id'] else etc
     
+    for user in users[
+         # check user with u_id 'u_id' is a valid user; if they aren't raise an inputerror 
+
+               
     # check channel_id is a valid channel_id; if not raise inputError
-    
     # check user with the token 'token' is actually part of the channel with id
     # 'channel_id'; if they aren't raise an accesserror
+    for channel in channel.keys():
+        if channel == channel_id:
+            for member in channel[channel_id]['all_members']
+                if member == token_u_id:
+                    break
+                else
+                    raise AccessError ("This user is not authorised to invite to this channel")
+        else
+            raise InputError ("Channel_id passed is not valid")
     
-    # check user with u_id 'u_id' is a valid user? (is this necessary)
-    # check user with u_id 'u_id' is not part of the channel with channel_id
-        #if they are, raise inputerror or just do nothing
-        
+    # check user with u_id 'u_id' is not part of the channel with channel_id         
+    
+
     # find channel[channel_id][all_members] and add u_id 
     
     return {
