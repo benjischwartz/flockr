@@ -8,9 +8,7 @@ users = {
     }
 }
 
-tokens = {
-    'token' : "benjischwartz@gmail.com"
-}
+tokens = ['benji.schwartz@gmail.com']
 
 channel = {
     'channel_id(int)' : {
