@@ -216,25 +216,19 @@ def test_channel_addowner():
     #assert type(login_result) is dict, "Test_Channel_2: User Sucessfully Logged In"
     ###
     
+    randChannel_id = channels_create(register_result['token'], 'randChannel2', True)
+
     #Check if a Non-Member Can be Made Owner
     #Check if an error is returned as expected
     with pytest.raises(AccessError):
-        assert channel_addowner(register_result['token'], 1, "randemail@gmail.com"), "Test_Channel_3: Correct AccessError Returned as Non-Member Can't Be Owner"
+        assert channel_addowner(register_result['token'], randChannel_id['channel_id'], "randemail@gmail.com"), "Test_Channel_3: Correct AccessError Returned as Non-Member Can't Be Owner"
     
 
     #Add User to Channel (Adding User to Channel 1)
-    try:
-        channel_join(register_result['token'], 1)
-    except:
-        #Check if Successfully Joined
-        assert False, "Test_Channel_4: Check if User Sucessfully Added to Channel"
+    channel_join(register_result['token'], randChannel_id['channel_id'])
 
     #Add User as Owner
-    try:
-        channel_addowner(register_result['token'], 1, "randemail@gmail.com")
-    except:
-        #Check if Owner Successfully Added
-        assert False, "Test_Channel_5: Check if Member User Sucessfully Added as Owner"
+    channel_addowner(register_result['token'], randChannel_id['channel_id'], "randemail@gmail.com")
 
 
     
@@ -249,10 +243,11 @@ def test_channel_removeowner():
     login_result = auth_login('randemail@gmail.com','password1234')
     assert type(login_result) is dict, "Test_Channel_2: User Sucessfully Logged In"
 
+    randChannel_id = channels_create(login_result['token'], 'randChannel3', True)
+
     #Add User to Channel (Adding User to Channel 1)
-    with pytest.raises(AccessError):
-        #Check if Successfully Joined
-        channel_join(login_result['token'], 1), "Test_Channel_3: Check if User Sucessfully Added to Channel"
+    channel_join(login_result['token'], randChannel_id['channel_id'])
+    # "Test_Channel_3: Check if User Sucessfully Added to Channel"
   
         
         
@@ -260,20 +255,12 @@ def test_channel_removeowner():
     #Remove Owner that is not an Owner
     #Check if Error Message Returned as Expected
     with pytest.raises(AccessError):
-        assert channel_removeowner(register_result['token'], 1, "randemail@gmail.com"), "Test_Channel_4: Correct AccessError Returned as Non-Member Can't Be Owner"
+        assert channel_removeowner(login_result['token'], randChannel_id['channel_id'], "randemail@gmail.com"), "Test_Channel_4: Correct AccessError Returned as Non-Member Can't Be Owner"
 
     #Add User as Owner
-    try:
-        channel_addowner(register_result['token'], 1, "randemail@gmail.com")
-    except:
-        #Check if Owner Successfully Added
-        assert False, "Test_Channel_5: Check if User Sucessfully Added to Channel"
+    channel_addowner(login_result['token'], randChannel_id['channel_id'], "randemail@gmail.com")
 
     #Remove Owner that is an Owner
-    try:
-        channel_removeowner(register_result['token'], 1, "randemail@gmail.com")
-    except:
-        #Check if Owner Sucessfully Removed
-        assert False, "Test_Channel_6: Check if User Sucessfully Removed From Channel"
+    channel_removeowner(register_result['token'], randChannel_id['channel_id'], "randemail@gmail.com")
   
     
