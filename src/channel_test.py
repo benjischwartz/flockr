@@ -186,7 +186,8 @@ def test_channel_join_private_no_invite():
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     user_login = auth_login('user@gmail.com', '123abc!@#')
-    joiner_login = auth_login('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    #joiner_login = auth_login('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    joiner_login = auth_login('joiner@gmail.com', '123abc!@#')
     userchannel_id = channels_create(user['token'], 'userchannel', False)    
     
     with pytest.raises(AccessError):
@@ -241,19 +242,20 @@ def test_channel_removeowner():
     #ETHAN
     
     #Registering User
-    register_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
-    assert type(register_result) is dict, "Test_Channel_1: User Sucessfully Registered"
+    #register_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #assert type(register_result) is dict, "Test_Channel_1: User Sucessfully Registered"
 
     #Logging In
-    #login_result = auth_login('randemail@gmail.com','password1234')
-    #assert type(login_result) is dict, "Test_Channel_2: User Sucessfully Logged In"
+    login_result = auth_login('randemail@gmail.com','password1234')
+    assert type(login_result) is dict, "Test_Channel_2: User Sucessfully Logged In"
 
     #Add User to Channel (Adding User to Channel 1)
-    try:
-        channel_join(register_result['token'], 1)
-    except:
+    with pytest.raises(AccessError):
         #Check if Successfully Joined
-        assert False, "Test_Channel_3: Check if User Sucessfully Added to Channel"
+        channel_join(login_result['token'], 1), "Test_Channel_3: Check if User Sucessfully Added to Channel"
+  
+        
+        
 
     #Remove Owner that is not an Owner
     #Check if Error Message Returned as Expected
