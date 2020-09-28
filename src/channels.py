@@ -2,13 +2,11 @@ from data import channel, users
 from channel import channel_details
 from check_token import is_valid_token, user_id_given_token
 import error
+from other import clear
 
 
 
-## TESTING DATA CLEAR: clearing data and putting own
-## dummy data for testing
-# clear users
-users.clear()
+## dummy data for testing 
 users["first@example.com"] = {
     'name_first' : " ",
     'name_last' : " ",
@@ -24,14 +22,12 @@ users["third@example.com"] = {
     'name_last' : " ",
     'u_id' : 3
     }
-# clear channels
-channel.clear()
 
 
 def channels_list(token):
-    # # raise ACCESS ERROR if token is invalid
-    # if is_valid_token(token) == False:
-    #     raise error.AccessError("Token passed in is not valid")  
+    # raise ACCESS ERROR if token is invalid
+    if is_valid_token(token) == False:
+        raise error.AccessError("Token passed in is not valid")  
 
     # init empty data structs for return
     returnList = []
@@ -65,9 +61,9 @@ def channels_list(token):
     # }
 
 def channels_listall(token):
-    # # raise ACCESS ERROR if token is invalid
-    # if is_valid_token(token) == False:
-    #     raise AccessError("Token passed in is not valid")  
+    # raise ACCESS ERROR if token is invalid
+    if is_valid_token(token) == False:
+        raise AccessError("Token passed in is not valid")  
         
     returnList = []
     returnDict = dict()
