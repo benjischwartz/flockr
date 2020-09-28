@@ -76,6 +76,21 @@ def channel_join(token, channel_id):
     }
 
 def channel_addowner(token, channel_id, u_id):
+    #ETHAN
+    #ERROR CHECKING
+    if channel_id is not in channel.keys():
+        #If Channel ID is invalid
+        raise InputError
+    elif u_id is in channel_owner.keys():
+        #If User ID is already an owner of the channel
+        raise InputError
+    
+    #If current token is not an owner of the channel
+    if token is not in channel_owner.keys():
+        raise AccessError
+
+    #Adding the User to the List of Owners
+    channel_owner[u_id] = True
     return {
         'owner_members': [
             {
@@ -94,6 +109,22 @@ def channel_addowner(token, channel_id, u_id):
     }
 
 def channel_removeowner(token, channel_id, u_id):
+    #ETHAN
+    #ERROR CHECKING
+    if channel_id is not in channel.keys():
+        #If Channel ID is invalid
+        raise InputError
+    elif u_id is in channel_owner.keys():
+        #If User ID is already an owner of the channel
+        raise InputError
+    
+    #If current token is not an owner of the channel
+    if token is not in channel_owner.keys():
+        raise AccessError
+
+    #Removing the User From List of Owners
+    channel_owner.pop(u_id)
+
     return {
         'owner_members': [
             {
