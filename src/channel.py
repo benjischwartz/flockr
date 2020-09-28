@@ -82,16 +82,16 @@ def channel_addowner(token, channel_id, u_id):
     if channel.has_key(channel_id) == False:
         #If Channel ID is invalid
         raise error.InputError("Channel ID is invalid")
-    elif u_id in channel_owner.keys():
+    if u_id in channel['owner_members'].keys():
         #If User ID is already an owner of the channel
         raise error.InputError("User is already an owner")
     
     #If current token is not an owner of the channel
-    if channel_owner.has_key(token) == False:
+    if channel['owner_members'].has_key(token) == False:
         raise error.AccessError("You are not an owner")
 
     #Adding the User to the List of Owners
-    channel_owner[u_id] = True
+    channel['owner_members'][u_id] = True
     return {
 
     }
@@ -102,16 +102,16 @@ def channel_removeowner(token, channel_id, u_id):
     if channel.has_key(channel_id) == False:
         #If Channel ID is invalid
         raise error.InputError("Channel ID is invalid")
-    elif u_id in channel_owner.keys():
+    if u_id in channel['owner_members'].keys():
         #If User ID is already an owner of the channel
         raise error.InputError("User is already an owner")
     
     #If current token is not an owner of the channel
-    if channel_owner.has_key(token) == False:
+    if channel['owner_members'].has_key(token) == False:
         raise error.AccessError("You are not an owner")
 
     #Removing the User From List of Owners
-    channel_owner.pop(u_id)
+    channel['owner_members'].pop(u_id)
 
     return {
 
