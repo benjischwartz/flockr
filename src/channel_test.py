@@ -16,20 +16,19 @@ from other import clear
     # CASE 3: channels_create --> is_public is False?? What is meant to happen
         # create tests for channel_invite, channel_details
 
-'''
+
 # check that when given valid input, randChannel_id does add the person and 
 # returns the correct output
 def test_channel_invite_correct_return():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    assert channel_invite(userOne['token'], randChannel_id, userTwo['u_id']) == {}
-    randChannel_details = channel_details(userOne['token'], randChannel_id)
+    assert channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id']) == {}
+    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
     assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
         'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
-        'name_first' : 'Second', 'name_last': 'User'}
+        'name_first' : 'Second', 'name_last': 'User'}]
 
-'''
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_invite_invalid_channel_id():
     clear()
@@ -41,7 +40,7 @@ def test_channel_invite_invalid_channel_id():
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     # create a channel_id and then make sure it isn't valid
     invalidChannel_id = 18
-    if invalidChannel_id == randChannel_id:
+    if invalidChannel_id == randChannel_id['channel_id']:
         invalidChannel_id = 19
     with pytest.raises(InputError):
         channel_invite(userOne['token'], invalidChannel_id, userTwo['u_id'])
@@ -76,12 +75,12 @@ def test_channel_invite_not_a_member():
     userThree = auth_register('thirduser@gmail.com', '876abc!@#', 'Third', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(AccessError):
-        channel_invite(userTwo['token'], randChannel_id , userThree['u_id'])
-    assert channel_invite(userTwo['token'], randChannel_id , userThree['u_id']) == 'Hello'
+        channel_invite(userTwo['token'], randChannel_id['channel_id'], userThree['u_id'])
+
 
 #TODO:  add yourself/ someone in the channel already
 
-'''
+
 #-------------------------------------------------------------------------------        
 # Tests for channel_details function - KESH
     # function input: token, channel_id
@@ -89,15 +88,19 @@ def test_channel_invite_not_a_member():
     
     
 def test_channel_details_correct_return():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    randChannel_details = channel_details(userOne['token'], randChannel_id)
-    assert randChannel_details == {}
-    #TODO:  Finish this 
+    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
+    assert randChannel_details == {'name': 'randChannel', 'owner_members' : [{
+        'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}],
+         'all_members' : [{'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}]
+         }
 
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_details_invalid_channel_id():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 18
@@ -108,13 +111,15 @@ def test_channel_details_invalid_channel_id():
 
 # check an AccessError is raised when the user is not a member of the channel
 def test_channel_details_not_member():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(AccessError):
-        channel_details(userTwo['token'], randChannel_id)   
+        channel_details(userTwo['token'], randChannel_id['channel_id'])   
 
 # ------------------------------------------------------------------------------
+'''
 # Tests for channel_messages function - KESH
     # function input: token, channel_id, start
     # output - dictionary
