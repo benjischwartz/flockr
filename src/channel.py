@@ -139,7 +139,11 @@ def channel_messages(token, channel_id, start):
         chnl_msgs['end'] = num_message
        
     return chnl_msgs
-    
+
+if __name__ == '__main__':
+    print(channel_messages('benji.schwartz@gmail.com', 1, 0))
+    print(channel_messages('benji.schwartz@gmail.com', 1, 1))
+        
 def channel_leave(token, channel_id):
     token_u_id = users[token]['u_id']
     # If the channel doesn't exist
@@ -213,7 +217,4 @@ def channel_removeowner(token, channel_id, u_id):
     return {
 
     }
-    
-if __name__ == '__main__':
-    print(channel_messages('benji.schwartz@gmail.com', 1, 0))
 

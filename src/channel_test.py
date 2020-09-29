@@ -155,7 +155,8 @@ def test_channel_messages_return_type():
 def test_channel_messages_start_too_big():
     pass
 
-# TODO: make a test checking that with valid input, channel_messages returns correctly
+#TODO: make a test checking that with valid input, channel_messages returns correctly
+
 # check an AccessError is raised when token does not refer to a valid user
 def test_channel_details_invalid_token():
     clear()
