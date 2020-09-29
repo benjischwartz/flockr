@@ -32,17 +32,16 @@ def channel_invite(token, channel_id, u_id):
             already_in = True
     if authorised == False:
         raise AccessError ("This user is not authorised to invite to this channel")
-        
+     
     if already_in:
         pass 
-
-    channel[channel_id]['all_members'] = {u_id : True}
+    
+    channel[channel_id]['all_members'][u_id] = True
     
     return {
     }
 
 def channel_details(token, channel_id):
-    
     # get the u_id of the person with the token
     # token is email in this case so
     # check that the person is a valid user - implement later
@@ -51,16 +50,15 @@ def channel_details(token, channel_id):
     # check that the channel is valid
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
-         
+    
     authorised = False
     for member in channel[channel_id]['all_members'].keys():
         if member == token_u_id:
             authorised = True
-            break
-            
+                
     if authorised == False:
         raise AccessError ("This user is not authorised to view the details of this channel")
-                
+            
     chnl_details = {}
     chnl_details['name'] = channel[channel_id]['channel_name']
     chnl_details['owner_members'] = []
@@ -79,7 +77,6 @@ def channel_details(token, channel_id):
                 last_name = users[user]['name_last']
         any_member_dict = { 'u_id' : any_member, 'name_first' : first_name, 'name_last' : last_name}
         chnl_details['all_members'].append(any_member_dict)    
-     
     return chnl_details
 
 def channel_messages(token, channel_id, start):

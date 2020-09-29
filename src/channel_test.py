@@ -29,7 +29,7 @@ def test_channel_invite_correct_return():
     assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
         'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
         'name_first' : 'Second', 'name_last': 'User'}]
-
+        
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_invite_invalid_channel_id():
     clear()
@@ -59,7 +59,6 @@ def test_channel_invite_invalid_u_id():
         channel_invite(userOne['token'], randChannel_id['channel_id'], randu_id)
 
 
-#TODO: BAD TEST---> CHECK IF this test is meaningul
 def test_channel_invite_no_channels_exist():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
