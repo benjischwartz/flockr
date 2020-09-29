@@ -3,9 +3,16 @@
 # whereas channel, singular, are user actions within the channel
 
 from channels import channels_listall, channels_list, channels_create
+from auth import auth_register
 import pytest
 from error import InputError, AccessError
+from other import clear
 
+# clear database and register new dummy users for testing
+clear()
+auth_register("first@example.com", "password1234", " ", " ")
+auth_register("second@example.com", "password1234", " ", " ")
+auth_register("third@example.com", "password1234", " ", " ")
 
 # check return values are valid types
 # add more to check the dict key values
@@ -43,6 +50,14 @@ def test_channels_create_invalid_token():
     with pytest.raises(AccessError, match=r"Token passed in is not valid"):
         assert channels_create("invalidtoken", "name", False)
 
+def test_channels_list_invalid_token():
+        with pytest.raises(AccessError, match=r"Token passed in is not valid"):
+            assert channels_list("invalidtoken")
+
+
+def test_channels_listall_invalid_token():
+        with pytest.raises(AccessError, match=r"Token passed in is not valid"):
+            assert channels_listall("invalidtoken")
 
 # Check if user can view only appropriate lists they are a member of
 def test_channels_list_user_view():
