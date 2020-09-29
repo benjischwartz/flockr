@@ -156,7 +156,7 @@ def channel_removeowner(token, channel_id, u_id):
         raise InputError("User is already an owner")
     
     #If current token is not an owner of the channel
-    if user_id_given_token(token) not in channel[channel_id]['owner_members']:
+    if token not in channel[channel_id]['owner_members']:
         raise AccessError("You are not an owner")
 
     #If there are no other owners (ASSUMPTION)
