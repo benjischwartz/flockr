@@ -30,17 +30,22 @@ def channel_invite(token, channel_id, u_id):
     # check user with u_id 'u_id' is not part of the channel with channel_id         
     authorised = False
     already_in = False
-    if str(channel_id) in channel.keys():
-        for member in channel[channel_id]['all_members'].keys():
-            if member == token_u_id:
-                authorised = True
-            if member == u_id:
-                already_in = True
-    else:
+    channel_exists = False
+    for chan in channel.keys():
+        if channel_id == chan:
+            channel_exists = True
+            for member in channel[channel_id]['all_members'].keys():
+                if member == token_u_id:
+                    authorised = True
+                if member == u_id:
+                    already_in = True
+                    
+    if channel_exists == False:
         raise InputError ("Channel_id passed is not valid")
     
     if authorised == False:
         raise AccessError ("This user is not authorised to invite to this channel")
+        
             
     if already_in:
         pass 
@@ -51,57 +56,48 @@ def channel_invite(token, channel_id, u_id):
     }
 
 def channel_details(token, channel_id):
-    '''
+    
     # get the u_id of the person with the token
     # token is email in this case so
     # check that the person is a valid user - implement later
     token_u_id = users[token]['u_id']
     
+    
     # check that the channel is valid 
     authorised = False
-    if channel_id in channel:
-        for member in channel[channel_id]['all_members'].keys():
-            if member == token_u_id:
-                authorised = True
-                break
-    else:
+    channel_exists = False
+    for chan in channel.keys():
+        if channel_id == chan:
+            channel_exists = True
+            for member in channel[channel_id]['all_members'].keys():
+                if member == token_u_id:
+                    authorised = True
+                    
+    if channel_exists == False:
         raise InputError ("Channel_id passed is not valid")
-                
     if authorised == False:
         raise AccessError ("This user is not authorised to view the details of this channel")
                 
     chnl_details = {}
-    chnl_name = channel[channel_id]['channel_name']
-    chnl_details = [name : chnl_name]
-    chnl_details = ['owner_members' : []]
-    for member in channel[channel_id]['owner_members']:
-        
-    # create a dictionary called chnl_details
-    # find the name
-    # Loop: get the u_id of the owners
-        # get the first_name and last_name 
-        # add that to chnl_details
-    # get the u_id of all the members
-        # get the first_name and last_name 
-        # add that to channel_id
-    '''        
-    return {
-        'name': 'Hayden',
-        'owner_members': [
-            {
-                'u_id': 1,
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-            }
-        ],
-        'all_members': [
-            {
-                'u_id': 1,
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-            }
-        ],
-    }
+    chnl_details['name'] = channel[channel_id]['channel_name']
+    chnl_details['owner_members'] = []
+    chnl_details['all_members'] = []
+    for owner_member in channel[channel_id]['owner_members']:
+        for user in users.keys():
+            if owner_member == users[user]['u_id']:
+                first_name = users[user]['name_first']
+                last_name = users[user]['name_last']
+        owner_dict = { 'u_id' : owner_member, 'name_first' : first_name, 'name_last' : last_name}
+        chnl_details['owner_members'].append(owner_dict)
+    for any_member in channel[channel_id]['all_members']:
+        for user in users.keys():
+            if any_member == users[user]['u_id']:
+                first_name = users[user]['name_first']
+                last_name = users[user]['name_last']
+        any_member_dict = { 'u_id' : any_member, 'name_first' : first_name, 'name_last' : last_name}
+        chnl_details['all_members'].append(any_member_dict)    
+     
+    return chnl_details
 
 def channel_messages(token, channel_id, start):
     return {
