@@ -163,7 +163,7 @@ def test_channel_leave_invalid_user():
     userchannel_id = channels_create(user['token'], 'userchannel', True)
     
     with pytest.raises(AccessError):
-        channel_leave(leaver['token'], userchannel_id)
+        channel_leave(leaver['token'], userchannel_id['channel_id'])
         
 #------------------------------------------------------------------------------#
     
