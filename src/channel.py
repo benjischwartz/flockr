@@ -8,7 +8,7 @@ def channel_invite(token, channel_id, u_id):
     # get the u_id of the person with the token; token is email
     # check token is valid 
     # check token is valid
-    valid_token = is_valid_token
+    valid_token = is_valid_token(token)
     if valid_token == False:
         raise AccessError("Token passed in is not valid")
  
@@ -20,12 +20,13 @@ def channel_invite(token, channel_id, u_id):
             break
     if valid_user == False:
         raise InputError ("This user is not a valid user")
+    
     # check channel_id is a valid channel_id;
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
     # check user with the token 'token' is actually part of the channel with id
     # 'channel_id'; if they aren't raise an accesserror
-    # check user with u_id 'u_id' is not part of the channel with channel_id   
+    # check user with u_id 'u_id' is part of the channel with channel_id   
     token_u_id = users[token]['u_id']      
     authorised = False
     already_in = False
@@ -38,7 +39,8 @@ def channel_invite(token, channel_id, u_id):
         raise AccessError ("This user is not authorised to invite to this channel")
      
     if already_in:
-        pass 
+        print("The user you are trying to add is already in the channel")
+        return {}
     
     channel[channel_id]['all_members'][u_id] = True
     
@@ -47,14 +49,17 @@ def channel_invite(token, channel_id, u_id):
 def channel_details(token, channel_id):
 
     # check token is valid
-    valid_token = is_valid_token
+    valid_token = is_valid_token(token)
     if valid_token == False:
         raise AccessError("Token passed in is not valid")
 
     # check that the channel is valid
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
+    
+
     # check token holder is authorised to access channel
+    token_u_id = users[token]['u_id']
     authorised = False
     for member in channel[channel_id]['all_members'].keys():
         if member == token_u_id:
@@ -62,7 +67,7 @@ def channel_details(token, channel_id):
     if authorised == False:
         raise AccessError ("This user is not authorised to view the details of this channel")
         
-    token_u_id = users[token]['u_id']
+
     chnl_details = {}
     chnl_details['name'] = channel[channel_id]['channel_name']
     chnl_details['owner_members'] = []
@@ -83,13 +88,14 @@ def channel_details(token, channel_id):
                 last_name = users[user]['name_last']
         any_member_dict = { 'u_id' : any_member, 'name_first' : first_name, 'name_last' : last_name}
         chnl_details['all_members'].append(any_member_dict)
-            
+    
+    print(chnl_details)        
     return chnl_details
 
-def channel_messages(token, channel_id, start):
 
+def channel_messages(token, channel_id, start):
     # check token is valid
-    valid_token = is_valid_token
+    valid_token = is_valid_token(token)
     if valid_token == False:
         raise AccessError("Token passed in is not valid")
 
@@ -98,6 +104,7 @@ def channel_messages(token, channel_id, start):
         raise InputError("Channel ID is invalid")
     
     # check token holder is authorised to access channel
+    token_u_id = users[token]['u_id']
     authorised = False
     for member in channel[channel_id]['all_members'].keys():
         if member == token_u_id:
@@ -105,31 +112,34 @@ def channel_messages(token, channel_id, start):
     if authorised == False:
         raise AccessError ("This user is not authorised to view the details of this channel")
    
-    total_messages = len(channel['messages'])
+    total_messages = len(channel[channel_id]['messages'])
+    print(total_messages)
     if start > total_messages:
         raise InputError ("Start is greater than the total number of messages in the channel")
-    chnl_msgs = {'messages' : [], 'start' : start}
+    chnl_msgs = {}
+    chnl_msgs['messages'] = []
+    chnl_msgs['start'] = start
     num_message = 0
     for message in reversed(channel[channel_id]['messages']):
         if num_message >= start and num_message < (start + 50):
+            msg_id = message['message_id']
             msg_u_id = message['u_id']
-            msg_content = [message]['message_content']
-            msg_time = [message]['time_created']
-            msg_dict = {'message_id': message, 'u_id' : msg_u_id, 'message' : msg_content,
-            'time_created' : msg_time}
-            chnl_messages['messages'].append(msg_dict)
+            msg_content = message['message_content']
+            msg_time = message['time_created']
+            msg_dict = {'message_id': msg_id, 'u_id' : msg_u_id, 
+                'message' : msg_content, 'time_created' : msg_time}
+            chnl_msgs['messages'].append(msg_dict)
         num_message += 1
         if num_message == start + 50:
             break
     
     if num_message < start + 50:
-        chnl_messages['end'] = -1
+        chnl_msgs['end'] = -1
     else:
-        chnl_messages['end'] = num_message
-        
+        chnl_msgs['end'] = num_message
+       
+    return chnl_msgs
     
-    return chnl_messages
-
 def channel_leave(token, channel_id):
     token_u_id = users[token]['u_id']
     # If the channel doesn't exist
@@ -203,3 +213,7 @@ def channel_removeowner(token, channel_id, u_id):
     return {
 
     }
+    
+if __name__ == '__main__':
+    print(channel_messages('benji.schwartz@gmail.com', 1, 0))
+
