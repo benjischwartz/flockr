@@ -20,6 +20,7 @@ from other import clear
 # check that when given valid input, randChannel_id does add the person and 
 # returns the correct output
 def test_channel_invite_correct_return():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
@@ -80,13 +81,7 @@ def test_channel_invite_not_a_member():
 
 #TODO:  add yourself/ someone in the channel already
 
-
-#-------------------------------------------------------------------------------        
-# Tests for channel_details function - KESH
-    # function input: token, channel_id
-    # output - dictionary
-    
-    
+# Tests for channel_details function
 def test_channel_details_correct_return():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
