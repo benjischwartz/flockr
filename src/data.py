@@ -24,7 +24,7 @@ channel = {
             567 : True
         },
         'messages(str)' : {
-            'message(int)' : {
+            'message_id(int)' : {
               'u_id(int)' : " ",
               'message_content' : " ",
               'time' : " "

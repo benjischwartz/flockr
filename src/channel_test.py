@@ -33,13 +33,9 @@ def test_channel_invite_correct_return():
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_invite_invalid_channel_id():
     clear()
-    # userOne and userTwo are dictionaries containing u_id and token
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    
-    # randchannel_id is a dictionary mapping channel_id to a number
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    # create a channel_id and then make sure it isn't valid
     invalidChannel_id = 18
     if invalidChannel_id == randChannel_id['channel_id']:
         invalidChannel_id = 19
