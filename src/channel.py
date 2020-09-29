@@ -118,12 +118,32 @@ def channel_messages(token, channel_id, start):
     }
 
 def channel_leave(token, channel_id):
-    return {
-    }
+    token_u_id = users[token]['u_id']
+    # If the channel doesn't exist
+    if channel_id not in channel:
+        raise InputError("Channel ID is invalid")
+    #check for specific person and remove him from the list
+    for member in channel[channel_id]['all_members']:
+        if member == token_u_id:
+            channel[channel_id]['owner_members'].pop(token_u_id)
+            return
+    
+    raise AccessError("Member not in selected Channel")
 
 def channel_join(token, channel_id):
-    return {
-    }
+    token_u_id = users[token]['u_id']
+    #If the channel doesn't exist
+    if channel_id not in channel:
+        raise InputError("Channel ID is invalid")
+        
+    #If member already in channel
+    if token_u_id in channel[channel_id]['all_members']:
+        raise InputError("User is already in the channel")
+    
+    if channel[channel_id]['is_public'] == False:
+        raise AccessError("User does not have access to this channel")
+    
+    channel[channel_id]['owner_members'][token_u_id] = True
 
 def channel_addowner(token, channel_id, u_id):
     #ETHAN
@@ -133,7 +153,7 @@ def channel_addowner(token, channel_id, u_id):
         raise InputError("Channel ID is invalid")
     if u_id in channel[channel_id]['owner_members']:
         #If User ID is already an owner of the channel
-        raise InputError("User is already an owner")
+        raise InputError("User is already an owner")    
     
     #If current token is not an owner of the channel
     if user_id_given_token(token) not in channel[channel_id]['owner_members']:
