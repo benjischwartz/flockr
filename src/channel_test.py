@@ -168,12 +168,13 @@ def test_channel_leave_invalid_user():
 #------------------------------------------------------------------------------#
     
 def test_channel_join_invalid_channel():
+    clear()
     #BRIAN
     #if the Channel id is invalid 
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     user_login = auth_login('user@gmail.com', '123abc!@#')
-    joiner_login = auth_login('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    joiner_login = auth_login('joiner@gmail.com', '123abc!@#')
     userchannel_id = channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
     if userchannel_id == invalid_id:
@@ -182,6 +183,7 @@ def test_channel_join_invalid_channel():
         channel_join(joiner['token'], invalid_id)
         
 def test_channel_join_private_no_invite():
+    clear()
     #if the channel is private, but no invite is given to the user
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
@@ -191,15 +193,17 @@ def test_channel_join_private_no_invite():
     userchannel_id = channels_create(user['token'], 'userchannel', False)    
     
     with pytest.raises(AccessError):
-        channel_join(joiner['token'], userchannel_id)
+        channel_join(joiner['token'], userchannel_id['channel_id'])
     
 def test_channel_join_already_in_channel():
+    clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     user_login = auth_login('user@gmail.com', '123abc!@#')  
-    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    userchannel_id = channels_create(joiner['token'], 'userchannel', True)
     
     with pytest.raises(InputError):
-        channel_join(joiner['token'], userchannel_id)
+        channel_join(joiner['token'], userchannel_id['channel_id'])
     
 
 #################################################################################
