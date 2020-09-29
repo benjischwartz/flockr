@@ -210,7 +210,7 @@ def test_channel_join_already_in_channel():
 #################################################################################
 def test_channel_addowner():
     #ETHAN
-
+    clear()
     #Registering User
     register_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
     assert type(register_result) is dict, "Test_Channel_1: User Sucessfully Registered"
@@ -230,6 +230,7 @@ def test_channel_addowner():
     
 
     #Add User to Channel (Adding User to Channel 1)
+
     channel_join(user_login['token'], randChannel_id['channel_id'])
 
     #Add User as Owner
@@ -239,7 +240,7 @@ def test_channel_addowner():
     
 def test_channel_removeowner():
     #ETHAN
-    
+    clear()
     #Registering User
     #register_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
     #assert type(register_result) is dict, "Test_Channel_1: User Sucessfully Registered"
