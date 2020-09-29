@@ -9,7 +9,7 @@ def channel_invite(token, channel_id, u_id):
     # check token is valid 
     # check token is valid
     valid_token = is_valid_token
-    if valid_token == False
+    if valid_token == False:
         raise AccessError("Token passed in is not valid")
  
     # check user with u_id 'u_id' is a valid user;
@@ -42,14 +42,13 @@ def channel_invite(token, channel_id, u_id):
     
     channel[channel_id]['all_members'][u_id] = True
     
-    return {
-    }
+    return {}
 
 def channel_details(token, channel_id):
 
     # check token is valid
     valid_token = is_valid_token
-    if valid_token == False
+    if valid_token == False:
         raise AccessError("Token passed in is not valid")
 
     # check that the channel is valid
@@ -68,6 +67,7 @@ def channel_details(token, channel_id):
     chnl_details['name'] = channel[channel_id]['channel_name']
     chnl_details['owner_members'] = []
     chnl_details['all_members'] = []
+    
     for owner_member in channel[channel_id]['owner_members']:
         for user in users.keys():
             if owner_member == users[user]['u_id']:
@@ -75,23 +75,25 @@ def channel_details(token, channel_id):
                 last_name = users[user]['name_last']
         owner_dict = { 'u_id' : owner_member, 'name_first' : first_name, 'name_last' : last_name}
         chnl_details['owner_members'].append(owner_dict)
+        
     for any_member in channel[channel_id]['all_members']:
         for user in users.keys():
             if any_member == users[user]['u_id']:
                 first_name = users[user]['name_first']
                 last_name = users[user]['name_last']
         any_member_dict = { 'u_id' : any_member, 'name_first' : first_name, 'name_last' : last_name}
-        chnl_details['all_members'].append(any_member_dict)    
+        chnl_details['all_members'].append(any_member_dict)
+            
     return chnl_details
 
 def channel_messages(token, channel_id, start):
 
     # check token is valid
     valid_token = is_valid_token
-    if valid_token == False
+    if valid_token == False:
         raise AccessError("Token passed in is not valid")
 
-    # check that the channel is valid
+    # check that the channel_id is valid
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
     
@@ -103,30 +105,30 @@ def channel_messages(token, channel_id, start):
     if authorised == False:
         raise AccessError ("This user is not authorised to view the details of this channel")
    
-    # TODO: check start
-    
+    total_messages = len(channel['messages'])
+    if start > total_messages:
+        raise InputError ("Start is greater than the total number of messages in the channel")
     chnl_msgs = {'messages' : [], 'start' : start}
-    for message in channel[channel_id]['messages']:
-        msg_u_id = channel[channel_id]['messages'][message]['u_id']
-        msg_content= channel[channel_id]['messages'][message]['message_content']
-        msg_time = channel[channel_id]['messages'][message]['time_created']
-        msg_dict {'message_id': message, 'u_id' : msg_u_id, 'message' : msg_content,
+    num_message = 0
+    for message in reversed(channel[channel_id]['messages']):
+        if num_message >= start and num_message < (start + 50):
+            msg_u_id = message['u_id']
+            msg_content = [message]['message_content']
+            msg_time = [message]['time_created']
+            msg_dict = {'message_id': message, 'u_id' : msg_u_id, 'message' : msg_content,
             'time_created' : msg_time}
-        chnl_messages['messages'].append(msg_dict)
+            chnl_messages['messages'].append(msg_dict)
+        num_message += 1
+        if num_message == start + 50:
+            break
+    
+    if num_message < start + 50:
+        chnl_messages['end'] = -1
+    else:
+        chnl_messages['end'] = num_message
         
     
-    return {
-        'messages': [
-            {
-                'message_id': 1,
-                'u_id': 1,
-                'message': 'Hello world',
-                'time_created': 1582426789,
-            }
-        ],
-        'start': 0,
-        'end': 50,
-    }
+    return chnl_messages
 
 def channel_leave(token, channel_id):
     token_u_id = users[token]['u_id']

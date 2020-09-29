@@ -23,13 +23,13 @@ channel = {
             223423 : True,
             567 : True
         },
-        'messages(str)' : {
-            'message_id(int)' : {
+        'messages(str)' : [
+            { 'message_id' : " ",
               'u_id(int)' : " ",
               'message_content' : " ",
-              'time' : " "
+              'time_created' : " "
             }
-        }
+        ]
     }
 }      
  
