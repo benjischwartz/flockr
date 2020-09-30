@@ -1,4 +1,4 @@
-from data import users
+from data import users, tokens
 import re
 from error import InputError
 
@@ -16,7 +16,8 @@ def auth_login(email, password):
     for emails in users.keys():
         if email == emails:            
             if users[email]['password'] == password:
-                # print("Login successful")
+                #validate token
+                tokens.append(email)
                 return {
                     'u_id': users[email]['u_id'],
                     'token': email, ## for iteration 1, tokens can just be email or id
@@ -25,8 +26,17 @@ def auth_login(email, password):
     
 
 def auth_logout(token):
+    for valid_token in tokens:
+        if token == valid_token:
+            # remove from tokens dict
+            tokens.remove(token)
+            return {
+                'is_success': True,
+            }
+
+    # not a valid token
     return {
-        'is_success': True,
+        'is_success': False,
     }
 
 def auth_register(email, password, name_first, name_last):
@@ -52,15 +62,21 @@ def auth_register(email, password, name_first, name_last):
     # register a user
     # create a unique user_id
     totalUsers = len(users)
-    newU_id = totalUsers
+    newU_id = totalUsers + 1
 
-    #For loop checking if id is in dictionary
+    # Potential TODO:
+    # For loop checking if id is in dictionary
+
     users[email] = {
             'u_id' : newU_id,
             'name_first' : name_first,
             'name_last' : name_last,
             'password' : password
         }
+    
+    # validate token
+    tokens.append(email)
+
     return {
         'u_id' : newU_id,
         'token' : email,
