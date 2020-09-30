@@ -27,7 +27,6 @@ channel = {
             567 : True
         },
         'messages' : []
-        }
     }
 }      
  
