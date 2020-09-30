@@ -7,12 +7,10 @@ import pytest
 from error import InputError, AccessError
 from other import clear
 
+# Tests for channel_invite function
 
-################################################################################
-# Tests for channel_invite function - Kesh
-
-# check that when given valid input and the channel is public, channel_behaves
-# according to the spec
+# check that when given valid input and the channel is public, channel_invite
+# behaves according to the spec
 def test_channel_invite_valid_public_true():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -24,8 +22,8 @@ def test_channel_invite_valid_public_true():
         'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
         'name_first' : 'Second', 'name_last': 'User'}]
 
-# check that when given valid input and the channel is private, channel_behaves
-# according to the spec and the same as if the channel is public
+# check that when given valid input and the channel is private, channel_invite
+# behaves according to the spec (the same as if the channel was public)
 def test_channel_invite_valid_public_false():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -36,10 +34,6 @@ def test_channel_invite_valid_public_false():
     assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
         'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
         'name_first' : 'Second', 'name_last': 'User'}]
-
-#TODO: check that no error is raised and an empty dictionary is returned if 
-# valid input is given but the user being invited is already in the channel
-# DO we do tests for assumptions??
 
 # check an AccessError is raised when token does not refer to a valid user
 def test_channel_invite_invalid_token():
@@ -87,7 +81,7 @@ def test_channel_invite_no_channels_exist():
         channel_invite(userOne['token'], 18 , userTwo['u_id'])
 
 # check that an AccessError has been raised when the user (of the token) invites
-# someone to a channel that they are not a member of
+# is not part of the channel
 def test_channel_invite_not_authorised():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -99,7 +93,10 @@ def test_channel_invite_not_authorised():
 
 
 # Tests for channel_details function
-def test_channel_details_correct_return():
+
+# check that when given valid input and the channel is public, channel_details
+# behaves according to the spec
+def test_channel_details_valid_public_true():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
@@ -110,6 +107,19 @@ def test_channel_details_correct_return():
          'all_members' : [{'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}]
          }
 
+# check that when given valid input and the channel is private, channel_details
+# behaves according to the spec
+def test_channel_details_valid_public_true():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', False)
+    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
+    assert randChannel_details == {'name': 'randChannel', 'owner_members' : [{
+        'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}],
+         'all_members' : [{'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}]
+         }
+         
 # check an AccessError is raised when token does not refer to a valid user
 def test_channel_details_invalid_token():
     clear()
@@ -141,21 +151,20 @@ def test_channel_details_not_member():
     with pytest.raises(AccessError):
         channel_details(userTwo['token'], randChannel_id['channel_id'])   
 
-# ------------------------------------------------------------------------------
 
-# Tests for channel_messages function - KESH
-
-
-#TODO: return type
+# Tests for channel_messages function
+'''
 def test_channel_messages_return_type():
-    pass 
-
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    returnedMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
+    assert type(returnedMessages) is dict
+'''    
 #TODO: check InputError is raised when start is greater than the total number of messages in the channel
-# is this test possible
 def test_channel_messages_start_too_big():
     pass
-
-#TODO: make a test checking that with valid input, channel_messages returns correctly
 
 # check an AccessError is raised when token does not refer to a valid user
 def test_channel_details_invalid_token():
@@ -188,7 +197,8 @@ def test_channel_messages_not_member():
     with pytest.raises(AccessError):
         channel_messages(userTwo['token'], randChannel_id['channel_id'], 0)
 
-#################################################################################
+# Tests for channel_leave
+
 #channel_leave (token, channel_id)
 def test_channel_leave_invalid_user():
     #BRIAN
