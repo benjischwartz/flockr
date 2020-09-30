@@ -26,12 +26,7 @@ channel = {
             223423 : True,
             567 : True
         },
-        'messages' : {
-            'message' : {
-              'u_id' : " ",
-              'message_content' : " ",
-              'time' : " "
-            }
+        'messages' : []
         }
     }
 }      
