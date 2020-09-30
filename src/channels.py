@@ -4,26 +4,6 @@ from check_token import is_valid_token, user_id_given_token
 from error import InputError, AccessError
 
 
-
-
-# # dummy data for testing 
-# users["first@example.com"] = {
-#     'name_first' : " ",
-#     'name_last' : " ",
-#     'u_id' : 1
-#     }
-# users["second@example.com"] = {
-#     'name_first' : " ",
-#     'name_last' : " ",
-#     'u_id' : 2
-#     }
-# users["third@example.com"] = {
-#     'name_first' : " ",
-#     'name_last' : " ",
-#     'u_id' : 3
-#     }
-
-
 def channels_list(token):
     # raise ACCESS ERROR if token is invalid
     if is_valid_token(token) == False:

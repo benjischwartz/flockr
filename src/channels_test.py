@@ -7,16 +7,20 @@ from auth import auth_register
 import pytest
 from error import InputError, AccessError
 from other import clear
+from data import users
 
-# clear database and register new dummy users for testing
-clear()
-auth_register("first@example.com", "password1234", " ", " ")
-auth_register("second@example.com", "password1234", " ", " ")
-auth_register("third@example.com", "password1234", " ", " ")
+
+
 
 # check return values are valid types
 # add more to check the dict key values
 def test_return_type():
+    # clear database and register new dummy users for testing
+    clear()
+    auth_register("first@example.com", "password1234", " ", " ")
+    auth_register("second@example.com", "password1234", " ", " ")
+    auth_register("third@example.com", "password1234", " ", " ")
+    # check types
     assert(type(channels_list("first@example.com")) is dict) 
     assert(type(channels_listall("second@example.com")) is dict)
     assert(type(channels_create("third@example.com", "somename", True)) is dict)
@@ -24,6 +28,10 @@ def test_return_type():
 # check channels create() adds a new channel
 # calls channels_listall to check
 def test_channels_create_valid():
+    # clear database and register new dummy users for testing
+    clear()
+    auth_register("first@example.com", "password1234", " ", " ")
+    auth_register("second@example.com", "password1234", " ", " ")
     # number of channels before
     before = len(channels_listall("second@example.com")['channels'])
     # test if channel is in channels list_all after
@@ -43,6 +51,7 @@ def test_channels_create_valid():
 
 # check raises ACCESS ERROR if token is invalid for channel_create
 def test_channels_create_invalid_token():
+    clear()
     # check string
     with pytest.raises(AccessError):
         channels_create(123, "name", False)
@@ -51,16 +60,22 @@ def test_channels_create_invalid_token():
         assert channels_create("invalidtoken", "name", False)
 
 def test_channels_list_invalid_token():
-        with pytest.raises(AccessError, match=r"Token passed in is not valid"):
-            assert channels_list("invalidtoken")
+    clear()
+    with pytest.raises(AccessError, match=r"Token passed in is not valid"):
+        assert channels_list("invalidtoken")
 
 
 def test_channels_listall_invalid_token():
-        with pytest.raises(AccessError, match=r"Token passed in is not valid"):
-            assert channels_listall("invalidtoken")
+    clear()
+    with pytest.raises(AccessError, match=r"Token passed in is not valid"):
+        assert channels_listall("invalidtoken")
 
 # Check if user can view only appropriate lists they are a member of
 def test_channels_list_user_view():
+    # clear database and register new dummy users for testing
+    clear()
+    auth_register("first@example.com", "password1234", " ", " ")
+    auth_register("second@example.com", "password1234", " ", " ")
     # create channels that has no users
     emptyChannel = channels_create("first@example.com", "validchannel1", True)
     userChannel = channels_create("second@example.com", "validchannel2", True)
@@ -69,6 +84,9 @@ def test_channels_list_user_view():
    
 # check channels_create raises input error when name is too long
 def test_channels_create_too_long_name():
+    # clear database and register new dummy users for testing
+    clear()
+    auth_register("third@example.com", "password1234", " ", " ")
     with pytest.raises(InputError, match=r"channel name cannot be greater than 20 characters"):
         channels_create("third@example.com", "a_string_name_which_is_very_long_and_will_never_pass", True)
 
