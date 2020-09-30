@@ -16,7 +16,7 @@ users = {
 tokens = ['benji.schwartz@gmail.com']
 
 channel = {
-    1 : {
+    8 : {
         'channel_name' : "First_channel",
         'is_public' : False,
         'owner_members' : {

@@ -45,7 +45,8 @@ def channel_invite(token, channel_id, u_id):
     channel[channel_id]['all_members'][u_id] = True
     
     return {}
-
+if __name__ == '__main__':
+    print(channel_invite('benji.schwartz@gmail.com', 8, 2))
 def channel_details(token, channel_id):
 
     # check token is valid
@@ -141,8 +142,8 @@ def channel_messages(token, channel_id, start):
     return chnl_msgs
 
 if __name__ == '__main__':
-    print(channel_messages('benji.schwartz@gmail.com', 1, 0))
-    print(channel_messages('benji.schwartz@gmail.com', 1, 1))
+    print(channel_messages('benji.schwartz@gmail.com',8, 0))
+    print(channel_messages('benji.schwartz@gmail.com',8, 1))
         
 def channel_leave(token, channel_id):
     token_u_id = users[token]['u_id']
