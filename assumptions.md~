@@ -13,4 +13,4 @@
     will return; no exception is raised
 * channel_invite -- behaves the same whether the channel is private or public
 * channel_details -- behaves the same whether the channel is private or public
-* multiple invalid input: in the situation that an unauthorised user invites an invalid user there will be an AccessError??
+* channel)messages -- behaves the same whether the channel is private or public
