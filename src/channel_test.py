@@ -80,8 +80,8 @@ def test_channel_invite_no_channels_exist():
     with pytest.raises(InputError):
         channel_invite(userOne['token'], 18 , userTwo['u_id'])
 
-# check that an AccessError has been raised when the user (of the token) invites
-# is not part of the channel
+# check that an AccessError has been raised when the user (of the token) is not
+# part of the channel and is thus, not authorised to invite 
 def test_channel_invite_not_authorised():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -90,6 +90,32 @@ def test_channel_invite_not_authorised():
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(AccessError):
         channel_invite(userTwo['token'], randChannel_id['channel_id'], userThree['u_id'])
+
+# check that no error is raised and nothing is done in the case that the user
+# invites themselves
+def test_channel_invite_aready_in_self():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    assert channel_invite(userOne['token'], randChannel_id['channel_id'], userOne['u_id']) == {}
+    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
+    assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
+        'name_first' : 'First', 'name_last': 'User'}]
+
+# check that no error is raised and nothing is done in the case that the user
+# invites someone already in the channel
+def test_channel_invite_already_in_else():
+    clear()        
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id'])
+    assert channel_invite(userTwo['token'], randChannel_id['channel_id'], userOne['u_id']) == {}
+    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
+    assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
+        'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
+        'name_first' : 'Second', 'name_last': 'User'}]
 
 
 # Tests for channel_details function
@@ -153,15 +179,25 @@ def test_channel_details_not_member():
 
 
 # Tests for channel_messages function
+# Require updated channels_create for these tests to work
 '''
+def test_channel_messages_no_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    randMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
+    assert randMessages == {'messages': [], 'start': 0, 'end': -1}
+
+
 def test_channel_messages_return_type():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    returnedMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
-    assert type(returnedMessages) is dict
-'''    
+    assert type(channel_messages(userOne['token'], randChannel_id['channel_id'], 0)) is dict
+'''
+    
 #TODO: check InputError is raised when start is greater than the total number of messages in the channel
 def test_channel_messages_start_too_big():
     pass

@@ -126,6 +126,7 @@ def channel_messages(token, channel_id, start):
 
 if __name__ == '__main__':
     print(channel_messages('benji.schwartz@gmail.com',8, 0))
+    '''
     num = 3
     for num in range(3,100):
         msg_id = num
@@ -135,7 +136,7 @@ if __name__ == '__main__':
     print(channel_messages('benji.schwartz@gmail.com',8, 0))
     print(channel_messages('benji.schwartz@gmail.com',8, 60))
     print(channel_messages('benji.schwartz@gmail.com',8, 40))
-        
+    '''    
 def channel_leave(token, channel_id):
     token_u_id = users[token]['u_id']
     # If the channel doesn't exist
