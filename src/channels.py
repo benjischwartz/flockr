@@ -116,8 +116,7 @@ def channels_create(token, name, is_public):
             'all_members' : {
                 user_id_given_token(token) : True
             },
-            'messages' : {
-            }
+            'messages' : []
         }
     
     return {

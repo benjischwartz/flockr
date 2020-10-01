@@ -117,8 +117,7 @@ def test_channel_invite_already_in_else():
         'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
         'name_first' : 'Second', 'name_last': 'User'}]
 
-# check that no error is raised and nothing is done in the case that the user
-# invites someone already in the channel
+# check that when an owner is added they are not added as an owner
 def test_channel_invite_flockr_owner():
     clear()        
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -127,8 +126,7 @@ def test_channel_invite_flockr_owner():
     channel_invite(userTwo['token'], randChannel_id['channel_id'], userOne['u_id'])
     randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
     assert randChannel_details['owner_members'] == [{'u_id': userTwo['u_id'], 
-        'name_first' : 'Second', 'name_last': 'User'}, {'u_id': userOne['u_id'], 
-        'name_first' : 'First', 'name_last': 'User'}]
+        'name_first' : 'Second', 'name_last': 'User'}]
 
 # Tests for channel_details function
 
@@ -192,8 +190,10 @@ def test_channel_details_not_member():
 
 # Tests for channel_messages function
 # Require updated channels_create for these tests to work
-'''
-def test_channel_messages_no_messages():
+
+# check that channel_messages returns the correct dictionary given valid input
+# with a channel that has no messages and the channel is public   
+def test_channel_messages_no_messages_public_true():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
@@ -201,15 +201,18 @@ def test_channel_messages_no_messages():
     randMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
     assert randMessages == {'messages': [], 'start': 0, 'end': -1}
 
-
-def test_channel_messages_return_type():
+# check that channel_messages returns the correct dictionary given valid input
+# with a channel that has no messages and the channel is private
+# channel_messages should behave the same as if the channel was public
+def test_channel_messages_no_messages_public_true():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    assert type(channel_messages(userOne['token'], randChannel_id['channel_id'], 0)) is dict
+    randChannel_id = channels_create(userOne['token'], 'randChannel', False)
+    randMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
+    assert randMessages == {'messages': [], 'start': 0, 'end': -1}
 
-    
+
 # check an InputError is raised when start is greater than the total number of 
 # messages in the channel; in this test there are no messages in the channel
 def test_channel_messages_start_too_big():
@@ -218,8 +221,18 @@ def test_channel_messages_start_too_big():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(InputError):
-        channel_messages(invalidToken, randChannel_id['channel_id'], 1)
-'''
+        channel_messages(userOne['token'], randChannel_id['channel_id'], 1)
+
+# check an InputError is raised when start is greater than the total number of 
+# messages in the channel; in this test there are no messages in the channel
+def test_channel_messages_start_less_than_0():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    with pytest.raises(InputError):
+        channel_messages(userOne['token'], randChannel_id['channel_id'], -1)        
+
 # check an AccessError is raised when token does not refer to a valid user
 def test_channel_details_invalid_token():
     clear()

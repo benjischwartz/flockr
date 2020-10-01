@@ -34,11 +34,7 @@ def channel_invite(token, channel_id, u_id):
         print("The user you are trying to add is already in the channel")
         return {}
     
-    if u_id == 1:
-        channel[channel_id]['owner_members'][u_id] = True
-        channel[channel_id]['all_members'][u_id] = True
-    else:
-        channel[channel_id]['all_members'][u_id] = True
+    channel[channel_id]['all_members'][u_id] = True
     
     return {}
 
@@ -103,6 +99,9 @@ def channel_messages(token, channel_id, start):
     total_messages = len(channel[channel_id]['messages'])
     if start > total_messages:
         raise InputError ("Start is greater than the total number of messages in the channel")
+    
+    if start < 0:
+        raise InputError ("Start is below zero")
     
     chnl_msgs = {}
     chnl_msgs['messages'] = []
