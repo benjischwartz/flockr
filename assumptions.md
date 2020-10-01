@@ -14,4 +14,5 @@
 * channel_invite – any member can invite to the channel (whether they are owner or not is irrelevant) 
 * channel_invite – behaves the same whether the channel is private or public
 * channel_details – behaves the same whether the channel is private or public
-* channel)messages – behaves the same whether the channel is private or public
+* channel_messages – behaves the same whether the channel is private or public
+* channel_messages – raise an InputError if start is less than zero

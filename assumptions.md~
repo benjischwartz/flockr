@@ -11,6 +11,7 @@
     who is already in the channel, a message will be printed out notifying the
     authorised user that the user invitee is in the channel and the function 
     will return; no exception is raised
-* channel_invite -- behaves the same whether the channel is private or public
-* channel_details -- behaves the same whether the channel is private or public
-* channel)messages -- behaves the same whether the channel is private or public
+* channel_invite – any member can invite to the channel (whether they are owner or not is irrelevant) 
+* channel_invite – behaves the same whether the channel is private or public
+* channel_details – behaves the same whether the channel is private or public
+* channel)messages – behaves the same whether the channel is private or public
