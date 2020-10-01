@@ -7,7 +7,7 @@ from auth import auth_register
 import pytest
 from error import InputError, AccessError
 from other import clear
-from data import users
+
 
 
 
@@ -56,18 +56,18 @@ def test_channels_create_invalid_token():
     with pytest.raises(AccessError):
         channels_create(123, "name", False)
     # Expect this test to fail 
-    with pytest.raises(AccessError, match=r"Token passed in is not valid"):
+    with pytest.raises(AccessError):
         assert channels_create("invalidtoken", "name", False)
 
 def test_channels_list_invalid_token():
     clear()
-    with pytest.raises(AccessError, match=r"Token passed in is not valid"):
+    with pytest.raises(AccessError):
         assert channels_list("invalidtoken")
 
 
 def test_channels_listall_invalid_token():
     clear()
-    with pytest.raises(AccessError, match=r"Token passed in is not valid"):
+    with pytest.raises(AccessError):
         assert channels_listall("invalidtoken")
 
 # Check if user can view only appropriate lists they are a member of
@@ -90,6 +90,6 @@ def test_channels_create_too_long_name():
     # clear database and register new dummy users for testing
     clear()
     userThree = auth_register("third@example.com", "password1234", " ", " ")
-    with pytest.raises(InputError, match=r"channel name cannot be greater than 20 characters"):
+    with pytest.raises(InputError):
         channels_create(userThree['token'], "a_string_name_which_is_very_long_and_will_never_pass", True)
 
