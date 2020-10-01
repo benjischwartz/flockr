@@ -208,12 +208,18 @@ def test_channel_messages_return_type():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     assert type(channel_messages(userOne['token'], randChannel_id['channel_id'], 0)) is dict
-'''
-    
-#TODO: check InputError is raised when start is greater than the total number of messages in the channel
-def test_channel_messages_start_too_big():
-    pass
 
+    
+# check an InputError is raised when start is greater than the total number of 
+# messages in the channel; in this test there are no messages in the channel
+def test_channel_messages_start_too_big():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    with pytest.raises(InputError):
+        channel_messages(invalidToken, randChannel_id['channel_id'], 1)
+'''
 # check an AccessError is raised when token does not refer to a valid user
 def test_channel_details_invalid_token():
     clear()
