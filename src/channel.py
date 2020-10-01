@@ -33,8 +33,12 @@ def channel_invite(token, channel_id, u_id):
     if u_id in channel[channel_id]['all_members']:
         print("The user you are trying to add is already in the channel")
         return {}
-
-    channel[channel_id]['all_members'][u_id] = True
+    
+    if u_id == 1:
+        channel[channel_id]['owner_members'][u_id] = True
+        channel[channel_id]['all_members'][u_id] = True
+    else:
+        channel[channel_id]['all_members'][u_id] = True
     
     return {}
 

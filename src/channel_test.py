@@ -117,6 +117,18 @@ def test_channel_invite_already_in_else():
         'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
         'name_first' : 'Second', 'name_last': 'User'}]
 
+# check that no error is raised and nothing is done in the case that the user
+# invites someone already in the channel
+def test_channel_invite_flockr_owner():
+    clear()        
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel_id = channels_create(userTwo['token'], 'randChannel', True)
+    channel_invite(userTwo['token'], randChannel_id['channel_id'], userOne['u_id'])
+    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
+    assert randChannel_details['owner_members'] == [{'u_id': userTwo['u_id'], 
+        'name_first' : 'Second', 'name_last': 'User'}, {'u_id': userOne['u_id'], 
+        'name_first' : 'First', 'name_last': 'User'}]
 
 # Tests for channel_details function
 
