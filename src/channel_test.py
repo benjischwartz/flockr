@@ -392,7 +392,15 @@ def test_channel_addowner_invalid_channel_id():
 
 #checking if owner of the flockr who is not the channel owner can add owner 
 def test_channel_addowner_owner_flockr():
-    pass
+    clear()
+    #Registering First User as the First User is the Owner of the Flockr
+    registerFirst_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Creating Channel
+    randChannel_id = channels_create(registerFirst_result['token'], 'Random Channel', True)
+    #Registering Secondary User
+    registerSecond_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #First User Adding Secondary User
+    channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], registerSecond_result['u_id'])
 
 #checking if able to remove an owner who is an owner with authorised token is sucessful 
 def test_channel_removeowner_standard_input():
