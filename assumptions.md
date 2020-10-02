@@ -16,3 +16,4 @@
 * channel_details – behaves the same whether the channel is private or public
 * channel_messages – behaves the same whether the channel is private or public
 * channel_messages – raise an InputError if start is less than zero
+* channel_leave – empty channels should still exist last person leaves and not deleted whether channel is private or public 
