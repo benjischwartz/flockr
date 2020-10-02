@@ -191,14 +191,17 @@ def channel_addowner(token, channel_id, u_id):
     
     
     #If current token is not an owner of the channel
-    if (user_id_given_token(token) not in channel[channel_id]['owner_members']) and (user_id_given_token(token) != 1):
+    if user_id_given_token(token) == 1:
+        #if owner of Flockr
+        if (user_id_given_token(token) not in channel[channel_id]['all_members']):
+            #if owner of Flockr is not a member of the channel
+            raise AccessError("Owner of Flockr is not a member of the channel")
+    elif (user_id_given_token(token) not in channel[channel_id]['owner_members']):
         raise AccessError("You are not an owner")
-    elif user_id_given_token(token) == 1:
-        if (user_id_given_token(token) not in channel[channel_id]['owner_members']):
-            raise AccessError("You are not an owner")
+    
     #Adding the User to the List of Users
     channel[channel_id]['owner_members'][u_id] = True
-    
+
     return {
 
     }
@@ -211,18 +214,19 @@ def channel_removeowner(token, channel_id, u_id):
     #if channel id is invalid
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
-    #if user ID is already an owner of the channel
+    #if user id given is not an owner
     if u_id not in channel[channel_id]['owner_members']:
         raise InputError("Attempting to Remove an Owner who is not an Owner")   
     
     
-    #if current token is not an owner of the channel
-    token_u_id = users[token]['u_id']
-    if (token_u_id not in channel[channel_id]['owner_members']) and (token_u_id != 1):
+    #If current token is not an owner of the channel
+    if user_id_given_token(token) == 1:
+        #if owner of Flockr
+        if (user_id_given_token(token) not in channel[channel_id]['all_members']):
+            #if owner of Flockr is not a member of the channel
+            raise AccessError("Owner of Flockr is not a member of the channel")
+    elif (user_id_given_token(token) not in channel[channel_id]['owner_members']):
         raise AccessError("You are not an owner")
-    elif user_id_given_token(token) == 1:
-        if (user_id_given_token(token) not in channel[channel_id]['owner_members']):
-            raise AccessError("You are not an owner")
 
 
     #removing owner from the list of owner members
