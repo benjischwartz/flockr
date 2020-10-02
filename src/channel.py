@@ -155,9 +155,9 @@ def channel_leave(token, channel_id):
     if token_u_id in channel[channel_id]['owner_members']:
         channel[channel_id]['owner_member'].pop(token_u_id)
         
-return {
+    return {
 
-}
+    }
 
 def channel_join(token, channel_id):
     #checking for tokens validation
@@ -178,9 +178,9 @@ def channel_join(token, channel_id):
     
     channel[channel_id]['owner_members'][token_u_id] = True
     
-return {
+    return {
 
-}
+    }
 
 def channel_addowner(token, channel_id, u_id):
     #ETHAN
