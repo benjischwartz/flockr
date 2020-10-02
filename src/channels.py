@@ -1,6 +1,6 @@
 from data import channel, users, tokens
 from error import InputError, AccessError
-from check_tokens import is_valid_token, user_id_given_token
+from check_token import is_valid_token, user_id_given_token
 
 
 def channels_list(token):
