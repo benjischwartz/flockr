@@ -194,7 +194,9 @@ def channel_addowner(token, channel_id, u_id):
     #If current token is not an owner of the channel
     if (user_id_given_token(token) not in channel[channel_id]['owner_members']) and (user_id_given_token(token) != 1):
         raise AccessError("You are not an owner")
-
+    if user_id_given_token(token) == 1:
+        if (user_id_given_token(token) not in channel[channel_id]['owner_members']):
+            raise AccessError("You are not an owner")
     #ADDING THE USER TO THE LIST OF OWNERS
     channel[channel_id]['owner_members'][u_id] = True
     return {
@@ -219,6 +221,9 @@ def channel_removeowner(token, channel_id, u_id):
     token_u_id = users[token]['u_id']
     if (token_u_id not in channel[channel_id]['owner_members']) and (token_u_id != 1):
         raise AccessError("You are not an owner")
+    if user_id_given_token(token) == 1:
+        if (user_id_given_token(token) not in channel[channel_id]['owner_members']):
+            raise AccessError("You are not an owner")
 
     #If there are no other owners (ASSUMPTION)
     if (len(channel[channel_id]['owner_members']) <= 1):
