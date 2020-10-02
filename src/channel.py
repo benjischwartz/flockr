@@ -135,10 +135,9 @@ def channel_messages(token, channel_id, start):
 
 def channel_leave(token, channel_id):
     #checking for tokens validation
-    valid_token = is_valid_token(token)
     if token not in tokens:
         raise AccessError("Token passed in is not valid")
-    token_u_id = users[token]['u_id']
+    token_u_id = user_id_given_token(token)
     # If the channel doesn't exist
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
@@ -157,10 +156,9 @@ def channel_leave(token, channel_id):
 
 def channel_join(token, channel_id):
     #checking for tokens validation
-    valid_token = is_valid_token(token)
     if token not in tokens:
         raise AccessError("Token passed in is not valid")
-    token_u_id = users[token]['u_id']
+    token_u_id = user_id_given_token(token)
     #If the channel doesn't exist
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
@@ -172,7 +170,7 @@ def channel_join(token, channel_id):
     if channel[channel_id]['is_public'] == False and token_u_id != 1:
         raise AccessError("User does not have access to this channel")
     
-    channel[channel_id]['owner_members'][token_u_id] = True
+    channel[channel_id]['all_members'][token_u_id] = True
     
     return {
 
