@@ -1,8 +1,7 @@
 from data import channel, users
 from channel import channel_details
 from check_token import is_valid_token, user_id_given_token
-import error
-from other import clear
+from error import InputError, AccessError
 
 
 
@@ -24,10 +23,12 @@ users["third@example.com"] = {
     }
 
 
+
+
 def channels_list(token):
     # raise ACCESS ERROR if token is invalid
     if is_valid_token(token) == False:
-        raise error.AccessError("Token passed in is not valid")  
+        raise AccessError("Token passed in is not valid")  
 
     # init empty data structs for return
     returnList = []
@@ -39,8 +40,8 @@ def channels_list(token):
         eachDict['channel_id'] = key
         eachDict['name'] = value['channel_name']
         # check channel details to see if member is there
-        checkAccessDict = channel_details(token, key)
-        if  user_id_given_token(token) in checkAccessDict['all_members']:
+        checkAccessDict = channel[key]['all_members'].keys()
+        if  user_id_given_token(token) in checkAccessDict:
             # if token matches with a valid user_id in channel members,
             # add this channel info to list
             returnList.append(eachDict)
@@ -93,10 +94,10 @@ def channels_listall(token):
 def channels_create(token, name, is_public):
     # raise ACCESS ERROR if token is invalid
     if is_valid_token(token) == False:
-        raise error.AccessError("Token passed in is not valid")   
+        raise AccessError("Token passed in is not valid")   
     # Input error if channel name is too long
     if len(name) > 20:
-        raise error.InputError("channel name cannot be greater than 20 characters")
+        raise InputError("channel name cannot be greater than 20 characters")
 
     # get the current number of channels in total
     totalChannels = len(channel)
@@ -117,6 +118,7 @@ def channels_create(token, name, is_public):
                 user_id_given_token(token) : True
             },
             'messages' : []
+            
         }
     
     return {
@@ -126,3 +128,4 @@ def channels_create(token, name, is_public):
     # return {
     #     'channel_id': newChannel_id
     # }
+
