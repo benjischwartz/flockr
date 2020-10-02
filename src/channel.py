@@ -202,6 +202,10 @@ def channel_removeowner(token, channel_id, u_id):
     if channel_id not in channel:
         #If Channel ID is invalid
         raise InputError("Channel ID is invalid")
+
+    if u_id not in channel[channel_id]['owner_members']:
+        #If User ID is already an owner of the channel
+        raise InputError("Attempting to Remove an Owner who is not an Owner")   
     
     
     #If current token is not an owner of the channel
