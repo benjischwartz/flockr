@@ -351,6 +351,18 @@ def test_channel_addowner():
     #Add User as Owner
     channel_addowner(register_result['token'], randChannel_id['channel_id'], "randemail@gmail.com")
 
+def test_channel_addowner_standard_input():
+    clear()
+    #Registering First User
+    registerFirst_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Creating Channel
+    randChannel_id = channels_create(registerFirst_result['token'], 'Random Channel', True)
+    #Registering Second User
+    registerSecond_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Adding User as Owner
+    channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], "randemail2@gmail.com")
+
+# checking whether adding an owner after the user has logged out returns error as expected
 def test_channel_addowner_invalid_token_after_logout():
     clear()
     #Registering User
