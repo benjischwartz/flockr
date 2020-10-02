@@ -33,6 +33,7 @@ def channel_invite(token, channel_id, u_id):
         print("The user you are trying to add is already in the channel")
         return {}
     
+    # add member with u_id as a member of the channel
     channel[channel_id]['all_members'][u_id] = True
     
     return {}
@@ -52,12 +53,14 @@ def channel_details(token, channel_id):
     token_u_id = users[token]['u_id']
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError ("This user is not authorised to view the details of this channel")
-        
+    
+    # create return dictionary   
     chnl_details = {}
     chnl_details['name'] = channel[channel_id]['channel_name']
     chnl_details['owner_members'] = []
     chnl_details['all_members'] = []
     
+    # find owners of channel and  their u_id, first name and last name
     for owner_member in channel[channel_id]['owner_members']:
         for user in users.keys():
             if owner_member == users[user]['u_id']:
@@ -65,7 +68,8 @@ def channel_details(token, channel_id):
                 last_name = users[user]['name_last']
         owner_dict = { 'u_id' : owner_member, 'name_first' : first_name, 'name_last' : last_name}
         chnl_details['owner_members'].append(owner_dict)
-        
+    
+    # find all members of channel and  their u_id, first name and last name  
     for any_member in channel[channel_id]['all_members']:
         for user in users.keys():
             if any_member == users[user]['u_id']:
@@ -97,13 +101,17 @@ def channel_messages(token, channel_id, start):
     if start > total_messages:
         raise InputError ("Start is greater than the total number of messages in the channel")
     
+    # raise an exception if start is less than 0 (zero is the most recent message)
     if start < 0:
         raise InputError ("Start is below zero")
     
+    # create return dictionary
     chnl_msgs = {}
     chnl_msgs['messages'] = []
     chnl_msgs['start'] = start
     num_message = 0
+    
+    # find the details of each message in the channel up to start + 50
     for message in reversed(channel[channel_id]['messages']):
         if num_message >= start and num_message < (start + 50):
             msg_id = message['message_id']
@@ -117,25 +125,13 @@ def channel_messages(token, channel_id, start):
         if num_message == start + 50:
             break
     
+    # create and determine the value for end in the return dictionary
     if num_message < start + 50:
         chnl_msgs['end'] = -1
     else:
         chnl_msgs['end'] = num_message
        
     return chnl_msgs
-
-if __name__ == '__main__':
-    print(channel_messages('benji.schwartz@gmail.com',8, 0))
-    num = 3
-    for num in range(3,100):
-        msg_id = num
-        msg_dict_new = {'message_id': msg_id, 'u_id' : 1, 'message_content' : 'Hello', 'time_created': '7:00pm'}
-        channel[8]['messages'].append(msg_dict_new)
-        num += 1
-    print(channel_messages('benji.schwartz@gmail.com',8, 0))
-    print(channel_messages('benji.schwartz@gmail.com',8, 60))
-    print(channel_messages('benji.schwartz@gmail.com',8, 40))
-    print(channel_messages('benji.schwartz@gmail.com',8, 99))
 
 def channel_leave(token, channel_id):
     #checking for tokens validation
