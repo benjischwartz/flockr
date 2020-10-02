@@ -6,9 +6,8 @@ from check_token import is_valid_token, user_id_given_token
 
 def channel_invite(token, channel_id, u_id):
 
-    # raise an exception if the token is invalid
-    valid_token = is_valid_token(token)
-    if valid_token == False:
+
+    if token not in tokens:
         raise AccessError("Token passed in is not valid")
  
     # raise an exception if the user with u_id 'u_id' is not a valid user
@@ -41,8 +40,7 @@ def channel_invite(token, channel_id, u_id):
 def channel_details(token, channel_id):
 
     # raise an exception if the token is invalid
-    valid_token = is_valid_token(token)
-    if valid_token == False:
+    if token not in tokens:
         raise AccessError("Token passed in is not valid")
 
     # raise an exception if the channel is invalid
@@ -81,8 +79,7 @@ def channel_details(token, channel_id):
 
 def channel_messages(token, channel_id, start):
     # raise an exception if the token is invalid
-    valid_token = is_valid_token(token)
-    if valid_token == False:
+    if token not in tokens:
         raise AccessError("Token passed in is not valid")
 
     # raise an exception if the channel is invalid

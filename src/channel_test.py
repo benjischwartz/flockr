@@ -41,13 +41,9 @@ def test_channel_invite_invalid_token():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', False)
-    invalidToken = 'invalidToken'
-    if invalidToken == userOne['token']:
-        invalidToken = 'invalidToken123'
-    if invalidToken == userTwo['token']:
-        invalidToken = 'invalidToken123456'
+    userOne_logout = auth_logout(userOne['token'])
     with pytest.raises(AccessError):
-        channel_invite(invalidToken, randChannel_id['channel_id'], userTwo['u_id'])
+        channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id'])
                 
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_invite_invalid_channel_id():
@@ -161,11 +157,9 @@ def test_channel_details_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', False)
-    invalidToken = 'invalidToken'
-    if invalidToken == userOne['token']:
-        invalidToken = 'invalidToken123'
+    userOne_logout = auth_logout(userOne['token'])
     with pytest.raises(AccessError):
-        channel_details(invalidToken, randChannel_id['channel_id'])
+        channel_details(userOne['token'], randChannel_id['channel_id'])
         
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_details_invalid_channel_id():
@@ -234,15 +228,13 @@ def test_channel_messages_start_less_than_0():
         channel_messages(userOne['token'], randChannel_id['channel_id'], -1)        
 
 # check an AccessError is raised when token does not refer to a valid user
-def test_channel_details_invalid_token():
+def test_channel_messages_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', False)
-    invalidToken = 'invalidToken'
-    if invalidToken == userOne['token']:
-        invalidToken = 'invalidToken123'
+    userOne_logout = auth_logout(userOne['token'])
     with pytest.raises(AccessError):
-        channel_messages(invalidToken, randChannel_id['channel_id'], 0)
+        channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
             
 # check an InputError is raised when channel_id does not refer to a valid channel
 def test_channel_messages_invalid_channel_id():
