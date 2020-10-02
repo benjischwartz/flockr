@@ -319,38 +319,8 @@ def test_channel_join_already_in_channel():
     
 
 #################################################################################
-def test_channel_addowner():
-    #ETHAN
-    clear()
-    #Registering User
-    register_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
-    assert type(register_result) is dict, "Test_Channel_1: User Sucessfully Registered"
 
-    #Register Second User
-    register_result_user2 = auth_register('user@gmail.com', '123abc!@#', 'Jane', 'Citizen')
-    assert type(register_result_user2) is dict, "Test_Channel_1: User Sucessfully Registered"
-    
-    #Logging In
-    ###
-    #login_result = auth_login('randemail@gmail.com','password1234')
-    #assert type(login_result) is dict, "Test_Channel_2: User Sucessfully Logged In"
-    ###
-    #user_login = auth_login('user@gmail.com', '123abc!@#')
-    randChannel_id = channels_create(register_result_user2['token'], 'randChannel2', True)
-
-    #Check if a Non-Member Can be Made Owner
-    #Check if an error is returned as expected
-    with pytest.raises(AccessError):
-        assert channel_addowner(register_result['token'], randChannel_id['channel_id'], "randemail@gmail.com"), "Test_Channel_3: Correct AccessError Returned as Non-Member Can't Be Owner"
-    
-
-    #Add User to Channel (Adding User to Channel 1)
-
-    channel_join(register_result['token'], randChannel_id['channel_id'])
-
-    #Add User as Owner
-    channel_addowner(register_result['token'], randChannel_id['channel_id'], "randemail@gmail.com")
-
+#checking if adding another owner from the current owner's token works as expected
 def test_channel_addowner_standard_input():
     clear()
     #Registering First User
@@ -375,7 +345,20 @@ def test_channel_addowner_invalid_token_after_logout():
     with pytest.raises(AccessError):
         assert channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], "randemail@gmail.com")
 
-
+#checking if an InputError is returned if attempting to add a user as an owner who is already an owner
+def test_channel_addowner_already_an_owner():
+    clear()
+    #Registering First User
+    registerFirst_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Creating Channel
+    randChannel_id = channels_create(registerFirst_result['token'], 'Random Channel', True)
+    #Registering Secondary User
+    registerSecond_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Make Secondary User an Owner
+    channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], "randemail2@gmail.com")
+    #First User (Current Owner) Attempting to Add Secondary User Who Is Also Now an Owner
+    with pytest.raises(InputError):
+        assert channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], "randemail2@gmail.com")
 
 
     
