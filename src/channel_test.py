@@ -266,32 +266,41 @@ def test_channel_messages_not_member():
 
 # Tests for channel_leave
 
-#channel_leave (token, channel_id)
 def test_channel_leave_invalid_user():
     #BRIAN
+    clear()
     #check for access error when user isn't in the specified channel
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
-    user_login = auth_login('user@gmail.com', '123abc!@#')
-    leaver_login = auth_login('leaver@gmail.com', '123abc!@#')
     userchannel_id = channels_create(user['token'], 'userchannel', True)
     
     with pytest.raises(AccessError):
         channel_leave(leaver['token'], userchannel_id['channel_id'])
         
+def test_channel_leave_invalid_channel():
+    #BRIAN
+    #if the Channel id is invalid 
+    clear()
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    invalid_id = 0
+    if userchannel_id['channel_id'] == invalid_id:
+        invalid_id = 1
+    with pytest.raises(InputError):
+        channel_leave(leaver['token'], invalid_id)
+        
 #------------------------------------------------------------------------------#
     
 def test_channel_join_invalid_channel():
-    clear()
     #BRIAN
     #if the Channel id is invalid 
+    clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
-    user_login = auth_login('user@gmail.com', '123abc!@#')
-    joiner_login = auth_login('joiner@gmail.com', '123abc!@#')
     userchannel_id = channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
-    if userchannel_id == invalid_id:
+    if userchannel_id['channel_id'] == invalid_id:
         invalid_id = 1
     with pytest.raises(InputError):
         channel_join(joiner['token'], invalid_id)
@@ -301,9 +310,7 @@ def test_channel_join_private_no_invite():
     #if the channel is private, but no invite is given to the user
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
-    user_login = auth_login('user@gmail.com', '123abc!@#')
     #joiner_login = auth_login('joiner@gmail.com', '123abc!@#', 'first', 'last')
-    joiner_login = auth_login('joiner@gmail.com', '123abc!@#')
     userchannel_id = channels_create(user['token'], 'userchannel', False)    
     
     with pytest.raises(AccessError):
@@ -312,12 +319,11 @@ def test_channel_join_private_no_invite():
 def test_channel_join_already_in_channel():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
-    joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
-    user_login = auth_login('user@gmail.com', '123abc!@#')  
-    userchannel_id = channels_create(joiner['token'], 'userchannel', True)
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
     
     with pytest.raises(InputError):
-        channel_join(joiner['token'], userchannel_id['channel_id'])
+        channel_join(user['token'], userchannel_id['channel_id'])
+    
     
 
 #################################################################################
