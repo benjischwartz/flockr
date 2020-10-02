@@ -1,4 +1,4 @@
-from data import channel, users
+from data import channel, users, tokens
 from error import InputError, AccessError
 
 
@@ -110,7 +110,7 @@ def is_valid_token(token):
     '''
     returns true or false if token, email, is in user database
     '''
-    if token in users:
+    if token in tokens:
         return True
     return False
 
