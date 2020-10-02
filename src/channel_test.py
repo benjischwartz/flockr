@@ -332,7 +332,7 @@ def test_channel_addowner_standard_input():
     #Adding User as Owner
     channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], "randemail2@gmail.com")
 
-# checking whether adding an owner after the user has logged out returns error as expected
+# checking whether adding an owner after the user has logged out returns AccessError as expected
 def test_channel_addowner_invalid_token_after_logout():
     clear()
     #Registering User
@@ -360,8 +360,21 @@ def test_channel_addowner_already_an_owner():
     with pytest.raises(InputError):
         assert channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], "randemail2@gmail.com")
 
+#checking if an InputError is returned if an invalid Channel ID is inputted into the function
+def test_channel_addowner_invalid_channel_id():
+    clear()
+    #Registering First User
+    registerFirst_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Registering Secondary User
+    registerSecond_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Attempting to Add Secondary User to an Invalid Channel
+    with pytest.raises(InputError):
+        assert channel_addowner(registerFirst_result['token'], 'INVALIDID', "randemail2@gmail.com")
 
-    
+#checking if owner of the flockr who is not the channel owner can add owner 
+def test_channel_addowner_owner_flockr():
+    pass
+
 def test_channel_removeowner():
     #ETHAN
     clear()
