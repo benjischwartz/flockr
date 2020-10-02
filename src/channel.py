@@ -138,26 +138,31 @@ if __name__ == '__main__':
     print(channel_messages('benji.schwartz@gmail.com',8, 99))
 
 def channel_leave(token, channel_id):
-
+    #checking for tokens validation
     valid_token = is_valid_token(token)
-    if valid_token == False:
+    if token not in tokens:
         raise AccessError("Token passed in is not valid")
     token_u_id = users[token]['u_id']
     # If the channel doesn't exist
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
     #check for specific person and remove him from the list
-    for member in channel[channel_id]['all_members']:
-        if member == token_u_id:
-            channel[channel_id]['owner_members'].pop(token_u_id)
-            return
-    
-    raise AccessError("Member not in selected Channel")
+    if token_u_id not in channel[channel_id]['all_members']:
+        raise AccessError("Member not in selected Channel")
+    else:
+        channel[channel_id]['all_members'].pop(token_u_id)
+    #If the person is part of the owner, remove him from the list
+    if token_u_id in channel[channel_id]['owner_members']:
+        channel[channel_id]['owner_member'].pop(token_u_id)
+        
+return {
+
+}
 
 def channel_join(token, channel_id):
-
+    #checking for tokens validation
     valid_token = is_valid_token(token)
-    if valid_token == False:
+    if token not in tokens:
         raise AccessError("Token passed in is not valid")
     token_u_id = users[token]['u_id']
     #If the channel doesn't exist
@@ -166,12 +171,16 @@ def channel_join(token, channel_id):
         
     #If member already in channel
     if token_u_id in channel[channel_id]['all_members']:
-        raise InputError("User is already in the channel")
-    
-    if channel[channel_id]['is_public'] == False:
+        raise AccessError("User is already in the channel")
+    #If the channel is private only the owner of flockr can join token_u_id 1 is the owner of flockr
+    if channel[channel_id]['is_public'] == False and token_u_id != 1:
         raise AccessError("User does not have access to this channel")
     
     channel[channel_id]['owner_members'][token_u_id] = True
+    
+return {
+
+}
 
 def channel_addowner(token, channel_id, u_id):
     #ETHAN
