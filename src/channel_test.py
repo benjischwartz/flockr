@@ -256,8 +256,16 @@ def test_channel_messages_not_member():
     with pytest.raises(AccessError):
         channel_messages(userTwo['token'], randChannel_id['channel_id'], 0)
 
+################################################################################
 # Tests for channel_leave
-
+def test_channel_leave_invalid_token():
+    clear()
+    user = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
+    userchannel_id = channels_create(user['token'], 'userchannel', False)
+    user_logout = auth_logout(user['token'])
+    with pytest.raises(AccessError):
+        channel_leave(user['token'], userchannel_id['channel_id'])
+    
 def test_channel_leave_invalid_user():
     #BRIAN
     clear()
@@ -283,6 +291,14 @@ def test_channel_leave_invalid_channel():
         channel_leave(leaver['token'], invalid_id)
         
 #------------------------------------------------------------------------------#
+
+def test_channel_join_invalid_token():
+    clear()
+    user = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
+    userchannel_id = channels_create(user['token'], 'userchannel', False)
+    user_logout = auth_logout(user['token'])
+    with pytest.raises(AccessError):
+        channel_join(user['token'], userchannel_id['channel_id'])
     
 def test_channel_join_invalid_channel():
     #BRIAN
@@ -313,7 +329,7 @@ def test_channel_join_already_in_channel():
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)
     
-    with pytest.raises(InputError):
+    with pytest.raises(AccessError):
         channel_join(user['token'], userchannel_id['channel_id'])
     
     
