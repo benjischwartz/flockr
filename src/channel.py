@@ -141,6 +141,10 @@ if __name__ == '__main__':
     print(channel_messages('benji.schwartz@gmail.com',8, 99))
 
 def channel_leave(token, channel_id):
+
+    valid_token = is_valid_token(token)
+    if valid_token == False:
+        raise AccessError("Token passed in is not valid")
     token_u_id = users[token]['u_id']
     # If the channel doesn't exist
     if channel_id not in channel:
@@ -154,6 +158,10 @@ def channel_leave(token, channel_id):
     raise AccessError("Member not in selected Channel")
 
 def channel_join(token, channel_id):
+
+    valid_token = is_valid_token(token)
+    if valid_token == False:
+        raise AccessError("Token passed in is not valid")
     token_u_id = users[token]['u_id']
     #If the channel doesn't exist
     if channel_id not in channel:
