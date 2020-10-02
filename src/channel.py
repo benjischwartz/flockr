@@ -199,6 +199,8 @@ def channel_addowner(token, channel_id, u_id):
 def channel_removeowner(token, channel_id, u_id):
     #ETHAN
     #ERROR CHECKING
+    if token not in tokens:
+        raise AccessError("Token passed in is not valid")
     if channel_id not in channel:
         #If Channel ID is invalid
         raise InputError("Channel ID is invalid")

@@ -409,9 +409,27 @@ def test_channel_removeowner_invalid_user_id():
     randChannel_id = channels_create(registerFirst_result['token'], 'Random Channel', True)
     #Registering Second User
     registerSecond_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
-    #Attempting to Remove Secondary User from an Invalid Channel
+    #Attempting to Remove Secondary User with an Invalid User ID
     with pytest.raises(InputError):
         assert channel_removeowner(registerFirst_result['token'], randChannel_id['channel_id'], "invalidemail@gmail.com")
+
+# checking whether removing an owner after the user has logged out returns AccessError as expected
+def test_channel_addowner_invalid_token_after_logout():
+    clear()
+    #Registering First User
+    registerFirst_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Creating Channel
+    randChannel_id = channels_create(registerFirst_result['token'], 'Random Channel', True)
+    #Registering Second User
+    registerSecond_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Making Second User an Owner
+    channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], "randemail2@gmail.com")
+    #Logging Out First User
+    registerFirst_logout = auth_logout(registerFirst_result['token'])
+    #Attempting to Remove Secondary Owner After Logging Out
+    with pytest.raises(AccessError):
+        assert channel_removeowner(registerFirst_result['token'], randChannel_id['channel_id'], "randemail2@gmail.com")
+
 
 #checking if owner of the flockr who is not the channel owner can remove owner 
 def test_channel_removeowner_owner_flockr():
