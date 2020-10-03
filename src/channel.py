@@ -200,6 +200,9 @@ def channel_addowner(token, channel_id, u_id):
     #Adding the User to the List of Users
     channel[channel_id]['owner_members'][u_id] = True
 
+    #In the case of adding a user who is not a member of the channel
+    channel[channel_id]['all_members'][u_id] = True
+
     return {
 
     }
