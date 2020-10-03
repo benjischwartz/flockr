@@ -381,10 +381,9 @@ def test_channel_join_normal_case():
 ################################################################################
 # Tests for channel_addowner function
     # note: since the owner of flockr (the first user registered) has the same 
-        # permissions in channel_invite as a regular member of flockr, the first
-        # user registered is used for these tests
-    # also note: any function other than channel_messages called in these tests is 
-        # assumed to be working correctly
+        # permissions as the owner of a channel (if they are also a regular member)
+        # the first user is registered but not used for any tests except where the
+        # owner of flockr functionality is tested
 ################################################################################
 
 # checking if adding another owner from the current owner's token works as expected
@@ -466,10 +465,9 @@ def test_channel_addowner_owner_flockr():
 ################################################################################
 # Tests for channel_removeowner function
     # note: since the owner of flockr (the first user registered) has the same 
-        # permissions in channel_invite as a regular member of flockr, the first
-        # user registered is used for these tests
-    # also note: any function other than channel_messages called in these tests is 
-        # assumed to be working correctly
+        # permissions as the owner of a channel (if they are also a regular member)
+        # the first user is registered but not used for any tests except where the
+        # owner of flockr functionality is tested
 ################################################################################
 
 # checking if able to remove an owner who is an owner with authorised token is sucessful 
