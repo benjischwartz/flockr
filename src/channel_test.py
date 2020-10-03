@@ -270,13 +270,12 @@ def test_channel_messages_not_member():
 def test_channel_leave_invalid_token():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
-    userchannel_id = channels_create(user['token'], 'userchannel', False)
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
     user_logout = auth_logout(user['token'])
     with pytest.raises(AccessError):
         channel_leave(user['token'], userchannel_id['channel_id'])
 
 def test_channel_leave_invalid_user():
-    #BRIAN
     clear()
     #check for access error when user isn't in the specified channel
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
@@ -287,7 +286,6 @@ def test_channel_leave_invalid_user():
         channel_leave(leaver['token'], userchannel_id['channel_id'])
         
 def test_channel_leave_invalid_channel():
-    #BRIAN
     #if the Channel id is invalid - input error
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
@@ -299,18 +297,35 @@ def test_channel_leave_invalid_channel():
     with pytest.raises(InputError):
         channel_leave(leaver['token'], invalid_id)
         
+def test_channel_leave_normal_case():
+    clear()
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', True)   
+    channel_join(leaver['token'], userchannel_id['channel_id'])
+    channel_leave(leaver['token'], userchannel_id['channel_id'])
+    
+    randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
+    assert(randChannel_details['all_members'] == [
+    {
+        'u_id' : user['u_id'],
+        'name_first' : 'first',
+        'name_last' : 'last'
+    }
+    ])
+        
 #------------------------------------------------------------------------------#
 #checking for validation of token
 def test_channel_join_invalid_token():
     clear()
-    user = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
-    userchannel_id = channels_create(user['token'], 'userchannel', False)
-    user_logout = auth_logout(user['token'])
+    userOne = auth_register('userone@gmail.com', '123abc!@#', 'First', 'Last')
+    userTwo = auth_register('usertwo@gmail.com', '123abc!@#', 'First', 'Last')
+    userchannel_id = channels_create(userTwo['token'], 'userchannel', True)
+    auth_logout(userTwo['token'])
     with pytest.raises(AccessError):
-        channel_join(user['token'], userchannel_id['channel_id'])
+        channel_join(userTwo['token'], userchannel_id['channel_id'])
     
 def test_channel_join_invalid_channel():
-    #BRIAN
     #if the Channel id is invalid - raises input error
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
@@ -328,7 +343,6 @@ def test_channel_join_private_no_invite():
     #if the channel is private, but no invite is given to the user
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
-    #joiner_login = auth_login('joiner@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', False)    
     
     with pytest.raises(AccessError):
@@ -342,8 +356,27 @@ def test_channel_join_already_in_channel():
     
     with pytest.raises(AccessError):
         channel_join(user['token'], userchannel_id['channel_id'])
+        
+def test_channel_join_normal_case():
+    clear()
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', True)   
+    channel_join(joiner['token'], userchannel_id['channel_id'])
     
-    
+    randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
+    assert(randChannel_details['all_members'] == [
+    {
+        'u_id' : user['u_id'],
+        'name_first' : 'first',
+        'name_last' : 'last'
+    },
+    {
+        'u_id' : joiner['u_id'],
+        'name_first' : 'first',
+        'name_last' : 'last'
+    }
+    ])
 
 #################################################################################
 
