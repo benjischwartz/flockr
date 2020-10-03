@@ -378,19 +378,28 @@ def test_channel_join_normal_case():
     }
     ])
 
-#################################################################################
+################################################################################
+# Tests for channel_addowner function
+    # note: since the owner of flockr (the first user registered) has the same 
+        # permissions in channel_invite as a regular member of flockr, the first
+        # user registered is used for these tests
+    # also note: any function other than channel_messages called in these tests is 
+        # assumed to be working correctly
+################################################################################
 
-#checking if adding another owner from the current owner's token works as expected
+# checking if adding another owner from the current owner's token works as expected
 def test_channel_addowner_standard_input():
     clear()
     #Registering First User
     registerFirst_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
-    #Creating Channel
-    randChannel_id = channels_create(registerFirst_result['token'], 'Random Channel', True)
     #Registering Second User
     registerSecond_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #Creating Channel
+    randChannel_id = channels_create(registerSecond_result['token'], 'Random Channel', True)
+    #Registering Third User
+    registerThird_result = auth_register('randemail3@gmail.com', 'password1234', 'Jane', 'Citizen')
     #Adding User as Owner
-    channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], registerSecond_result['u_id'])
+    channel_addowner(registerSecond_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
 
 # checking whether adding an owner after the user has logged out returns AccessError as expected
 def test_channel_addowner_invalid_token_after_logout():
@@ -406,7 +415,7 @@ def test_channel_addowner_invalid_token_after_logout():
     with pytest.raises(AccessError):
         assert channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], registerFirst_result['u_id'])
 
-#checking if an InputError is returned if attempting to add a user as an owner who is already an owner
+# checking if an InputError is returned if attempting to add a user as an owner who is already an owner
 def test_channel_addowner_already_an_owner():
     clear()
     #Registering First User
@@ -421,7 +430,7 @@ def test_channel_addowner_already_an_owner():
     with pytest.raises(InputError):
         assert channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], registerSecond_result['u_id'])
 
-#checking if an InputError is returned if an invalid Channel ID is inputted into the function
+# checking if an InputError is returned if an invalid Channel ID is inputted into the function
 def test_channel_addowner_invalid_channel_id():
     clear()
     #Registering First User
@@ -432,7 +441,7 @@ def test_channel_addowner_invalid_channel_id():
     with pytest.raises(InputError):
         assert channel_addowner(registerFirst_result['token'], 'INVALIDID', registerSecond_result['u_id'])
 
-#checking if owner of the flockr who is not the channel owner can add owner 
+# checking if owner of the flockr who is not the channel owner can add owner 
 def test_channel_addowner_owner_flockr():
     clear()
     #Registering First User as the First User is the Owner of the Flockr
@@ -448,7 +457,16 @@ def test_channel_addowner_owner_flockr():
     #First User Adding Second User
     channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
 
-#checking if able to remove an owner who is an owner with authorised token is sucessful 
+################################################################################
+# Tests for channel_removeowner function
+    # note: since the owner of flockr (the first user registered) has the same 
+        # permissions in channel_invite as a regular member of flockr, the first
+        # user registered is used for these tests
+    # also note: any function other than channel_messages called in these tests is 
+        # assumed to be working correctly
+################################################################################
+
+# checking if able to remove an owner who is an owner with authorised token is sucessful 
 def test_channel_removeowner_standard_input():
     clear()
     #Registering First User
@@ -462,7 +480,7 @@ def test_channel_removeowner_standard_input():
     #Removing Second User
     channel_removeowner(registerFirst_result['token'], randChannel_id['channel_id'], registerSecond_result['u_id'])
 
-#checking if InputError returned as expected if attempting to use an invalid Channel ID
+# checking if InputError returned as expected if attempting to use an invalid Channel ID
 def test_channel_removeowner_invalid_channel_id():
     clear()
     #Registering First User
@@ -473,7 +491,7 @@ def test_channel_removeowner_invalid_channel_id():
     with pytest.raises(InputError):
         assert channel_removeowner(registerFirst_result['token'], 'INVALIDID', registerSecond_result['u_id'])
 
-#checking if removing an owner with an invalid user ID
+# checking if removing an owner with an invalid user ID
 def test_channel_removeowner_invalid_user_id():
     clear()
     #Registering First User
@@ -505,7 +523,7 @@ def test_channel_removeowner_invalid_token_after_logout():
     with pytest.raises(AccessError):
         assert channel_removeowner(registerFirst_result['token'], randChannel_id['channel_id'], registerSecond_result['u_id'])
 
-#checking if removing an owner without owner permissions raises an AccessError
+# checking if removing an owner without owner permissions raises an AccessError
 def test_channel_removeowner_not_owner_permissions():
     clear()
     #Registering First User
@@ -518,7 +536,7 @@ def test_channel_removeowner_not_owner_permissions():
     with pytest.raises(AccessError):
         assert channel_removeowner(registerSecond_result['token'], randChannel_id['channel_id'], registerFirst_result['u_id'])
     
-#checking if owner of the flockr who is not the channel owner can remove owner 
+# checking if owner of the flockr who is not the channel owner can remove owner 
 def test_channel_removeowner_owner_flockr():
     clear()
     #Registering First User
