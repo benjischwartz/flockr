@@ -8,7 +8,7 @@ def channel_invite(token, channel_id, u_id):
 
     # raise an exception if the token is invalid
     token_u_id = user_id_given_token(token)
-    if token_u_id == None
+    if token_u_id == None:
         raise AccessError("Token passed is not valid")
  
     # raise an exception if the user with u_id 'u_id' is not a valid user
@@ -43,7 +43,7 @@ def channel_details(token, channel_id):
 
     # raise an exception if the token is invalid
     token_u_id = user_id_given_token(token)
-    if token_u_id == None
+    if token_u_id == None:
         raise AccessError("Token passed is not valid")
 
     # raise an exception if the channel is invalid
@@ -106,7 +106,7 @@ def channel_messages(token, channel_id, start):
     
     # raise an exception if the token is invalid
     token_u_id = user_id_given_token(token)
-    if token_u_id == None
+    if token_u_id == None:
         raise AccessError("Token passed is not valid")
 
     # raise an exception if the channel is invalid
@@ -171,9 +171,10 @@ def channel_messages(token, channel_id, start):
 
 def channel_leave(token, channel_id):
     
-    #checking for tokens validation
-    if token not in tokens:
-        raise AccessError("Token passed in is not valid")
+    # raise an exception if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError("Token passed is not valid")
     token_u_id = user_id_given_token(token)
     # If the channel doesn't exist
     if channel_id not in channel:
@@ -190,9 +191,10 @@ def channel_leave(token, channel_id):
     return {}
 
 def channel_join(token, channel_id):
-    #checking for tokens validation
-    if token not in tokens:
-        raise AccessError("Token passed in is not valid")
+    # raise an exception if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError("Token passed is not valid")
     token_u_id = user_id_given_token(token)
     #If the channel doesn't exist
     if channel_id not in channel:
@@ -211,8 +213,10 @@ def channel_join(token, channel_id):
 
 def channel_addowner(token, channel_id, u_id):
     #Error Checking
-    if token not in tokens:
-        raise AccessError("Token passed in is not valid")
+    # raise an exception if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError("Token passed is not valid")
     #If Channel ID is invalid
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
@@ -222,12 +226,12 @@ def channel_addowner(token, channel_id, u_id):
     
     
     #If current token is not an owner of the channel
-    if user_id_given_token(token) == 1:
+    if token_u_id == 1:
         #if owner of Flockr
-        if (user_id_given_token(token) not in channel[channel_id]['all_members']):
+        if (token_u_id not in channel[channel_id]['all_members']):
             #if owner of Flockr is not a member of the channel
             raise AccessError("Owner of Flockr is not a member of the channel")
-    elif (user_id_given_token(token) not in channel[channel_id]['owner_members']):
+    elif (token_u_id not in channel[channel_id]['owner_members']):
         raise AccessError("You are not an owner")
     
     #Adding the User to the List of Users
@@ -237,9 +241,10 @@ def channel_addowner(token, channel_id, u_id):
 
 def channel_removeowner(token, channel_id, u_id):
     #checking for invalid inputs:
-    #if token is invalid when user logs out
-    if token not in tokens:
-        raise AccessError("Token passed in is not valid")
+    # raise an exception if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError("Token passed is not valid")
     #if channel id is invalid
     if channel_id not in channel:
         raise InputError("Channel ID is invalid")
@@ -249,12 +254,12 @@ def channel_removeowner(token, channel_id, u_id):
     
     
     #If current token is not an owner of the channel
-    if user_id_given_token(token) == 1:
+    if token_u_id == 1:
         #if owner of Flockr
-        if (user_id_given_token(token) not in channel[channel_id]['all_members']):
+        if (token_u_id not in channel[channel_id]['all_members']):
             #if owner of Flockr is not a member of the channel
             raise AccessError("Owner of Flockr is not a member of the channel")
-    elif (user_id_given_token(token) not in channel[channel_id]['owner_members']):
+    elif (token_u_id not in channel[channel_id]['owner_members']):
         raise AccessError("You are not an owner")
 
     #removing owner from the list of owner members
