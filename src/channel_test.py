@@ -7,41 +7,52 @@ import pytest
 from error import InputError, AccessError
 from other import clear
 
+################################################################################
 # Tests for channel_invite function
+    # note: since the owner of flockr (the first user registered) has the same 
+        # permissions in channel_invite as a regular member of flockr, the first
+        # user registered is used for these tests
+    # also note: any function other than channel_invite called in these tests is 
+        # assumed to be working correctly
+################################################################################
 
-# check that when given valid input and the channel is public, channel_invite
-# behaves according to the spec
-def test_channel_invite_valid_public_true():
+# check that when given valid input channel_invite returns an empty dictionary 
+# and only adds the user as a regular member
+def test_channel_invite_valid_input():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     assert channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id']) == {}
     randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
-    assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
+    assert randChannel_details == {'name': 'randChannel', 'owner_members' : [{
+        'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}],
+         'all_members' :  [{'u_id': userOne['u_id'], 
         'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
-        'name_first' : 'Second', 'name_last': 'User'}]
+        'name_first' : 'Second', 'name_last': 'User'}]}
 
-# check that when given valid input and the channel is private, channel_invite
-# behaves according to the spec (the same as if the channel was public)
-def test_channel_invite_valid_public_false():
+# check that when given valid input, channel_invite behaves the same whether
+# the channel is public or private
+def test_channel_invite_same_public_or_private():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel_id = channels_create(userOne['token'], 'randChannel', False)
-    assert channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id']) == {}
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    randChannel_id2 = channels_create(userOne['token'], 'randChannel', False)
+    resultPublic =  channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id'])
+    resultPrivate = channel_invite(userOne['token'], randChannel_id2['channel_id'], userTwo['u_id'])
+    assert resultPublic == resultPrivate
     randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
-    assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
-        'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
-        'name_first' : 'Second', 'name_last': 'User'}]
-
+    randChannel_details2 = channel_details(userOne['token'], randChannel_id2['channel_id'])
+    assert randChannel_details == randChannel_details2
+    
 # check an AccessError is raised when token does not refer to a valid user
 def test_channel_invite_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', False)
-    userOne_logout = auth_logout(userOne['token'])
+    auth_logout(userOne['token'])
     with pytest.raises(AccessError):
         channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id'])
                 
@@ -51,9 +62,9 @@ def test_channel_invite_invalid_channel_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    invalidChannel_id = 18
+    invalidChannel_id = 0
     if invalidChannel_id == randChannel_id['channel_id']:
-        invalidChannel_id = 19
+        invalidChannel_id = 1
     with pytest.raises(InputError):
         channel_invite(userOne['token'], invalidChannel_id, userTwo['u_id'])
     
@@ -62,11 +73,11 @@ def test_channel_invite_invalid_u_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    randu_id = 18
-    if randu_id == userOne['u_id']:
-        randu_id = 19
+    invalidu_id = 0
+    if invalidu_id == userOne['u_id']:
+        invalidu_id = 1
     with pytest.raises(InputError):
-        channel_invite(userOne['token'], randChannel_id['channel_id'], randu_id)
+        channel_invite(userOne['token'], randChannel_id['channel_id'], invalidu_id)
 
 # check an InputError is raised when no channel exists
 def test_channel_invite_no_channels_exist():
@@ -74,7 +85,7 @@ def test_channel_invite_no_channels_exist():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     with pytest.raises(InputError):
-        channel_invite(userOne['token'], 18 , userTwo['u_id'])
+        channel_invite(userOne['token'], 0, userTwo['u_id'])
 
 # check that an AccessError has been raised when the user (of the token) is not
 # part of the channel and is thus, not authorised to invite 
@@ -87,72 +98,66 @@ def test_channel_invite_not_authorised():
     with pytest.raises(AccessError):
         channel_invite(userTwo['token'], randChannel_id['channel_id'], userThree['u_id'])
 
-# check that no error is raised and nothing is done in the case that the user
-# invites themselves
-def test_channel_invite_aready_in_self():
+# check that an empty dictionary is returned and no changes are made to the 
+# channel members if a user invites themselves
+def test_channel_invite_self():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    randChannel_detailsInitial = channel_details(userOne['token'], randChannel_id['channel_id'])
     assert channel_invite(userOne['token'], randChannel_id['channel_id'], userOne['u_id']) == {}
-    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
-    assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
-        'name_first' : 'First', 'name_last': 'User'}]
+    randChannel_detailsAfter = channel_details(userOne['token'], randChannel_id['channel_id'])
+    assert randChannel_detailsInitial == randChannel_detailsAfter
 
-# check that no error is raised and nothing is done in the case that the user
-# invites someone already in the channel
-def test_channel_invite_already_in_else():
+
+# check that an empty dictionary is returned and no changes are made to the 
+# channel members if a user invites someone already in the channel
+
+def test_channel_invite_already_in():
     clear()        
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id'])
+    channel_join(userTwo['token'], randChannel_id['channel_id'])
+    randChannel_detailsInitial = channel_details(userOne['token'], randChannel_id['channel_id'])
     assert channel_invite(userTwo['token'], randChannel_id['channel_id'], userOne['u_id']) == {}
-    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
-    assert randChannel_details['all_members'] == [{'u_id': userOne['u_id'], 
-        'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
-        'name_first' : 'Second', 'name_last': 'User'}]
+    randChannel_detailsAfter = channel_details(userOne['token'], randChannel_id['channel_id'])
+    assert randChannel_detailsInitial == randChannel_detailsAfter
 
-# check that when an owner is added they are not added as an owner
-def test_channel_invite_flockr_owner():
-    clear()        
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel_id = channels_create(userTwo['token'], 'randChannel', True)
-    channel_invite(userTwo['token'], randChannel_id['channel_id'], userOne['u_id'])
-    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
-    assert randChannel_details['owner_members'] == [{'u_id': userTwo['u_id'], 
-        'name_first' : 'Second', 'name_last': 'User'}]
-
+################################################################################
 # Tests for channel_details function
+    # note: since the owner of flockr (the first user registered) has the same 
+        # permissions in channel_invite as a regular member of flockr, the first
+        # user registered is used for these tests
+    # also note: any function other than channel_details called in these tests 
+        # is assumed to be working correctly
+################################################################################
 
-# check that when given valid input and the channel is public, channel_details
-# behaves according to the spec
-def test_channel_details_valid_public_true():
+# check that when given valid input channel_details returns a dictionary in the 
+# format defined by the spec (and asserted below)
+def test_channel_details_valid_input_():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
     assert randChannel_details == {'name': 'randChannel', 'owner_members' : [{
         'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}],
          'all_members' : [{'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}]
          }
-
-# check that when given valid input and the channel is private, channel_details
-# behaves according to the spec
-def test_channel_details_valid_public_true():
+ 
+# check that when given valid input, channel_details returns the same dictionary
+# whether the channel is public or private
+def test_channel_invite_same_behaviour_public_or_private():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel_id = channels_create(userOne['token'], 'randChannel', False)
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    randChannel_id2 = channels_create(userOne['token'], 'randChannel', False)
     randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
-    assert randChannel_details == {'name': 'randChannel', 'owner_members' : [{
-        'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}],
-         'all_members' : [{'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}]
-         }
+    randChannel_details2 = channel_details(userOne['token'], randChannel_id2['channel_id'])
+    assert randChannel_details == randChannel_details2
          
-# check an AccessError is raised when token does not refer to a valid user
+# check an AccessError is raised when the token does not refer to a valid user
 def test_channel_details_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -166,9 +171,9 @@ def test_channel_details_invalid_channel_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    invalidChannel_id = 18
+    invalidChannel_id = 0
     if invalidChannel_id == randChannel_id['channel_id']:
-        invalidChannel_id = 19
+        invalidChannel_id = 1
     with pytest.raises(InputError):
         channel_details(userOne['token'], invalidChannel_id)
 
@@ -181,31 +186,34 @@ def test_channel_details_not_member():
     with pytest.raises(AccessError):
         channel_details(userTwo['token'], randChannel_id['channel_id'])   
 
-
-# Tests for channel_messages function
-# Require updated channels_create for these tests to work
+################################################################################
+# Tests for channel_mesages function
+    # note: since the owner of flockr (the first user registered) has the same 
+        # permissions in channel_invite as a regular member of flockr, the first
+        # user registered is used for these tests
+    # also note: any function other than channel_messages called in these tests is 
+        # assumed to be working correctly
+################################################################################
 
 # check that channel_messages returns the correct dictionary given valid input
-# with a channel that has no messages and the channel is public   
-def test_channel_messages_no_messages_public_true():
+# with the user calling it being the flockr owner
+def test_channel_messages_valid_input():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     randMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
     assert randMessages == {'messages': [], 'start': 0, 'end': -1}
 
-# check that channel_messages returns the correct dictionary given valid input
-# with a channel that has no messages and the channel is private
-# channel_messages should behave the same as if the channel was public
-def test_channel_messages_no_messages_public_true():
+# check that channel_messages returns the same dictionary whether the channel
+# is public or private
+def test_channel_messages_same_public_or_private():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel_id = channels_create(userOne['token'], 'randChannel', False)
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    randChannel_id2 = channels_create(userOne['token'], 'randChannel', False)
     randMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
-    assert randMessages == {'messages': [], 'start': 0, 'end': -1}
-
+    randMessages2 = channel_messages(userOne['token'], randChannel_id2['channel_id'], 0)
+    assert randMessages == randMessages2
 
 # check an InputError is raised when start is greater than the total number of 
 # messages in the channel; in this test there are no messages in the channel
@@ -232,7 +240,7 @@ def test_channel_messages_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', False)
-    userOne_logout = auth_logout(userOne['token'])
+    auth_logout(userOne['token'])
     with pytest.raises(AccessError):
         channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
             
@@ -241,9 +249,9 @@ def test_channel_messages_invalid_channel_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
-    invalidChannel_id = 18
+    invalidChannel_id = 0
     if invalidChannel_id == randChannel_id['channel_id']:
-        invalidChannel_id = 19
+        invalidChannel_id = 1
     with pytest.raises(InputError):
         channel_messages(userOne['token'], invalidChannel_id, 0)
 
