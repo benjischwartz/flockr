@@ -11,8 +11,13 @@ def check(email):
 
     
 def auth_login(email, password):
+
+    #  check if email already logged in (token already valid)
+    for token in tokens:
+        if email == token:
+            raise InputError ("Already logged in")
+
     # check if email is registered
-    login = False
     for emails in users.keys():
         if email == emails:            
             if users[email]['password'] == password:
@@ -81,5 +86,3 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : newU_id,
         'token' : email,
     }
-
-# TODO: figure out how to successfully logout and invalidate token

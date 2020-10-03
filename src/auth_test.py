@@ -3,44 +3,52 @@ from auth import auth_login, auth_logout, auth_register
 import pytest
 from error import InputError
 from other import clear
-from data import tokens
 
 # checking the successful registration of a user
 # checking the successful login of a user
-def test_login_return_type():
+def register_return_values():
     clear()
-    result = auth_register('validemail1@gmail.com', '123abc!@#', 'hello', 'goodbye')
-    assert result['u_id'] == 1, "registration unsuccessful"
-    log_result = auth_login('validemail1@gmail.com', '123abc!@#')
-    assert log_result['u_id'] == 1, "login unsuccessful" # Expect to work since we registered
-    assert log_result['token'] == 'validemail1@gmail.com'
+    result = auth_register('validemail@gmail.com', '123abc!@#', 'hello', 'goodbye')
+    assert type(result) is dict
+    assert type(result['u_id']) is int, "registration unsuccessful"
     clear()
 
-def test_register_return_values():
+def test_register_multiple():
     clear()
-    result = auth_register('validemail2@gmail.com', '123abc!@#', 'second', 'person')
-    assert result['u_id'] == 1
-    assert result['token'] == 'validemail2@gmail.com'
+    result1 = auth_register('validemail@gmail.com', '123abc!@#', 'first', 'person')
+    result2 = auth_register('validemail2@gmail.com', '123abc!@#', 'second', 'person')
+    assert result1['u_id'] != result2['u_id']
+    assert result1['token'] == 'validemail@gmail.com'
+    assert result2['token'] == 'validemail2@gmail.com'
     clear()
 
-def test_register_and_login_multiple_users():
+def test_register_multiple_fail_login():
     clear()
-    result1 = auth_register('validemailperson3@gmail.com', '123abc!@#', 'third', 'person')
-    result2 = auth_register('validemailperson4@gmail.com', '345def#$%', 'fourth', 'person')
-    # checking the return values of returned registration dictionary
-    assert result1['u_id'] == 1
-    assert result2['u_id'] == 2
-    assert result1['token'] == 'validemailperson3@gmail.com'
-    assert result2['token'] == 'validemailperson4@gmail.com'
+    result1 = auth_register('validemailperson@gmail.com', '123abc!@#', 'first', 'person')
+    result2 = auth_register('validemailperson2@gmail.com', '345def#$%', 'second', 'person')
 
-     # checking the return values of returned login dictionary
-    log_result_1 = auth_login('validemailperson3@gmail.com', '123abc!@#')
-    log_result_2 = auth_login('validemailperson4@gmail.com', '345def#$%')
-    assert log_result_1['u_id'] == 1
-    assert log_result_2['u_id'] == 2
+    # checking an error is raised when trying to log-in (since already logged-in)
     with pytest.raises(InputError) as e:
+        auth_login('validemailperson3@gmail.com', '123abc!@#')
+        auth_login('validemailperson4@gmail.com', '345def#$%')
         auth_login('validemailperson5@gmail.com', '456ghi$%^') # expect fail since did not register first
     clear()
+
+# Checking the invalid login of someone already logged in
+def test_already_logged_in():
+    clear()
+    reg_result = auth_register('validemail@gmail.com', '123abc!@#', 'Firstname', 'Lastname')
+    assert type(reg_result) == dict
+    with pytest.raises(InputError) as e:
+        auth_login('validemail@gmail.com', '123abc!@#')
+    clear()
+
+def test_register_logout_login():
+    clear()
+    result = auth_register('validemail@gmail.com', '123abc!@#', 'Firstname', 'Lastname')
+    assert(auth_logout('validemail@gmail.com')) == {'is_success': True}
+    login_result = auth_login('validemail@gmail.com', '123abc!@#')
+    assert type(login_result) is dict
 
 
 # Checking the registration of users with invalid firstname, lastname, and password
@@ -89,10 +97,10 @@ def test_logout():
 def test_logout_invalidate_token():
     clear()
     result1 = auth_register('validemaillogout@gmail.com', '123abc!@#', 'hello', 'goodbye')
-    assert tokens[0] == 'validemaillogout@gmail.com'
     result2 = auth_logout('validemaillogout@gmail.com') 
     assert result2 == {'is_success': True} #expect to return true since token is valid
-    assert len(tokens) == 0
+    result3 = auth_login('validemaillogout@gmail.com', '123abc!@#')
+    assert type(result3) is dict
     clear()
 
 def test_invalid_logout():
@@ -100,3 +108,10 @@ def test_invalid_logout():
      #expect to return false since token is not valid
     assert auth_logout('invalidemaillogout@gmail.com') == {'is_success': False}
     clear()
+
+def test_logout_twice():
+    clear()
+    result = auth_register('validemaillogout@gmail.com', '123abc!@#', 'hello', 'goodbye')
+    assert (auth_logout('validemaillogout@gmail.com')) == {'is_success': True}
+    # expect false since already logged out
+    assert (auth_logout('validemaillogout@gmail.com')) == {'is_success': False}
