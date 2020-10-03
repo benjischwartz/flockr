@@ -79,7 +79,26 @@ def channel_details(token, channel_id):
         chnl_details['all_members'].append(any_member_dict)
     
     return chnl_details
+    #### format for return ####
+    # {
+    #   'name': 'Hayden',
+    #   'owner_members': [
+    #       {
+    #           'u_id': 1,
+    #           'name_first': 'Hayden',
+    #           'name_last': 'Jacobs',
+    #       }
+    #   ],
+    #   'all_members': [
+    #       {
+    #           'u_id': 1,
+    #           'name_first': 'Hayden',
+    #           'name_last': 'Jacobs',
+    #       }
+    #   ],
+    # }
 
+    
 
 def channel_messages(token, channel_id, start):
     # raise an exception if the token is invalid
@@ -132,6 +151,19 @@ def channel_messages(token, channel_id, start):
         chnl_msgs['end'] = num_message
        
     return chnl_msgs
+    #### format for return ####
+    # {
+    # 'messages': [
+    #       {
+    #           'message_id': 1,
+    #           'u_id': 1,
+    #           'message': 'Hello world',
+    #           'time_created': 1582426789,
+    #       }
+    #   ],
+    #   'start': 0,
+    #   'end': 50,
+    # }
 
 def channel_leave(token, channel_id):
     #checking for tokens validation
@@ -150,9 +182,7 @@ def channel_leave(token, channel_id):
     if token_u_id in channel[channel_id]['owner_members']:
         channel[channel_id]['owner_member'].pop(token_u_id)
         
-    return {
-
-    }
+    return {}
 
 def channel_join(token, channel_id):
     #checking for tokens validation
@@ -172,9 +202,7 @@ def channel_join(token, channel_id):
     
     channel[channel_id]['all_members'][token_u_id] = True
     
-    return {
-
-    }
+    return {}
 
 def channel_addowner(token, channel_id, u_id):
     #Error Checking
@@ -200,9 +228,7 @@ def channel_addowner(token, channel_id, u_id):
     #Adding the User to the List of Users
     channel[channel_id]['owner_members'][u_id] = True
 
-    return {
-
-    }
+    return {}
 
 def channel_removeowner(token, channel_id, u_id):
     #checking for invalid inputs:
@@ -229,7 +255,5 @@ def channel_removeowner(token, channel_id, u_id):
     #removing owner from the list of owner members
     channel[channel_id]['owner_members'].pop(u_id)
 
-    return {
-
-    }
+    return {}
 
