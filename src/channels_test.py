@@ -8,10 +8,6 @@ import pytest
 from error import InputError, AccessError
 from other import clear
 
-
-
-
-
 # check return values are valid types
 # add more to check the dict key values
 def test_return_type():
