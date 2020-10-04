@@ -554,14 +554,14 @@ def test_channel_removeowner_not_owner_permissions():
 # checking if owner of the flockr who is not the channel owner can remove owner 
 def test_channel_removeowner_owner_flockr():
     clear()
-    #Registering First User
+    #Registering First User as the First User is the Owner of the Flockr
     registerFirst_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
-    #Creating Channel
-    randChannel_id = channels_create(registerFirst_result['token'], 'Random Channel', True)
-    #Registering Second User
+    #Registering Secondary User
     registerSecond_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
-    #Making Second User an Owner of Channel
-    channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], registerSecond_result['u_id'])
-    #Removing Second User
+    #Creating Channel
+    randChannel_id = channels_create(registerSecond_result['token'], 'Random Channel', True)
+    #Add First User as Regular Member
+    channel_join(registerFirst_result['token'], randChannel_id['channel_id'])
+    #First User Adding Second User
     channel_removeowner(registerFirst_result['token'], randChannel_id['channel_id'], registerSecond_result['u_id'])
 
