@@ -24,10 +24,14 @@
     - channel_addowner
     - channel_removeowner
 * channel_messages – raise an InputError if start is less than zero
-* channel_addowner - if you make a user an owner of an channel where they are not a member, they become a
-member and an owner.
-* channel_removeowner – if you remove an owner they become an ordinary member
-* channel_removeowner – you can remove an owner even if they are the last owner of the channel
-* channel_leave – empty channels should still exist even if the last member leaves whether channel is private or public
-* channel_join – raise an AccessError if the user trying to join is already in the channel 
+* channel_removeowner - if you remove an owner they become an ordinary member
+* channel_leave – empty channels should still exist last person leaves and not deleted whether channel is private or public 
+* owner of flockr is the first user registered, and will thus have u_id of `1`
 
+## Auth.py assumptions
+* auth_login - logging in twice will return the same valid token and user_id
+* auth_register - registering will automatically log the user in with an 
+authenticated token
+* auth_register - email entered must be all lowercase, otherwise not a valid email
+* auth_register - first user registered will have u_id `1`, and subsequent u_id's will be determined from the number of people registered, thus always unique
+* auth_logout - logging out twice will return {'is_success': False}
