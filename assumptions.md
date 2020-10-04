@@ -7,11 +7,15 @@
 * when a channel is created, the user whose token it is matched with, will auto-matically be the first owner and member of that channel
 
 ## Channel.py assumptions
-* channel_invite – if the authorised user invites themselves or someone else
+* channel_invite – if the user with token 'token' invites themselves or someone else
     who is already in the channel, a message will be printed out notifying the
-    authorised user that the user invitee is in the channel and the function 
-    will return; no exception is raised
-* channel_invite – any member can invite to the channel (whether they are owner or not is irrelevant) 
+    the user that the user they are inviting is already in the channel and the function 
+    will return an empty dictionary; no exception is raised
+* any member of the channel can call these functions (whether they are owner or not is irrelevant)
+    - channel_invite
+    - channel_details
+    - channel_messages
+    - channel_leave
 * Functions which behave the same whether the channel is private or public are:
     - channel_invite
     - channel_details
