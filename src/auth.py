@@ -15,7 +15,10 @@ def auth_login(email, password):
     #  check if email already logged in (token already valid)
     for token in tokens:
         if email == token:
-            raise InputError ("Already logged in")
+            return { # logging in twice returns same token
+                    'u_id': users[email]['u_id'],
+                    'token': email,
+                }
 
     # check if email is registered
     for emails in users.keys():

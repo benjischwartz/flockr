@@ -39,8 +39,7 @@ def test_already_logged_in():
     clear()
     reg_result = auth_register('validemail@gmail.com', '123abc!@#', 'Firstname', 'Lastname')
     assert type(reg_result) == dict
-    with pytest.raises(InputError) as e:
-        auth_login('validemail@gmail.com', '123abc!@#')
+    assert type(auth_login('validemail@gmail.com', '123abc!@#')) is dict
     clear()
 
 def test_register_logout_login():
