@@ -1,12 +1,13 @@
 
-users = { # 'email' is the actual emails of users
+
+users = {
     'email': {
         'u_id' : " ",
         'name_first' : " ",
         'name_last' : " ",
         'password' : " "
+        }
     }
-}
 
 tokens = ['benji.schwartz@gmail.com']
 

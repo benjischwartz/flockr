@@ -3,6 +3,7 @@ from error import InputError, AccessError
 from check_token import user_id_given_token
 
 
+
 def channels_list(token):
     # raise ACCESS ERROR if token is invalid
     if user_id_given_token(token) == None:
@@ -106,5 +107,4 @@ def channels_create(token, name, is_public):
     # return {
     #     'channel_id': newChannel_id
     # }
-
 
