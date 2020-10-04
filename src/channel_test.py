@@ -315,6 +315,8 @@ def test_channel_leave_normal_case():
 # tests for channel_join
 # note: the owner of flockr (the first user registered) has special permissions
     # to join a private channel
+    # userOne is always the owner of flockr.
+    # first user to join flockr is always the owner of flockr
         
 #checking for validation of token
 def test_channel_join_invalid_token():
@@ -365,6 +367,29 @@ def test_channel_join_normal_case():
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)   
     channel_join(joiner['token'], userchannel_id['channel_id'])
+    
+    randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
+    assert(randChannel_details['all_members'] == [
+    {
+        'u_id' : user['u_id'],
+        'name_first' : 'first',
+        'name_last' : 'last'
+    },
+    {
+        'u_id' : joiner['u_id'],
+        'name_first' : 'first',
+        'name_last' : 'last'
+    }
+    ])
+    
+def test_channel_join_private_owner():
+    clear()
+    #if the channel is private, but no invite is given to the user
+    #joiner is the owner in this case
+    joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', False)
+    channel_join(joiner['token'], userchannel_id['channel_id'])    
     
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['all_members'] == [
