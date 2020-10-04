@@ -60,7 +60,7 @@ def auth_register(email, password, name_first, name_last):
                 raise InputError("Email already belongs to a user")
 
     # Check if first and last name are between 1 and 50 inclusive
-    if len(name_first) not in range(1, 50) or len(name_last) not in range(1,50):
+    if len(name_first) not in range(1, 51) or len(name_last) not in range(1,51):
         raise InputError ("First and last name must be between 1 and 50 inclusive")
     
     #Check that password is at least 6 letters
