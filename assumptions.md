@@ -27,6 +27,7 @@
 * channel_addowner - if you make a user an owner of an channel where they are not a member, they become a
 member and an owner.
 * channel_removeowner – if you remove an owner they become an ordinary member
+* channel_removeowner – you can remove an owner even if they are the last owner of the channel
 * channel_leave – empty channels should still exist even if the last member leaves whether channel is private or public
 * channel_join – raise an AccessError if the user trying to join is already in the channel 
 
