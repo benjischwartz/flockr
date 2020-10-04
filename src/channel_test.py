@@ -460,7 +460,7 @@ def test_channel_addowner_owner_flockr():
     randChannel_id = channels_create(registerSecond_result['token'], 'Random Channel', True)
     #Add First User as Regular Member
     channel_join(registerFirst_result['token'], randChannel_id['channel_id'])
-    #First User Adding Second User
+    #First User Adding Third User
     channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
 
 # Tests for channel_removeowner function
