@@ -11,8 +11,13 @@ def check(email):
 
     
 def auth_login(email, password):
+
+    # raise an inputerror if the user is already logged in (token already valid)
+    for token in tokens:
+        if email == token:
+            raise InputError ("Already logged in")
+
     # check if email is registered
-    login = False
     for emails in users.keys():
         if email == emails:            
             if users[email]['password'] == password:
@@ -26,6 +31,7 @@ def auth_login(email, password):
     
 
 def auth_logout(token):
+
     for valid_token in tokens:
         if token == valid_token:
             # remove from tokens dict
@@ -41,21 +47,22 @@ def auth_logout(token):
 
 def auth_register(email, password, name_first, name_last):
     
-    # Check if valid email
+    # raise an inputerror if email is invalid
     if (check(email) != "Valid Email"):
         raise InputError ("Invalid email")
 
-    # Check if email already registered to a user
+    # raise an inputerror if email already registered to a user
     else:
         for emails in users.keys():
             if email == emails:
                 raise InputError("Email already belongs to a user")
 
-    # Check if first and last name are between 1 and 50 inclusive
-    if len(name_first) not in range(1, 50) or len(name_last) not in range(1,50):
+    # raise an inputerror if first and last name are not between 1 and 50 
+    # inclusive
+    if len(name_first) not in range(1, 51) or len(name_last) not in range(1,51):
         raise InputError ("First and last name must be between 1 and 50 inclusive")
     
-    #Check that password is at least 6 letters
+    # raise an inputerror if password is not at least 6 letters
     if len(password) < 6:
         raise InputError("Password too short")
 
@@ -63,9 +70,6 @@ def auth_register(email, password, name_first, name_last):
     # create a unique user_id
     totalUsers = len(users)
     newU_id = totalUsers + 1
-
-    # Potential TODO:
-    # For loop checking if id is in dictionary
 
     users[email] = {
             'u_id' : newU_id,
@@ -81,5 +85,3 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : newU_id,
         'token' : email,
     }
-
-# TODO: figure out how to successfully logout and invalidate token

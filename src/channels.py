@@ -5,11 +5,12 @@ from check_token import user_id_given_token
 
 
 def channels_list(token):
-    # raise ACCESS ERROR if token is invalid
-    if user_id_given_token(token) == None:
-        raise AccessError("Token passed in is not valid")  
 
-    # init empty data structs for return
+    # raise an accesserror if token is invalid
+    if user_id_given_token(token) == None:
+        raise AccessError("Token passed is not valid.")  
+
+    # create empty data structs for return
     returnList = []
     returnDict = dict()
     
@@ -41,9 +42,10 @@ def channels_list(token):
     # }
 
 def channels_listall(token):
-    # raise ACCESS ERROR if token is invalid
+
+    # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError("Token passed in is not valid")  
+        raise AccessError("Token passed in is not valid.")  
         
     returnList = []
     returnDict = dict()
@@ -71,20 +73,23 @@ def channels_listall(token):
     # }
 
 def channels_create(token, name, is_public):
-    # raise ACCESS ERROR if token is invalid
+
+    # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError("Token passed in is not valid")   
-    # Input error if channel name is too long
+        raise AccessError("Token passed in is not valid.")   
+    # raise an inputerror if channel name is too long
     if len(name) > 20:
-        raise InputError("channel name cannot be greater than 20 characters")
+        raise InputError("Channel name cannot be greater than 20 characters.")
 
     # get the current number of channels in total
     totalChannels = len(channel)
     newChannel_id = totalChannels + 1
+    
     # if new channel id already a key in database,
     # increment until it is unique
     while newChannel_id in channel:
         newChannel_id += 1
+        
     # create the channel: i.e add channel to the database
     # with token user as owner and member
     channel[newChannel_id] = {

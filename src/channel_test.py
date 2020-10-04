@@ -7,14 +7,14 @@ import pytest
 from error import InputError, AccessError
 from other import clear
 
-################################################################################
-# Tests for channel_invite function
-    # note: since the owner of flockr (the first user registered) has the same 
-        # permissions in channel_invite as a regular member of flockr, the first
-        # user registered is used for these tests
-    # also note: any function other than channel_invite called in these tests is 
-        # assumed to be working correctly
-################################################################################
+# note: any function other than the one being tested for (as per the test name)
+# assumed to be working correctly in these tests
+
+
+# tests for channel_invite
+# note: since the owner of flockr (the first user registered) has the same 
+    # permissions in channel_invite as a regular member of flockr, the first
+    # user registered is used for these tests
 
 # check that when given valid input channel_invite returns an empty dictionary 
 # and only adds the user as a regular member
@@ -46,7 +46,7 @@ def test_channel_invite_same_public_or_private():
     randChannel_details2 = channel_details(userOne['token'], randChannel_id2['channel_id'])
     assert randChannel_details == randChannel_details2
     
-# check an AccessError is raised when token does not refer to a valid user
+# check an accesserror is raised when token does not refer to a valid user
 def test_channel_invite_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -56,7 +56,7 @@ def test_channel_invite_invalid_token():
     with pytest.raises(AccessError):
         channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id'])
                 
-# check an InputError is raised when channel_id does not refer to a valid channel
+# check an inputerror is raised when channel_id does not refer to a valid channel
 def test_channel_invite_invalid_channel_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -68,7 +68,7 @@ def test_channel_invite_invalid_channel_id():
     with pytest.raises(InputError):
         channel_invite(userOne['token'], invalidChannel_id, userTwo['u_id'])
     
-# check an InputError is raised when u_id does not refer to a valid user
+# check an inputerror is raised when u_id does not refer to a valid user
 def test_channel_invite_invalid_u_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -79,7 +79,7 @@ def test_channel_invite_invalid_u_id():
     with pytest.raises(InputError):
         channel_invite(userOne['token'], randChannel_id['channel_id'], invalidu_id)
 
-# check an InputError is raised when no channel exists
+# check an inputerror is raised when no channel exists
 def test_channel_invite_no_channels_exist():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -87,7 +87,7 @@ def test_channel_invite_no_channels_exist():
     with pytest.raises(InputError):
         channel_invite(userOne['token'], 0, userTwo['u_id'])
 
-# check that an AccessError has been raised when the user (of the token) is not
+# check that an accesserror has been raised when the user (of the token) is not
 # part of the channel and is thus, not authorised to invite 
 def test_channel_invite_not_authorised():
     clear()
@@ -125,14 +125,11 @@ def test_channel_invite_already_in():
     randChannel_detailsAfter = channel_details(userOne['token'], randChannel_id['channel_id'])
     assert randChannel_detailsInitial == randChannel_detailsAfter
 
-################################################################################
-# Tests for channel_details function
+
+# tests for channel_details
     # note: since the owner of flockr (the first user registered) has the same 
-        # permissions in channel_invite as a regular member of flockr, the first
+        # permissions in channel_details as a regular member of flockr, the first
         # user registered is used for these tests
-    # also note: any function other than channel_details called in these tests 
-        # is assumed to be working correctly
-################################################################################
 
 # check that when given valid input channel_details returns a dictionary in the 
 # format defined by the spec (and asserted below)
@@ -157,7 +154,7 @@ def test_channel_invite_same_behaviour_public_or_private():
     randChannel_details2 = channel_details(userOne['token'], randChannel_id2['channel_id'])
     assert randChannel_details == randChannel_details2
          
-# check an AccessError is raised when the token does not refer to a valid user
+# check an accesserror is raised when the token does not refer to a valid user
 def test_channel_details_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -166,7 +163,7 @@ def test_channel_details_invalid_token():
     with pytest.raises(AccessError):
         channel_details(userOne['token'], randChannel_id['channel_id'])
         
-# check an InputError is raised when channel_id does not refer to a valid channel
+# check an inputerror is raised when channel_id does not refer to a valid channel
 def test_channel_details_invalid_channel_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -177,7 +174,7 @@ def test_channel_details_invalid_channel_id():
     with pytest.raises(InputError):
         channel_details(userOne['token'], invalidChannel_id)
 
-# check an AccessError is raised when the user is not a member of the channel
+# check an accesserror is raised when the user is not a member of the channel
 def test_channel_details_not_member():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -186,14 +183,10 @@ def test_channel_details_not_member():
     with pytest.raises(AccessError):
         channel_details(userTwo['token'], randChannel_id['channel_id'])   
 
-################################################################################
-# Tests for channel_mesages function
+# tests for channel_mesages
     # note: since the owner of flockr (the first user registered) has the same 
-        # permissions in channel_invite as a regular member of flockr, the first
+        # permissions in channel_messages as a regular member of flockr, the first
         # user registered is used for these tests
-    # also note: any function other than channel_messages called in these tests is 
-        # assumed to be working correctly
-################################################################################
 
 # check that channel_messages returns the correct dictionary given valid input
 # with the user calling it being the flockr owner
@@ -215,7 +208,7 @@ def test_channel_messages_same_public_or_private():
     randMessages2 = channel_messages(userOne['token'], randChannel_id2['channel_id'], 0)
     assert randMessages == randMessages2
 
-# check an InputError is raised when start is greater than the total number of 
+# check an inputerror is raised when start is greater than the total number of 
 # messages in the channel; in this test there are no messages in the channel
 def test_channel_messages_start_too_big():
     clear()
@@ -225,7 +218,7 @@ def test_channel_messages_start_too_big():
     with pytest.raises(InputError):
         channel_messages(userOne['token'], randChannel_id['channel_id'], 1)
 
-# check an InputError is raised when start is greater than the total number of 
+# check an inputerror is raised when start is greater than the total number of 
 # messages in the channel; in this test there are no messages in the channel
 def test_channel_messages_start_less_than_0():
     clear()
@@ -235,7 +228,7 @@ def test_channel_messages_start_less_than_0():
     with pytest.raises(InputError):
         channel_messages(userOne['token'], randChannel_id['channel_id'], -1)        
 
-# check an AccessError is raised when token does not refer to a valid user
+# check an accesserror is raised when token does not refer to a valid user
 def test_channel_messages_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -244,7 +237,7 @@ def test_channel_messages_invalid_token():
     with pytest.raises(AccessError):
         channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
             
-# check an InputError is raised when channel_id does not refer to a valid channel
+# check an inputerror is raised when channel_id does not refer to a valid channel
 def test_channel_messages_invalid_channel_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -255,7 +248,7 @@ def test_channel_messages_invalid_channel_id():
     with pytest.raises(InputError):
         channel_messages(userOne['token'], invalidChannel_id, 0)
 
-# check that an AccessError has been raised when the user is not a member of the channel
+# check that an accesserror has been raised when the user is not a member of the channel
 def test_channel_messages_not_member():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -264,9 +257,12 @@ def test_channel_messages_not_member():
     with pytest.raises(AccessError):
         channel_messages(userTwo['token'], randChannel_id['channel_id'], 0)
 
-################################################################################
-# Tests for channel_leave
-#checking for validation of token - raises access error
+# tests for channel_leave
+# note: since the owner of flockr (the first user registered) has the same 
+        # permissions in channel_leave as a regular member of flockr, the first
+        # user registered is used for these tests
+
+# checking for validation of token - raises accesserror
 def test_channel_leave_invalid_token():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
@@ -275,18 +271,19 @@ def test_channel_leave_invalid_token():
     with pytest.raises(AccessError):
         channel_leave(user['token'], userchannel_id['channel_id'])
 
+# check for accesserror when user isn't in the specified channel
 def test_channel_leave_invalid_user():
     clear()
-    #check for access error when user isn't in the specified channel
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)
     
     with pytest.raises(AccessError):
         channel_leave(leaver['token'], userchannel_id['channel_id'])
-        
+
+# check if inputerror is raised if the channel_id is invalid 
 def test_channel_leave_invalid_channel():
-    #if the Channel id is invalid - input error
+
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
@@ -314,7 +311,11 @@ def test_channel_leave_normal_case():
     }
     ])
         
-#------------------------------------------------------------------------------#
+
+# tests for channel_join
+# note: the owner of flockr (the first user registered) has special permissions
+    # to join a private channel
+        
 #checking for validation of token
 def test_channel_join_invalid_token():
     clear()
@@ -324,9 +325,9 @@ def test_channel_join_invalid_token():
     auth_logout(userTwo['token'])
     with pytest.raises(AccessError):
         channel_join(userTwo['token'], userchannel_id['channel_id'])
-    
+
+# check if the channel_id is invalid an inputerror is raised
 def test_channel_join_invalid_channel():
-    #if the Channel id is invalid - raises input error
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
@@ -337,7 +338,7 @@ def test_channel_join_invalid_channel():
     with pytest.raises(InputError):
         channel_join(joiner['token'], invalid_id)
         
-#checking if a user is trying to join a private channel, throw access error
+#checking if a user is trying to join a private channel, an accesserror is raised
 def test_channel_join_private_no_invite():
     clear()
     #if the channel is private, but no invite is given to the user
@@ -348,7 +349,7 @@ def test_channel_join_private_no_invite():
     with pytest.raises(AccessError):
         channel_join(joiner['token'], userchannel_id['channel_id'])
     
-#checking if the user is already in the channel, return access error if it is
+#checking if the user is already in the channel, raise accesserror if they are
 def test_channel_join_already_in_channel():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
@@ -356,7 +357,8 @@ def test_channel_join_already_in_channel():
     
     with pytest.raises(AccessError):
         channel_join(user['token'], userchannel_id['channel_id'])
-        
+
+# check if channel_join behaves correctly given valid input        
 def test_channel_join_normal_case():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
@@ -378,13 +380,12 @@ def test_channel_join_normal_case():
     }
     ])
 
-################################################################################
+
 # Tests for channel_addowner function
     # note: since the owner of flockr (the first user registered) has the same 
         # permissions as the owner of a channel (if they are also a regular member)
         # the first user is registered but not used for any tests except where the
         # owner of flockr functionality is tested
-################################################################################
 
 # checking if adding another owner from the current owner's token works as expected
 def test_channel_addowner_standard_input():
@@ -400,7 +401,7 @@ def test_channel_addowner_standard_input():
     #Adding User as Owner
     channel_addowner(registerSecond_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
 
-# checking whether adding an owner after the user has logged out returns AccessError as expected
+# checking whether adding an owner after the user has logged out raises an accesserror as expected
 def test_channel_addowner_invalid_token_after_logout():
     clear()
     #Registering First User
@@ -416,7 +417,7 @@ def test_channel_addowner_invalid_token_after_logout():
     with pytest.raises(AccessError):
         assert channel_addowner(registerSecond_result['token'], randChannel_id['channel_id'], registerSecond_result['u_id'])
 
-# checking if an InputError is returned if attempting to add a user as an owner who is already an owner
+# checking if an inputerror is raised if attempting to add a user as an owner who is already an owner
 def test_channel_addowner_already_an_owner():
     clear()
     #Registering First User
@@ -433,7 +434,7 @@ def test_channel_addowner_already_an_owner():
     with pytest.raises(InputError):
         assert channel_addowner(registerSecond_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
 
-# checking if an InputError is returned if an invalid Channel ID is inputted into the function
+# checking if an inputerror is raised if an invalid Channel ID is inputted into the function
 def test_channel_addowner_invalid_channel_id():
     clear()
     #Registering First User
@@ -462,13 +463,11 @@ def test_channel_addowner_owner_flockr():
     #First User Adding Second User
     channel_addowner(registerFirst_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
 
-################################################################################
 # Tests for channel_removeowner function
     # note: since the owner of flockr (the first user registered) has the same 
         # permissions as the owner of a channel (if they are also a regular member)
         # the first user is registered but not used for any tests except where the
         # owner of flockr functionality is tested
-################################################################################
 
 # checking if able to remove an owner who is an owner with authorised token is sucessful 
 def test_channel_removeowner_standard_input():
@@ -486,7 +485,7 @@ def test_channel_removeowner_standard_input():
     #Removing Third User
     channel_removeowner(registerSecond_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
 
-# checking if InputError returned as expected if attempting to use an invalid Channel ID
+# checking if inputerror is raised as expected if attempting to use an invalid Channel ID
 def test_channel_removeowner_invalid_channel_id():
     clear()
     #Registering First User
@@ -499,7 +498,7 @@ def test_channel_removeowner_invalid_channel_id():
     with pytest.raises(InputError):
         assert channel_removeowner(registerSecond_result['token'], 'INVALIDID', registerThird_result['u_id'])
 
-# checking if removing an owner with an invalid user ID
+# checking if removing an owner with an invalid user ID raises an inputerror
 def test_channel_removeowner_invalid_user_id():
     clear()
     #Registering First User
@@ -514,7 +513,7 @@ def test_channel_removeowner_invalid_user_id():
     with pytest.raises(InputError):
         assert channel_removeowner(registerSecond_result['token'], randChannel_id['channel_id'], "invalidemail@gmail.com")
 
-# checking whether removing an owner after the user has logged out returns AccessError as expected
+# checking whether removing an owner after the user has logged out raises an accesserror as expected
 def test_channel_removeowner_invalid_token_after_logout():
     clear()
     #Registering First User
@@ -536,7 +535,7 @@ def test_channel_removeowner_invalid_token_after_logout():
     with pytest.raises(AccessError):
         assert channel_removeowner(registerSecond_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
 
-# checking if removing an owner without owner permissions raises an AccessError
+# checking if removing an owner without owner permissions raises an accesserror
 def test_channel_removeowner_not_owner_permissions():
     clear()
     #Registering First User
