@@ -96,6 +96,7 @@ def test_logout():
 def test_logout_invalidate_token():
     clear()
     result1 = auth_register('validemaillogout@gmail.com', '123abc!@#', 'hello', 'goodbye')
+    assert type(result1) is dict
     result2 = auth_logout('validemaillogout@gmail.com') 
     assert result2 == {'is_success': True} #expect to return true since token is valid
     result3 = auth_login('validemaillogout@gmail.com', '123abc!@#')
@@ -111,6 +112,7 @@ def test_invalid_logout():
 def test_logout_twice():
     clear()
     result = auth_register('validemaillogout@gmail.com', '123abc!@#', 'hello', 'goodbye')
+    assert type(result) is dict
     assert (auth_logout('validemaillogout@gmail.com')) == {'is_success': True}
     # expect false since already logged out
     assert (auth_logout('validemaillogout@gmail.com')) == {'is_success': False}
