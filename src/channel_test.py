@@ -103,7 +103,7 @@ def test_channel_invite_not_authorised():
 def test_channel_invite_self():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     randChannel_detailsInitial = channel_details(userOne['token'], randChannel_id['channel_id'])
     assert channel_invite(userOne['token'], randChannel_id['channel_id'], userOne['u_id']) == {}
@@ -159,7 +159,7 @@ def test_channel_details_invalid_token():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', False)
-    userOne_logout = auth_logout(userOne['token'])
+    auth_logout(userOne['token'])
     with pytest.raises(AccessError):
         channel_details(userOne['token'], randChannel_id['channel_id'])
         
@@ -213,7 +213,7 @@ def test_channel_messages_same_public_or_private():
 def test_channel_messages_start_too_big():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(InputError):
         channel_messages(userOne['token'], randChannel_id['channel_id'], 1)
@@ -223,7 +223,7 @@ def test_channel_messages_start_too_big():
 def test_channel_messages_start_less_than_0():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(InputError):
         channel_messages(userOne['token'], randChannel_id['channel_id'], -1)        
@@ -267,7 +267,7 @@ def test_channel_leave_invalid_token():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)
-    user_logout = auth_logout(user['token'])
+    auth_logout(user['token'])
     with pytest.raises(AccessError):
         channel_leave(user['token'], userchannel_id['channel_id'])
 
@@ -321,7 +321,7 @@ def test_channel_leave_normal_case():
 #checking for validation of token
 def test_channel_join_invalid_token():
     clear()
-    userOne = auth_register('userone@gmail.com', '123abc!@#', 'First', 'Last')
+    auth_register('userone@gmail.com', '123abc!@#', 'First', 'Last')
     userTwo = auth_register('usertwo@gmail.com', '123abc!@#', 'First', 'Last')
     userchannel_id = channels_create(userTwo['token'], 'userchannel', True)
     auth_logout(userTwo['token'])
