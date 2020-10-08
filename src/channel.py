@@ -1,5 +1,4 @@
-from auth import auth_login, auth_logout, auth_register
-from data import users, tokens, channel
+from data import users, channel
 from error import InputError, AccessError
 from check_token import user_id_given_token
 
@@ -218,10 +217,10 @@ def channel_join(token, channel_id):
     return {}
 
 def channel_addowner(token, channel_id, u_id):
-
+    """ Making a user an owner of the channel """
     # raise an inputerror if the token is invalid
     token_u_id = user_id_given_token(token)
-    if token_u_id == None:
+    if token_u_id is None:
         raise AccessError("Token passed is not valid.")
         
     # raise an inputerror if the channel_id is invalid
@@ -251,10 +250,10 @@ def channel_addowner(token, channel_id, u_id):
     return {}
 
 def channel_removeowner(token, channel_id, u_id):
-
+    """ Removing an owner from the channel and making them an ordinary member instead """
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
-    if token_u_id == None:
+    if token_u_id is None:
         raise AccessError("Token passed is not valid.")
     
     # raise an inputerror if channel_id is invalid
