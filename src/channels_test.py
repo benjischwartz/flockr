@@ -89,3 +89,4 @@ def test_channels_create_too_long_name():
     with pytest.raises(InputError):
         channels_create(userThree['token'], "a_string_name_which_is_very_long_and_will_never_pass", True)
 
+
