@@ -292,7 +292,7 @@ def test_channel_leave_invalid_channel():
         invalid_id = 1
     with pytest.raises(InputError):
         channel_leave(leaver['token'], invalid_id)
-        
+
 def test_channel_leave_normal_case():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
@@ -309,7 +309,24 @@ def test_channel_leave_normal_case():
         'name_last' : 'last'
     }
     ])
-        
+# if the person removed is a owner,check whether the function actually removed him
+def test_channel_leave_normal_case_owner():
+    clear()
+    leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last') 
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    channel_join(leaver['token'], userchannel_id['channel_id'])
+    channel_addowner(leaver['token'], userchannel_id['channel_id'], leaver['u_id'])
+    channel_leave(leaver['token'], userchannel_id['channel_id'])
+
+    randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
+    assert(randChannel_details['owner_members'] == [
+    {
+        'u_id' : user['u_id'],
+        'name_first' : 'first',
+        'name_last' : 'last'
+    }
+    ]) 
 
 # tests for channel_join
 # note: the owner of flockr (the first user registered) has special permissions
