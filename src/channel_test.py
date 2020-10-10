@@ -282,7 +282,7 @@ def test_channel_leave_invalid_channel():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
-    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
 
     with pytest.raises(InputError):
@@ -344,7 +344,7 @@ def test_channel_join_invalid_channel():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
-    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
 
     with pytest.raises(InputError):
