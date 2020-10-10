@@ -492,6 +492,38 @@ def test_channel_addowner_owner_flockr():
     # first user adding third user
     channel_addowner(register_first_result['token'], randChannel_id['channel_id'], register_third_result['u_id'])
 
+def test_channel_addowner_owner_flockr_not_member():
+    """ checking if AccessError is returned as expected if the owner of flockr is not a member of the channel"""
+    clear()
+    # registering first user as the first user is the owner of the flockr
+    register_first_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # registering second user
+    register_second_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # registering third user
+    register_third_result = auth_register('randemail3@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # creating channel
+    randChannel_id = channels_create(register_second_result['token'], 'Random Channel', True)
+    # first user adding third user
+    with pytest.raises(AccessError):
+        assert channel_addowner(register_first_result['token'], randChannel_id['channel_id'], register_third_result['u_id'])
+
+def test_channel_addowner_not_owner():
+    """ checking if AccessError is returned as expected if member is not an owner"""
+    clear()
+    # registering first user as the first user is the owner of the flockr
+    auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # registering second user
+    register_second_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # registering third user
+    register_third_result = auth_register('randemail3@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # registering forth user
+    register_forth_result = auth_register('randemail4@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # creating channel
+    randChannel_id = channels_create(register_second_result['token'], 'Random Channel', True)
+    # first user adding third user
+    with pytest.raises(AccessError):
+        assert channel_addowner(register_third_result['token'], randChannel_id['channel_id'], register_forth_result['u_id'])
+
 # Tests for channel_removeowner function
     # note: since the owner of flockr (the first user registered) has the same 
         # permissions as the owner of a channel (if they are also a regular member)
@@ -598,3 +630,18 @@ def test_channel_removeowner_owner_flockr():
     # first user removing second user
     channel_removeowner(register_first_result['token'], randChannel_id['channel_id'], register_second_result['u_id'])
 
+def test_channel_removeowner_owner_flockr_not_member():
+    """ checking if AccessError is returned as expected if the owner of flockr is not a member of the channel"""
+    clear()
+    # registering first user as the first user is the owner of the flockr
+    register_first_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # registering second user
+    register_second_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # registering third user
+    register_third_result = auth_register('randemail3@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # creating channel
+    randChannel_id = channels_create(register_second_result['token'], 'Random Channel', True)
+    # second user adding third user
+    channel_addowner(register_second_result['token'], randChannel_id['channel_id'], register_third_result['u_id'])
+    with pytest.raises(AccessError):
+        assert channel_removeowner(register_first_result['token'], randChannel_id['channel_id'], register_third_result['u_id'])
