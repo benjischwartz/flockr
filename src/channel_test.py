@@ -62,8 +62,7 @@ def test_channel_invite_invalid_channel_id():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-    if invalidChannel_id == randChannel_id['channel_id']:
-        invalidChannel_id = 1
+
     with pytest.raises(InputError):
         channel_invite(userOne['token'], invalidChannel_id, userTwo['u_id'])
     
@@ -73,8 +72,7 @@ def test_channel_invite_invalid_u_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     invalidu_id = 0
-    if invalidu_id == userOne['u_id']:
-        invalidu_id = 1
+
     with pytest.raises(InputError):
         channel_invite(userOne['token'], randChannel_id['channel_id'], invalidu_id)
 
@@ -168,8 +166,7 @@ def test_channel_details_invalid_channel_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-    if invalidChannel_id == randChannel_id['channel_id']:
-        invalidChannel_id = 1
+
     with pytest.raises(InputError):
         channel_details(userOne['token'], invalidChannel_id)
 
@@ -242,8 +239,7 @@ def test_channel_messages_invalid_channel_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-    if invalidChannel_id == randChannel_id['channel_id']:
-        invalidChannel_id = 1
+
     with pytest.raises(InputError):
         channel_messages(userOne['token'], invalidChannel_id, 0)
 
@@ -288,8 +284,7 @@ def test_channel_leave_invalid_channel():
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
-    if userchannel_id['channel_id'] == invalid_id:
-        invalid_id = 1
+
     with pytest.raises(InputError):
         channel_leave(leaver['token'], invalid_id)
 
@@ -351,8 +346,7 @@ def test_channel_join_invalid_channel():
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
-    if userchannel_id['channel_id'] == invalid_id:
-        invalid_id = 1
+
     with pytest.raises(InputError):
         channel_join(joiner['token'], invalid_id)
         
