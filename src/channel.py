@@ -187,7 +187,7 @@ def channel_leave(token, channel_id):
         
     # if the user is an owner, remove them from the list
     if token_u_id in channel[channel_id]['owner_members']:
-        channel[channel_id]['owner_member'].pop(token_u_id)
+        channel[channel_id]['owner_members'].pop(token_u_id)
         
     return {}
 
