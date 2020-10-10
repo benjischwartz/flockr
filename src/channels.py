@@ -85,10 +85,11 @@ def channels_create(token, name, is_public):
     totalChannels = len(channel)
     newChannel_id = totalChannels + 1
     
-    # if new channel id already a key in database,
-    # increment until it is unique
-    while newChannel_id in channel:
-        newChannel_id += 1
+    ### Uncomment only if we add the ability to delete a channel later ###
+    # # if new channel id already a key in database,
+    # # increment until it is unique
+    # while newChannel_id in channel:
+    #     newChannel_id += 1
         
     # create the channel: i.e add channel to the database
     # with token user as owner and member
