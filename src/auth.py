@@ -1,6 +1,7 @@
 from data import users, tokens
 import re
 from error import InputError
+from other import clear
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -74,12 +75,30 @@ def auth_register(email, password, name_first, name_last):
     totalUsers = len(users)
     newU_id = totalUsers + 1
 
+    #create a unique handle -> a concatenation of lower-case only
+    #first and last name. Cut off at 20 characters. 
+    concatenate = name_first.lower() + name_last.lower()
+    if len(concatenate) > 20:
+        concatenate = concatenate[0:20]
+
+    #if already taken, remove last two letters and add len(users) to make unique
+    for email in users.keys():
+        if concatenate == users[email]['handle']:
+            concatenate = concatenate[0:18]    # trim two digits off the end
+            totalUsers = len(users)
+            if totalUsers < 10:
+                concatenate = concatenate + str(0) + str(totalUsers)
+            else:
+                concatenate = concatenate + str(totalUsers)
+             
     users[email] = {
             'u_id' : newU_id,
             'name_first' : name_first,
             'name_last' : name_last,
-            'password' : password
+            'password' : password,
+            'handle' : concatenate,
         }
+    print(users[email]['handle'])
     
     # validate token
     tokens.append(email)
@@ -88,3 +107,23 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : newU_id,
         'token' : email,
     }
+
+auth_register('bobby@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+auth_register('jimmy@gmail.com', '123abc!@#', 'Jimmy', 'Red')
+auth_register('freddy@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy2@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy3@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy4@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy5@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy6@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy7@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy8@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy9@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy10@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy11@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy12@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy13@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy14@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+auth_register('freddy15@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+
+print(users)
