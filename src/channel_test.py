@@ -60,7 +60,7 @@ def test_channel_invite_invalid_channel_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
 
     with pytest.raises(InputError):
@@ -164,7 +164,7 @@ def test_channel_details_invalid_token():
 def test_channel_details_invalid_channel_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
 
     with pytest.raises(InputError):
@@ -237,7 +237,7 @@ def test_channel_messages_invalid_token():
 def test_channel_messages_invalid_channel_id():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
 
     with pytest.raises(InputError):
