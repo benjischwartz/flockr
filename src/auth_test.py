@@ -9,8 +9,12 @@ from other import clear
 def register_return_values():
     clear()
     result = auth_register('validemail@gmail.com', '123abc!@#', 'hello', 'goodbye')
-    assert type(result) is dict
-    assert type(result['u_id']) is int, "registration unsuccessful"
+    # Would be better to assert that the user has indeed been registered
+    details = user_profile(result['token'], result['u_id'])
+    assert details['email'] == 'validemail@gmail.com'
+    assert details['name_first'] == 'hello'
+    assert details['name_last'] == 'goodbye'
+    # No need to clear at the end if you are clearing at the start of each test
     clear()
 
 def test_register_multiple():
@@ -18,9 +22,8 @@ def test_register_multiple():
     result1 = auth_register('validemail@gmail.com', '123abc!@#', 'first', 'person')
     result2 = auth_register('validemail2@gmail.com', '123abc!@#', 'second', 'person')
     assert result1['u_id'] != result2['u_id']
-    assert result1['token'] == 'validemail@gmail.com'
-    assert result2['token'] == 'validemail2@gmail.com'
-    clear()
+    # Tests shouldn't have knowledge of the tokens themselves, instead test the tokens are unique
+    assert result1['token'] != result2['token']
 
 def test_register_multiple_fail_login():
     clear()
@@ -38,6 +41,7 @@ def test_register_multiple_fail_login():
 def test_already_logged_in():
     clear()
     reg_result = auth_register('validemail@gmail.com', '123abc!@#', 'Firstname', 'Lastname')
+    # Not clear what is 'invalid' about the login here
     assert type(reg_result) == dict
     assert type(auth_login('validemail@gmail.com', '123abc!@#')) is dict
     clear()
@@ -91,8 +95,10 @@ def test_logout():
     clear()
     result = auth_register('validemaillogout@gmail.com', '123abc!@#', 'hello', 'goodbye')
     assert auth_logout(result["token"]) == {'is_success': True}, "logout was unsuccessful"
+    # Also test side effect - has the token been invalidated?
     clear()
 
+# Not clear what this test is actually testing
 def test_logout_invalidate_token():
     clear()
     result1 = auth_register('validemaillogout@gmail.com', '123abc!@#', 'hello', 'goodbye')
