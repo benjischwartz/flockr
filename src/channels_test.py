@@ -13,9 +13,9 @@ from other import clear
 def test_return_type():
     # clear database and register new dummy users for testing
     clear()
-    userOne = auth_register("first@example.com", "password1234", " ", " ")
-    userTwo = auth_register("second@example.com", "password1234", " ", " ")
-    userThree = auth_register("third@example.com", "password1234", " ", " ")
+    auth_register("first@example.com", "password1234", " ", " ")
+    auth_register("second@example.com", "password1234", " ", " ")
+    auth_register("third@example.com", "password1234", " ", " ")
     # check types
     assert(type(channels_list("first@example.com")) is dict) 
     assert(type(channels_listall("second@example.com")) is dict)
@@ -73,8 +73,8 @@ def test_channels_list_user_view():
     userOne = auth_register("first@example.com", "password1234", " ", " ")
     userTwo = auth_register("second@example.com", "password1234", " ", " ")
     # create channels that has no users
-    emptyChannel = channels_create(userOne['token'], "validchannel1", True)
-    userChannel = channels_create(userTwo['token'], "validchannel2", True)
+    channels_create(userOne['token'], "validchannel1", True)
+    channels_create(userTwo['token'], "validchannel2", True)
     # create user and compare channels_list result with channels_list_all
     assert channels_list(userOne['token']) != channels_listall(userTwo['token']), "users can see all lists, even if not a member"
     assert len(channels_list(userOne['token'])['channels']) == 1, "channel list per user sees unexpected number"
@@ -88,4 +88,5 @@ def test_channels_create_too_long_name():
     userThree = auth_register("third@example.com", "password1234", " ", " ")
     with pytest.raises(InputError):
         channels_create(userThree['token'], "a_string_name_which_is_very_long_and_will_never_pass", True)
+
 
