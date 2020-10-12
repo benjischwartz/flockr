@@ -1,43 +1,47 @@
 import pytest
 from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
-from auth import auth_register
-from error import InputError
+from auth import auth_register, auth_logout, auth_login
+from error import InputError, AccessError
 from other import clear
+from channels import channels_create
+from channel import channel_details
 
 #TODO: ETHAN 
 #User Setname Tests
 def test_user_setname_positive_case():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    user_profile_setname(token[userOne], 'New First', 'New Last')
-    assert(users['firstuser@gmail.com']['name_first'] == 'New First')
-    assert(users['firstuser@gmail.com']['name_last'] == 'New Last')
+    user_profile_setname(userOne['token'], 'New First', 'New Last')
+    #Create a Channel and Find Its Details to See if the Name has Changed
+    randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
+    details = channel_details(userOne['token'], randomChannel_id)
+    assert(details['owner_members']['name_first'] == 'New First')
 
 def test_user_setname_name_first_short():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
-        user_profile_setname(token[userOne], '', 'New Last')
+        user_profile_setname(userOne['token'], '', 'New Last')
     
 def test_user_setname_name_first_long():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     longName = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ"
     with pytest.raises(InputError):
-        user_profile_setname(token[userOne], longName, 'New Last')
+        user_profile_setname(userOne['token'], longName, 'New Last')
 
 def test_user_setname_name_last_short():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
-        user_profile_setname(token[userOne], 'New First', '')
+        user_profile_setname(userOne['token'], 'New First', '')
 
 def test_user_setname_name_last_long():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     longName = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ"
     with pytest.raises(InputError):
-        user_profile_setname(token[userOne], 'New First', longName)
+        user_profile_setname(userOne['token'], 'New First', longName)
 
 def test_user_setname_name_invalid_token():
     clear()
@@ -49,9 +53,10 @@ def test_user_setname_name_invalid_token():
 def test_user_setemail_positive_case():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    user_profile_setemail(token[userOne], 'newemail@gmail.com')
-    assert(users['newemail@gmail.com']['name_first'] == 'First')
-    assert(users['newemail@gmail.com']['name_last'] == 'User')
+    user_profile_setemail(userOne['token'], 'newemail@gmail.com')
+    #Logging Out & Logging Back In With New Email
+    auth_logout(userOne)
+    auth_login('newemail@gmail.com', '123abc!@#')
 
 def test_user_setemail_already_used():
     clear()
@@ -59,19 +64,19 @@ def test_user_setemail_already_used():
     #Second User
     auth_register('randomemail@gmail.com', '123abc!@#', 'Second', 'User')
     with pytest.raises(InputError):
-        user_profile_setemail(token[userOne], 'randomemail@gmail.com')
+        user_profile_setemail(userOne['token'], 'randomemail@gmail.com')
 
 def test_user_setemail_invalid_email_no_at_symbol():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
-        user_profile_setemail(token[userOne], 'newemailgmail.com')
+        user_profile_setemail(userOne['token'], 'newemailgmail.com')
 
 def test_user_setemail_not_alphanumeric():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
-        user_profile_setemail(token[userOne], 'newemail  @gmail.com')
+        user_profile_setemail(userOne['token'], 'newemail  @gmail.com')
 
 def test_user_setemail_invalid_token():
     clear()
