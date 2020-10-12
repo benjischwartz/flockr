@@ -9,7 +9,7 @@ from other import clear
 # test change from non-owner of flocker to owner
 
 # test access error
-def access_error_token_not_owner():
+def test_access_error_token_not_owner():
     clear()
     auth_register("first@user.com", "thisisapassword", "Owner", "Flocker")
     not_owner = auth_register("second@user.com", "thisisapassword", "Not a owner", "Flocker")
