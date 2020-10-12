@@ -5,10 +5,13 @@ users = {
         'u_id' : " ",
         'name_first' : " ",
         'name_last' : " ",
-        'password' : " "
+        'password' : " ",
+        'permission_id' : 1 # Global flocker permission_id
+        # 1 for owner of flocker, 2 for regular members 
         }
     }
 
+# tokens are currently the emails of users
 tokens = ['benji.schwartz@gmail.com']
 
 channel = { # 'channel_id' are the int values themselves, per channel
@@ -28,4 +31,4 @@ channel = { # 'channel_id' are the int values themselves, per channel
         'messages' : []
     }
 }      
- 
+

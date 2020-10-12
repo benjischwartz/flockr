@@ -74,11 +74,15 @@ def auth_register(email, password, name_first, name_last):
     totalUsers = len(users)
     newU_id = totalUsers + 1
 
+    # give first user owner permission_id, member for all else
+    permission_id = 2 if newU_id != 1 else 1
+
     users[email] = {
             'u_id' : newU_id,
             'name_first' : name_first,
             'name_last' : name_last,
-            'password' : password
+            'password' : password,
+            'permission_id' : permission_id
         }
     
     # validate token
