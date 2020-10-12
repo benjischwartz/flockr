@@ -35,3 +35,5 @@ def test_multiple_channel_multiple_matches():
 # test no matches
 def test_no_matches():
     clear()
+
+# test query > 1000 characters. raise input error???
