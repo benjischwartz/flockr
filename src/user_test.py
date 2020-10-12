@@ -39,6 +39,12 @@ def test_user_setname_name_last_long():
     with pytest.raises(InputError):
         user_profile_setname(token[userOne], 'New First', longName)
 
+def test_user_setname_name_invalid_token():
+    clear()
+    auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    with pytest.raises(AccessError):
+        user_profile_setname('INVALID_TOKEN', 'New First', 'New Last')
+
 # User Setemail Tests
 def test_user_setemail_positive_case():
     clear()
@@ -50,7 +56,8 @@ def test_user_setemail_positive_case():
 def test_user_setemail_already_used():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('randomemail@gmail.com', '123abc!@#', 'Second', 'User')
+    #Second User
+    auth_register('randomemail@gmail.com', '123abc!@#', 'Second', 'User')
     with pytest.raises(InputError):
         user_profile_setemail(token[userOne], 'randomemail@gmail.com')
 
@@ -65,6 +72,12 @@ def test_user_setemail_not_alphanumeric():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
         user_profile_setemail(token[userOne], 'newemail  @gmail.com')
+
+def test_user_setemail_invalid_token():
+    clear()
+    auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    with pytest.raises(AccessError):
+        user_profile_setemail('INVALID_TOKEN', 'newemail@gmail.com')
 
 #TODO: BRIAN
 # User Profile Tests
