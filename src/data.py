@@ -3,6 +3,7 @@
 users = {
     'email': {
         'u_id' : " ",
+        'handle': " ",
         'name_first' : " ",
         'name_last' : " ",
         'password' : " "
