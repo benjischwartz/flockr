@@ -56,6 +56,14 @@ def test_user_setname_name_invalid_token():
     with pytest.raises(AccessError):
         user_profile_setname('INVALID_TOKEN', 'New First', 'New Last')
 
+def test_user_setname_name_invalid_token_after_logout():
+    ''' Test if Error Returned as Expected if the Token is Invalid after Logout'''
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    auth_logout(userOne)
+    with pytest.raises(AccessError):
+        user_profile_setname(userOne['token'], 'New First', 'New Last')
+
 # User Setemail Tests
 def test_user_setemail_positive_case():
     ''' Test a Positive Case to Find if The Email Changes ''' 
@@ -95,6 +103,14 @@ def test_user_setemail_invalid_token():
     auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(AccessError):
         user_profile_setemail('INVALID_TOKEN', 'newemail@gmail.com')
+
+def test_user_setemail_invalid_token_after_logout():
+    ''' Test if Error Returned as Expected if the Token is Invalid after Logout'''
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    auth_logout(userOne)
+    with pytest.raises(AccessError):
+        user_profile_setemail(userOne['token'], 'newemail@gmail.com')
 
 #TODO: BRIAN
 # User Profile Tests
