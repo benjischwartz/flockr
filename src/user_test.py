@@ -9,6 +9,7 @@ from channel import channel_details
 #TODO: ETHAN 
 #User Setname Tests
 def test_user_setname_positive_case():
+    ''' Positive Case To Determine Whether the Name Changes '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_profile_setname(userOne['token'], 'New First', 'New Last')
@@ -16,14 +17,17 @@ def test_user_setname_positive_case():
     randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
     details = channel_details(userOne['token'], randomChannel_id)
     assert(details['owner_members']['name_first'] == 'New First')
+    assert(details['owner_members']['name_first'] == 'New Last')
 
 def test_user_setname_name_first_short():
+    ''' Test if Error Returned as Expected if First Name is Too Short '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
         user_profile_setname(userOne['token'], '', 'New Last')
     
 def test_user_setname_name_first_long():
+    ''' Test if Error Returned as Expected if First Name is Too Long '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     longName = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -31,12 +35,14 @@ def test_user_setname_name_first_long():
         user_profile_setname(userOne['token'], longName, 'New Last')
 
 def test_user_setname_name_last_short():
+    ''' Test if Error Returned as Expected if Last Name is Too Short '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
         user_profile_setname(userOne['token'], 'New First', '')
 
 def test_user_setname_name_last_long():
+    ''' Test if Error Returned as Expected if Last Name is Too Long '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     longName = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -44,6 +50,7 @@ def test_user_setname_name_last_long():
         user_profile_setname(userOne['token'], 'New First', longName)
 
 def test_user_setname_name_invalid_token():
+    ''' Test if Error Returned as Expected if the Token is Invalid '''
     clear()
     auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(AccessError):
@@ -51,6 +58,7 @@ def test_user_setname_name_invalid_token():
 
 # User Setemail Tests
 def test_user_setemail_positive_case():
+    ''' Test a Positive Case to Find if The Email Changes ''' 
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_profile_setemail(userOne['token'], 'newemail@gmail.com')
@@ -59,6 +67,7 @@ def test_user_setemail_positive_case():
     auth_login('newemail@gmail.com', '123abc!@#')
 
 def test_user_setemail_already_used():
+    ''' Test if Error is Returned if Email is Already Used '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     #Second User
@@ -67,18 +76,21 @@ def test_user_setemail_already_used():
         user_profile_setemail(userOne['token'], 'randomemail@gmail.com')
 
 def test_user_setemail_invalid_email_no_at_symbol():
+    ''' Test if Error is Returned if Email is Invalid  with No @ Symbol'''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
         user_profile_setemail(userOne['token'], 'newemailgmail.com')
 
 def test_user_setemail_not_alphanumeric():
+    ''' Test if Error is Returned if Email is Invalid as it is not Alphanumeric'''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
         user_profile_setemail(userOne['token'], 'newemail  @gmail.com')
 
 def test_user_setemail_invalid_token():
+    ''' Test if Error is Returned if Token is Invalid '''
     clear()
     auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(AccessError):
