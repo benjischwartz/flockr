@@ -33,9 +33,36 @@ def test_user_setemail_not_alphanumeric():
 
 #TODO: BRIAN
 # User Profile Tests
-def test_user_profile():
+def test_user_profile_positive_case():
+    pass
+
+def test_user_profile_uid_not_valid():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    
     pass
 
 # User Sethandle Tests
-def test_user_sethandle():
+def test_user_sethandle_positive_case():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+
     pass
+
+def test_user_sethandle_length_short():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    
+    with pytest.raises(InputError):
+        user_profile_sethandle(userOne['token'], "12")
+
+def test_user_sethandle_lenth_long():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    
+    with pytest.raises(InputError):
+        user_profile_sethandle(userOne['token'], "123456789123456789123456789")
+
+def test_user_sethandle_handle_already_used():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_profile_sethandle(userOne['token'], "12345")
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+
+    with pytest.raises(InputError):
+        user_profile_sethandle(userTwo['token'], "12345")
