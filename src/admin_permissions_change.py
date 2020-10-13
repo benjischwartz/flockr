@@ -1,6 +1,6 @@
 from data import users
 from error import AccessError, InputError
-from check_token import user_id_given_token
+from check_token import user_id_given_token, email_given_user_id
 
 # required function changing permission
 def change_permissions(token,u_id,permission_id):
@@ -26,5 +26,8 @@ def change_permissions(token,u_id,permission_id):
     # invalid permission_id
     if permission_id != 1 and permission_id != 2:
         raise InputError
+
+    # if no errors, change permission
+    users[email_given_user_id(u_id)]['permission_id'] = permission_id
 
     return {}

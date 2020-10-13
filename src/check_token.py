@@ -12,3 +12,12 @@ def user_id_given_token(token):
             return user_id
     return None
 
+def email_given_user_id(u_id):
+    '''
+    returns the email if the u_id is valid,
+    otherwise returns None
+    '''
+    for email in users:
+        if u_id == users[email]['u_id']:
+            return email
+    return None
