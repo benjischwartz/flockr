@@ -128,7 +128,24 @@ def test_message_send_invalid_channel_id():
         message_send(userOne['token'], 0, 'Hello')
 
 # tests for message_remove
+'''
+def test_message_remove_valid_channel_member():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+        
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
 
+def test_message_remove_valid_channel_owner():
+
+
+def test_message_remove_valid_flockr_owner():
+
+
+def test_message_remove_invalid_flockr_owner():
+'''
+# raise accesserror 
 
 
 # valid tests
@@ -141,10 +158,11 @@ def test_message_send_invalid_channel_id():
     # no messages were even created
 # accesserror 
     # a normal member (not the member that sent the channel, nor owner of flockr or a channel_owner) tries to delete the message
-    # token is invalid 
+    # token is invalid
+    # ASSUMPTION someone not in the channel at all is trying to delete a message 
+    # ASSUMPTION owner of flockr tries to delete but they arent a member of the channel
 
-
-
+     
 # check an accesserror is raised when token is not valid
 def test_message_remove_invalid_token():
     clear()
