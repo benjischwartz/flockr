@@ -67,6 +67,16 @@ def user_profile_sethandle(token, handle_str):
             raise InputError("handle is already being used by another user.")
 
     users[token]['handle'] = handle_str
+    #for tokens, data in users.items():
+
+
+    #for emails in users.keys():
+    #    if users.get(emails, None) == None:
+    #        users[token]['handle'] = handle_str
+    #        return {}
+
+    #raise InputError("handle is already used.")
 
     return {
     }
+    
