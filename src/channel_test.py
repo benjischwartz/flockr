@@ -145,7 +145,9 @@ def test_channel_details_valid_input_single_user():
 def test_channel_details_valid_input_multiple_users():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    # registering the second user who is in Flockr but not a member of a 
+    # the channel
+    auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     userThree = auth_register('thirduser@gmail.com', '456abc!@#', 'Third', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     channel_join(userThree['token'], randChannel_id['channel_id'])
