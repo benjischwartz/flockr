@@ -138,7 +138,7 @@ def test_user_profile_uid_not_valid():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
 
     with pytest.raises(InputError):
-        user_profile(user['token'], '0')
+        user_profile(userOne['token'], '0')
     pass
 
 # User Sethandle Tests
