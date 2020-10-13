@@ -7,7 +7,6 @@ users = {
         'name_first' : " ",
         'name_last' : " ",
         'password' : " ",
-        'handle_str' : " "
         }
     }
 
