@@ -1,7 +1,9 @@
 from data import users, channel
 from error import InputError, AccessError
 from check_token import user_id_given_token
-
+from auth import auth_register
+from channels import channels_create
+from other import clear
 
 def channel_invite(token, channel_id, u_id):
 
@@ -99,7 +101,6 @@ def channel_details(token, channel_id):
     #   ],
     # }
 
-    
 
 def channel_messages(token, channel_id, start):
     
@@ -187,7 +188,7 @@ def channel_leave(token, channel_id):
         
     # if the user is an owner, remove them from the list
     if token_u_id in channel[channel_id]['owner_members']:
-        channel[channel_id]['owner_member'].pop(token_u_id)
+        channel[channel_id]['owner_members'].pop(token_u_id)
         
     return {}
 
