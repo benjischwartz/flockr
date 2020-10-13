@@ -6,6 +6,7 @@ from channels import channels_create, channels_list
 from auth import auth_register
 from message import message_send
 
+#TODO: add specific return checks, addditional to len
 # test for Access Error and Invalid Token
 def test_access_error():
     clear()
@@ -38,10 +39,21 @@ def test_pattern_match_unavailable_channel():
 # test expecting multiple string matches in same channel
 def test_single_channel_multiple_matches():
     clear()
+    user_one = auth_register("first@user.com", "password", "Jane", "Applebaum")
+    new_channel_one = channels_create(user_one['token'],"channel_one", True)
+    message_send(user_one['token'], new_channel_one['channel_id'], "this is a message")
+    message_send(user_one['token'], new_channel_one['channel_id'], "this is another message")
+    assert len(search(user_one['token'], "is")) == 2 
 
-# test expecting multiple string matches in different channels
+# test expecting multiple string matches in different channels: both public
 def test_multiple_channel_multiple_matches():
     clear()
+    user_one = auth_register("first@user.com", "password", "Jane", "Applebaum")
+    new_channel_one = channels_create(user_one['token'],"channel_one", True)
+    new_channel_two = channels_create(user_one['token'],"channel_two", True)
+    message_send(user_one['token'], new_channel_one['channel_id'], "this is a message")
+    message_send(user_one['token'], new_channel_two['channel_id'], "this is another message")
+    assert len(search(user_one['token'], "is")) == 2 
 
 # test no matches with query string not found
 def test_no_matches():
