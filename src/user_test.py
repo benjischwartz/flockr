@@ -115,16 +115,35 @@ def test_user_setemail_invalid_token_after_logout():
 #TODO: BRIAN
 # User Profile Tests
 def test_user_profile_positive_case():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    user_profile_sethandle(userTwo]['token'], '12345')
+
+    assert(user_profile(userOne['token'], userTwo['u_id']) == {
+        'u_id' : userTwo['u_id'],
+        'email' : 'seconduser@gmail.com',
+        'name_first' : 'Second',
+        'name_last' : 'User',
+        'handle_str' : '12345'
+    })
     pass
 
 def test_user_profile_uid_not_valid():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    
+
+    with pytest.raises(InputError):
+        user_profile(user['token'], '0')
     pass
 
 # User Sethandle Tests
 def test_user_sethandle_positive_case():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_profile_sethandle(userOne['token'], '12345')
+
+    randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
+    details = channel_details(userOne['token'], randomChannel_id)
+    assert(details['owner_members']['handle_str'] == '12345')
 
     pass
 
@@ -134,11 +153,15 @@ def test_user_sethandle_length_short():
     with pytest.raises(InputError):
         user_profile_sethandle(userOne['token'], "12")
 
+    pass
+
 def test_user_sethandle_lenth_long():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
     with pytest.raises(InputError):
         user_profile_sethandle(userOne['token'], "123456789123456789123456789")
+
+    pass
 
 def test_user_sethandle_handle_already_used():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -147,3 +170,5 @@ def test_user_sethandle_handle_already_used():
 
     with pytest.raises(InputError):
         user_profile_sethandle(userTwo['token'], "12345")
+    
+    pass
