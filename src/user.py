@@ -17,7 +17,7 @@ def user_profile(token, u_id):
         	'email': 'cs1531@cse.unsw.edu.au',
         	'name_first': 'Hayden',
         	'name_last': 'Jacobs',
-        	'handle_str': 'hjacobs',
+        	'handle': 'hjacobs',
         },
     }
 
@@ -62,11 +62,11 @@ def user_profile_sethandle(token, handle_str):
     if ((len(handle_str) < 3) or (len(handle_str) > 20)):
         raise InputError("handle has to be in between 3 and 20 letters inclusive.")
     
-    for item in users:
-        if handle_str in item:
+    for email in users:
+        if handle_str in users[email].values():
             raise InputError("handle is already being used by another user.")
 
-    users[token]['handle_str'] = handle_str
+    users[token]['handle'] = handle_str
 
     return {
     }
