@@ -130,6 +130,7 @@ def test_message_send_invalid_channel_id():
 # tests for message_remove
 
 
+
 # valid tests
     # user who created deletes
     # channel owner (not flockr owner)
@@ -141,9 +142,8 @@ def test_message_send_invalid_channel_id():
 # accesserror 
     # a normal member (not the member that sent the channel, nor owner of flockr or a channel_owner) tries to delete the message
     # token is invalid 
-# ASSUMPTION?? MESSAGE_IDs must be completely unique; 2 channels cannot have messages with the same message_id; check channels_create and auth_register for how to do this
-# raise an accesserror if the user is not the member that sent to the channel, 
-# the owner of flockr or the channel_owner
+
+
 
 # check an accesserror is raised when token is not valid
 def test_message_remove_invalid_token():
@@ -173,7 +173,7 @@ def test_message_remove_no_messages():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', False)
     with pytest.raises(InputError):
-        message_remove(userOne['token'], message['message_id'])
+        message_remove(userOne['token'], 0])
 
 # check an inputerror is raised when the message being removed has already been
 # deleted
