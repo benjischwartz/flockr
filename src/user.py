@@ -63,17 +63,18 @@ def user_profile_sethandle(token, handle_str):
         raise InputError("handle has to be in between 3 and 20 letters inclusive.")
     
     for email in users:
-        if handle_str in users[email].values():
-            raise InputError("handle is already being used by another user.")
+        if 'handle' in users[email].keys():
+            if handle_str == users[email]['handle']:
+                raise InputError("handle is already being used by another user.")
 
     users[token]['handle'] = handle_str
     #for tokens, data in users.items():
 
     
-    for emails in users.keys():
-        if users.get(emails, None) == None:
-            users[token]['handle'] = handle_str
-            return {}
+    #for emails in users.keys():
+    #    if 'handle' in users[emails].keys():
+    #        users[token]['handle'] = handle_st
+    #        return {}
 
     #raise InputError("handle is already used.")
     #is_unique = False
