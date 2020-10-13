@@ -59,5 +59,13 @@ def user_profile_setemail(token, email):
     }
 
 def user_profile_sethandle(token, handle_str):
+    if ((len(handle_str) < 3) or (len(handle_str) > 20)):
+        raise InputError("handle has to be in between 3 and 20 letters inclusive.")
+    
+    if handle_str in users:
+        raise InputError("handle is already being used by another user.")
+
+    users[token]['handle_str'] = handle_str
+    
     return {
     }
