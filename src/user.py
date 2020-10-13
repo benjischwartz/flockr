@@ -35,8 +35,6 @@ def user_profile_setname(token, name_first, name_last):
     if token not in users:
         raise AccessError("Token passed is not valid.")
 
-    #prev_name = users[token_u_id]['name_first']
-    
     users[token]['name_first'] = name_first
     users[token]['name_last'] = name_last
 
