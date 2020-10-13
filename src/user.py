@@ -64,8 +64,6 @@ def user_profile_sethandle(token, handle_str):
     
     #for tokens, data in users.items():
 
-    print(users)
-
     for tokens, data in users.items():
         if data['handle'] == handle_str:
             raise InputError("handle is already being used by another user.")
