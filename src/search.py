@@ -8,3 +8,5 @@ def search(token, query_string):
     """
     if user_id_given_token(token) == None:
         raise(AccessError) 
+    # TODO: change return
+    return {}
