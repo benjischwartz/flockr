@@ -17,7 +17,7 @@ def test_user_setname_positive_case():
     randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
     details = channel_details(userOne['token'], randomChannel_id)
     assert(details['owner_members']['name_first'] == 'New First')
-    assert(details['owner_members']['name_first'] == 'New Last')
+    assert(details['owner_members']['name_last'] == 'New Last')
 
 def test_user_setname_name_first_short():
     ''' Test if Error Returned as Expected if First Name is Too Short '''
