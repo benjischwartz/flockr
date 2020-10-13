@@ -1,7 +1,8 @@
 import pytest
 from auth import auth_register, auth_logout
-from channel import channel_messages, channel_join, 
+from channel import channel_messages, channel_join
 from channels import channels_create
+from message import message_send, message_remove, message_edit
 from error import InputError, AccessError
 from other import clear
 
@@ -9,59 +10,68 @@ from other import clear
 # tests for message_send
 # valid input tests
     # a member of the channel sending a message
-    # 0 charachters - empty string
-        # Assumption: just return empty dictionary (no message is sent; dont raise an inputerror)?
-    # 1000 characters - should add the message in
+    
+    # 1000 characters - should add the message in - check 
 # invalid tests
     # accesserror if token is invalid - check
     # inputerror for message too long - check
+    # ASSUMPTION raise an inputerror for message of 0 charachters - empty string
+        # (case won't be tested according to forum)
     # accesserror if user not in the channel - check 
     # ASSUMPTION: inputerror if the channel_id is invalid     
 
 
-# check if time_created that is returned in messages is a valid time object
-def test_message_send_valid_input_empty_message():
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id']
-    assert message_send(userTwo['token'], randChannel['channel_id'], '') == {}
-    # TODO: add channel_messages
-    # no messages should be channel_messages
+# raise an inputerror if time_created that is returned in messages is a valid time object
 
+def test_message_send_valid_multiple_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
+    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 2}
+    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 3}
+
+
+def test_message_send_valid_multiple_channels():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel1 = channels_create(userOne['token'], 'randChannel1', True)
+    randChannel2 = channels_create(userOne['token'], 'randChannel2', True)
+    assert message_send(userOne['token'], randChannel1['channel_id'], 'Hello') == {'message_id': 1}
+    assert message_send(userOne['token'], randChannel2['channel_id'], 'Hello') == {'message_id': 2}
+    assert message_send(userOne['token'], randChannel1['channel_id'], 'Hello') == {'message_id': 3}
 
 def test_message_send_valid_input_5_chars():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id']
-    
-    assert message_send(userTwo['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
+    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
     # TODO: add channel_messages
 
 def test_message_send_valid_input_1000_chars():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id']
-    # create a message that is 1001 characters lon
+    # create a message that is 1000 characters long
     message_long = 'a'
-    for i in range(1000)
+    for i in range(999):
         message_long  += 'a'
         i += 1
-    assert message_send(userTwo['token'], randChannel['channel_id'], message_long) == {'message_id': 1}
+    assert message_send(userOne['token'], randChannel['channel_id'], message_long) == {'message_id': 1}
     # TODO: add channel_messages
     
 # TEST MAYBE UNNECESSART FOR MESSAGE_SEND
 def test_message_send_valid_channel_owner():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel = channels_create(userTwo['token'], 'randChannel', True)
     assert message_send(userTwo['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
     # TODO: add channel_messages
 
-# TEST MAYBE UNNECESSART FOR MESSAGE_SEND
+# TEST MAYBE UNNECESSARY FOR MESSAGE_SEND
 def test_message_send_owner_of_flockr():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel = channels_create(userTwo['token'], 'randChannel', True)
@@ -77,7 +87,15 @@ def test_message_send_invalid_token():
     auth_logout(userOne['token'])
     with pytest.raises(AccessError):
         message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-        
+
+# raise an inputerror if the the input 'message' is an empty string
+def test_message_send_empty_message():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    with pytest.raises(InputError):
+         message_send(userOne['token'], randChannel['channel_id'], '') == {}
+                 
 # raise an inputerror if the message is greater than 1000 characters
 def test_message_send_over_1000_characters():
     clear()
@@ -85,10 +103,10 @@ def test_message_send_over_1000_characters():
     randChannel= channels_create(userOne['token'], 'randChannel', True)
     # create a message that is 1001 characters lon
     message_long = 'a'
-    for i in range(1001)
+    for i in range(1000):
         message_long  += 'a'
         i += 1
-    with pytest.raises(InputError)
+    with pytest.raises(InputError):
         message_send(userOne['token'], randChannel['channel_id'], message_long)
 
 # raise an accesserror if user is not in channel and tries to send a message
