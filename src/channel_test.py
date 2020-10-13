@@ -130,7 +130,7 @@ def test_channel_invite_already_in():
 
 # check that when given valid input channel_details returns a dictionary in the 
 # format defined by the spec (and asserted below)
-def test_channel_details_valid_input_():
+def test_channel_details_valid_input_single_user():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
@@ -138,6 +138,22 @@ def test_channel_details_valid_input_():
     assert randChannel_details == {'name': 'randChannel', 'owner_members' : [{
         'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}],
          'all_members' : [{'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}]
+         }
+
+# check that when given valid input and there are multiple users in Flockr, but 
+# only some of them in the channel, channel_details returns correctly
+def test_channel_details_valid_input_multiple_users():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    userThree = auth_register('thirduser@gmail.com', '456abc!@#', 'Third', 'User')
+    randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    channel_join(userThree['token'], randChannel_id['channel_id'])
+    randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
+    assert randChannel_details == {'name': 'randChannel', 'owner_members' : [{
+        'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}],
+         'all_members' : [{'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'},
+            {'u_id' : userThree['u_id'], 'name_first': 'Third', 'name_last' : 'User'}]
          }
  
 # check that when given valid input, channel_details returns the same dictionary
@@ -179,7 +195,7 @@ def test_channel_details_not_member():
     with pytest.raises(AccessError):
         channel_details(userTwo['token'], randChannel_id['channel_id'])   
 
-# tests for channel_mesages
+# tests for channel_messages
     # note: since the owner of flockr (the first user registered) has the same 
         # permissions in channel_messages as a regular member of flockr, the first
         # user registered is used for these tests

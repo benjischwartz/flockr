@@ -1,7 +1,9 @@
 from data import users, channel
 from error import InputError, AccessError
 from check_token import user_id_given_token
-
+from auth import auth_register
+from channels import channels_create
+from other import clear
 
 def channel_invite(token, channel_id, u_id):
 
@@ -99,7 +101,6 @@ def channel_details(token, channel_id):
     #   ],
     # }
 
-    
 
 def channel_messages(token, channel_id, start):
     
