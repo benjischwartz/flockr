@@ -2,11 +2,11 @@
 
 users = {
     'email': {
-        'u_id' : " ",
-        'name_first' : " ",
-        'name_last' : " ",
-        'password' : " ",
-        'handle' : " "
+        'u_id' : 1,
+        'name_first' : "John",
+        'name_last' : "Smith",
+        'password' : "abc123!@#",
+        'handle' : "johnsmith"
         }
     }
 
@@ -29,4 +29,3 @@ channel = { # 'channel_id' are the int values themselves, per channel
         'messages' : []
     }
 }      
- 
