@@ -32,8 +32,6 @@ def user_profile_setname(token, name_first, name_last):
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
         raise AccessError("Token passed is not valid.")
-    if token not in users:
-        raise AccessError("Token passed is not valid.")
 
     users[token]['name_first'] = name_first
     users[token]['name_last'] = name_last
@@ -49,8 +47,6 @@ def user_profile_setemail(token, email):
     #Error Checking: Raise an AccessError if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError("Token passed is not valid.")
-    if token not in users:
         raise AccessError("Token passed is not valid.")
 
     #Error Checking: Raise an InputError if email is already used
