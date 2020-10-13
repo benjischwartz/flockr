@@ -64,13 +64,16 @@ def user_profile_sethandle(token, handle_str):
     
     #for tokens, data in users.items():
 
-
+    is_unique = False
     for emails in users.keys():
         if users.get(emails, None) == None:
-            users[token]['handle'] = handle_str
-            return {}
-
-    raise InputError("handle is already used.")
+            is_unique = True
+    #print(f"{users}")    
+    if is_unique:
+        users[token]['handle'] = handle_str
+        return {}
+    else:
+        raise InputError("handle is already used.")
 
     return {
     }
