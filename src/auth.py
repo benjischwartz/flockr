@@ -1,7 +1,6 @@
 from data import users, tokens
 import re
 from error import InputError
-from other import clear
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -108,22 +107,9 @@ def auth_register(email, password, name_first, name_last):
         'token' : email,
     }
 
-auth_register('bobby@gmail.com', '123abc!@#', 'Bobby', 'Brown')
-auth_register('jimmy@gmail.com', '123abc!@#', 'Jimmy', 'Red')
-auth_register('freddy@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy2@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy3@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy4@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy5@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy6@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy7@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy8@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy9@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy10@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy11@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy12@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy13@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy14@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
-auth_register('freddy15@gmail.com', '123abc!@#', 'Fred', 'Ihaveareallylonglastname')
+def get_handle(u_id):
+    for email in users.keys():
+        if u_id == users['u_id']:
+            return users[email]['handle']
 
-print(users)
+    return 

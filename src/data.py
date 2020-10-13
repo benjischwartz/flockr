@@ -27,5 +27,5 @@ channel = { # 'channel_id' are the int values themselves, per channel
             567 : True
         },
         'messages' : []
-    }
-}      
+    }  
+}
