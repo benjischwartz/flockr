@@ -57,7 +57,7 @@ def user_profile_setemail(token, email):
     if email in users:
         raise InputError("Email is already used.")
 
-    users[token] = email
+    users[email] = users.pop(token)
 
     return {
     }

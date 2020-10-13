@@ -119,9 +119,10 @@ def test_user_setemail_invalid_token_after_logout():
 #TODO: BRIAN
 # User Profile Tests
 def test_user_profile_positive_case():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    user_profile_sethandle(userTwo]['token'], '12345')
+    user_profile_sethandle(userTwo['token'], '12345')
 
     assert(user_profile(userOne['token'], userTwo['u_id']) == {
         'u_id' : userTwo['u_id'],
@@ -133,6 +134,7 @@ def test_user_profile_positive_case():
     pass
 
 def test_user_profile_uid_not_valid():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
 
     with pytest.raises(InputError):
@@ -152,6 +154,7 @@ def test_user_sethandle_positive_case():
     pass
 
 def test_user_sethandle_length_short():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
     with pytest.raises(InputError):
@@ -160,6 +163,7 @@ def test_user_sethandle_length_short():
     pass
 
 def test_user_sethandle_lenth_long():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
     with pytest.raises(InputError):
@@ -168,6 +172,7 @@ def test_user_sethandle_lenth_long():
     pass
 
 def test_user_sethandle_handle_already_used():
+    clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_profile_sethandle(userOne['token'], "12345")
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
