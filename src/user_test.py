@@ -123,14 +123,14 @@ def test_user_profile_positive_case():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     user_profile_sethandle(userTwo['token'], '12345')
-
-    assert(user_profile(userOne['token'], userTwo['u_id']) == {
+    userprofile = user_profile(userOne['token'], userTwo['u_id'])
+    assert(userprofile == [{
         'u_id' : userTwo['u_id'],
         'email' : 'seconduser@gmail.com',
         'name_first' : 'Second',
         'name_last' : 'User',
         'handle_str' : '12345'
-    })
+    }])
     pass
 
 def test_user_profile_uid_not_valid():
