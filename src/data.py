@@ -6,7 +6,8 @@ users = {
         'handle': " ",
         'name_first' : " ",
         'name_last' : " ",
-        'password' : " "
+        'password' : " ",
+        'handle_str' : " "
         }
     }
 
