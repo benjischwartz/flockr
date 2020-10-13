@@ -32,9 +32,13 @@ def user_profile_setname(token, name_first, name_last):
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
         raise AccessError("Token passed is not valid.")
+    if token not in users:
+        raise AccessError("Token passed is not valid.")
+
+    #prev_name = users[token_u_id]['name_first']
     
-    users[token_u_id]['name_first'] = name_first
-    users[token_u_id]['name_last'] = name_last
+    users[token]['name_first'] = name_first
+    users[token]['name_last'] = name_last
 
     return {
     }
@@ -48,8 +52,14 @@ def user_profile_setemail(token, email):
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
         raise AccessError("Token passed is not valid.")
+    if token not in users:
+        raise AccessError("Token passed is not valid.")
 
-    users[email] = [token_u_id][users[email]]
+    #Error Checking: Raise an InputError if email is already used
+    if email in users:
+        raise InputError("Email is already used.")
+
+    users[token] = email
 
     return {
     }

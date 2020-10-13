@@ -15,7 +15,7 @@ def test_user_setname_positive_case():
     user_profile_setname(userOne['token'], 'New First', 'New Last')
     #Create a Channel and Find Its Details to See if the Name has Changed
     randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
-    details = channel_details(userOne['token'], randomChannel_id)
+    details = channel_details(userOne['token'], randomChannel_id['channel_id'])
     assert(details['owner_members']['name_first'] == 'New First')
     assert(details['owner_members']['name_last'] == 'New Last')
 
@@ -60,7 +60,7 @@ def test_user_setname_name_invalid_token_after_logout():
     ''' Test if Error Returned as Expected if the Token is Invalid after Logout'''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    auth_logout(userOne)
+    auth_logout(userOne['token'])
     with pytest.raises(AccessError):
         user_profile_setname(userOne['token'], 'New First', 'New Last')
 
@@ -108,7 +108,7 @@ def test_user_setemail_invalid_token_after_logout():
     ''' Test if Error Returned as Expected if the Token is Invalid after Logout'''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    auth_logout(userOne)
+    auth_logout(userOne['token'])
     with pytest.raises(AccessError):
         user_profile_setemail(userOne['token'], 'newemail@gmail.com')
 
