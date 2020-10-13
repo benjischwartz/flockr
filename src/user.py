@@ -86,6 +86,17 @@ def user_profile_sethandle(token, handle_str):
     #    return {}
     #else:
     #    raise InputError("handle is already used.")
+    #is_unique = True
+    #for emails in users.keys():
+    #    if users[emails]['handle'] == handle_str:
+    #        is_unique = False
+    #print(f"{users}") 
+    
+    #if is_unique:
+    #    users[token]['handle'] = handle_str
+    #    return {}
+    #else:
+    #    raise InputError("handle is already used.")
 
     return {
     }
