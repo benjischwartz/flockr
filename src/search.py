@@ -13,31 +13,41 @@ def search(token, query_string):
     if user_id_given_token(token) == None:
         raise(AccessError) 
     # init results
-    result = {}
-    result['messages'] = []
+    result = []
+
+    # for email in users:
+    #     if 'handle' in users[email].keys():
+    #         if handle_str == users[email]['handle']:
+    #             raise InputError("handle is already being used by another user.")
+
+    # users[token]['handle'] = handle_str
     # for each channel user is a member of
-    for each in channels_list(token):
+    for each in channels_list(token)['channels']:
         # use Python's in operator: if True, there is pattern match
-        if query_string in channel[each]['channel_id']['messages']['message']:
+        channel_id = each['channel_id']
+        messages = channel[channel_id]['messages']
+        for message in messages:
             # if there is match, append to result
-            result['messages'].append()
+            if query_string in message['message']:
+                result.append(message) 
     # return result
     return result
 
         #### format for return ####
-    # {
-    # 'messages': [
-    #       {
-    #           'message_id': 1,
-    #           'u_id': 1,
-    #           'message': 'Hello world',
-    #           'time_created': 1582426789,
-    #       },
-    #       {
-    #           'message_id': 2,
-    #           'u_id': 1,
-    #           'message': 'Hello again',
-    #           'time_created': 1582426799,
-    #       }
-    #   ]
-    # }
+    # 
+    # [
+#       {
+#           'message_id': 1,
+#           'u_id': 1,
+#           'message': 'Hello world',
+#           'time_created': 1582426789,
+#       },
+#       {
+#           'message_id': 2,
+#           'u_id': 1,
+#           'message': 'Hello again',
+#           'time_created': 1582426799,
+#       }
+    # ]
+    # 
+
