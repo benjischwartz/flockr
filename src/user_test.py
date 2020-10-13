@@ -131,7 +131,6 @@ def test_user_profile_positive_case():
         'name_last' : 'User',
         'handle_str' : '12345'
     }])
-    pass
 
 def test_user_profile_uid_not_valid():
     clear()
@@ -139,7 +138,6 @@ def test_user_profile_uid_not_valid():
 
     with pytest.raises(InputError):
         user_profile(userOne['token'], '0')
-    pass
 
 # User Sethandle Tests
 def test_user_sethandle_positive_case():
@@ -151,16 +149,12 @@ def test_user_sethandle_positive_case():
     details = channel_details(userOne['token'], randomChannel_id['channel_id'])
     assert(details['owner_members']['handle_str'] == '12345')
 
-    pass
-
 def test_user_sethandle_length_short():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
     with pytest.raises(InputError):
         user_profile_sethandle(userOne['token'], "12")
-
-    pass
 
 def test_user_sethandle_lenth_long():
     clear()
@@ -169,7 +163,6 @@ def test_user_sethandle_lenth_long():
     with pytest.raises(InputError):
         user_profile_sethandle(userOne['token'], "123456789123456789123456789")
 
-    pass
 
 def test_user_sethandle_handle_already_used():
     clear()
@@ -180,4 +173,3 @@ def test_user_sethandle_handle_already_used():
     with pytest.raises(InputError):
         user_profile_sethandle(userTwo['token'], "12345")
     
-    pass
