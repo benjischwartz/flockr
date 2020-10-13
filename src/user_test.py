@@ -18,6 +18,7 @@ def test_user_setname_positive_case():
     details = channel_details(userOne['token'], randomChannel_id['channel_id'])
     assert(details['owner_members']['name_first'] == 'New First')
     assert(details['owner_members']['name_last'] == 'New Last')
+    pass
 
 def test_user_setname_name_first_short():
     ''' Test if Error Returned as Expected if First Name is Too Short '''
@@ -71,8 +72,9 @@ def test_user_setemail_positive_case():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_profile_setemail(userOne['token'], 'newemail@gmail.com')
     #Logging Out & Logging Back In With New Email
-    auth_logout(userOne)
+    auth_logout(userOne['token'])
     auth_login('newemail@gmail.com', '123abc!@#')
+    pass
 
 def test_user_setemail_already_used():
     ''' Test if Error is Returned if Email is Already Used '''
