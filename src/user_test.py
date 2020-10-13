@@ -95,6 +95,7 @@ def test_user_setemail_invalid_email_no_at_symbol():
 def test_user_setemail_not_alphanumeric():
     ''' Test if Error is Returned if Email is Invalid as it is not Alphanumeric'''
     clear()
+    #Creating First User
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
         user_profile_setemail(userOne['token'], 'newemail  @gmail.com')
@@ -109,6 +110,7 @@ def test_user_setemail_invalid_token():
 def test_user_setemail_invalid_token_after_logout():
     ''' Test if Error Returned as Expected if the Token is Invalid after Logout'''
     clear()
+    #Creating First User
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     auth_logout(userOne['token'])
     with pytest.raises(AccessError):
