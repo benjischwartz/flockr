@@ -20,6 +20,54 @@ from other import clear
 
 
 # check if time_created that is returned in messages is a valid time object
+def test_message_send_valid_input_empty_message():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    channel_join(userTwo['token'], randChannel['channel_id']
+    assert message_send(userTwo['token'], randChannel['channel_id'], '') == {}
+    # TODO: add channel_messages
+    # no messages should be channel_messages
+
+
+def test_message_send_valid_input_5_chars():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    channel_join(userTwo['token'], randChannel['channel_id']
+    
+    assert message_send(userTwo['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
+    # TODO: add channel_messages
+
+def test_message_send_valid_input_1000_chars():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    channel_join(userTwo['token'], randChannel['channel_id']
+    # create a message that is 1001 characters lon
+    message_long = 'a'
+    for i in range(1000)
+        message_long  += 'a'
+        i += 1
+    assert message_send(userTwo['token'], randChannel['channel_id'], message_long) == {'message_id': 1}
+    # TODO: add channel_messages
+    
+# TEST MAYBE UNNECESSART FOR MESSAGE_SEND
+def test_message_send_valid_channel_owner():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userTwo['token'], 'randChannel', True)
+    assert message_send(userTwo['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
+    # TODO: add channel_messages
+
+# TEST MAYBE UNNECESSART FOR MESSAGE_SEND
+def test_message_send_owner_of_flockr():
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userTwo['token'], 'randChannel', True)
+    channel_join(userOne['token'], randChannel['channel_id'])
+    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
+    # TODO: add channel_messages
 
 # check an accesserror is raised when token is not valid
 def test_message_send_invalid_token():
@@ -52,6 +100,14 @@ def test_message_send_user_not_in_channel():
     with pytest.raises(AccessError):
         message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
 
+
+# ASSUMPTION: inputerror if the channel_id is invalid; in this test any number
+# is invalid since no channels exist?
+def test_message_send_invalid_channel_id():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    with pytest.raises(InputError):
+        message_send(userOne['token'], 0, 'Hello')
 
 # tests for message_remove
 
