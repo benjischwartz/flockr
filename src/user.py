@@ -14,6 +14,9 @@ def user_profile(token, u_id):
     validid = 0
     selected_data = {}
     selected_email = ' '
+    token_u_id = user_id_given_token(token)
+    if token_u_id is None:
+        raise AccessError("Token passed is not valid.")
 
     for tokens, data in users.items():
         if data['u_id'] == u_id:
@@ -67,6 +70,10 @@ def user_profile_setemail(token, email):
     }
 
 def user_profile_sethandle(token, handle_str):
+    token_u_id = user_id_given_token(token)
+    if token_u_id is None:
+        raise AccessError("Token passed is not valid.")
+
     if ((len(handle_str) < 3) or (len(handle_str) > 20)):
         raise InputError("handle has to be in between 3 and 20 letters inclusive.")
     

@@ -136,6 +136,13 @@ def test_user_profile_uid_not_valid():
 
     with pytest.raises(InputError):
         user_profile(userOne['token'], '0')
+    
+def test_user_profile_invalid_token():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    
+    with pytest.raises(AccessError):
+        user_profile('INVALID_TOKEN', 'newemail@gmail.com')
 
 # User Sethandle Tests
 def test_user_sethandle_positive_case():
@@ -170,3 +177,9 @@ def test_user_sethandle_handle_already_used():
     with pytest.raises(InputError):
         user_profile_sethandle(userTwo['token'], "12345")
     
+def test_user_profile_invalid_token():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    
+    with pytest.raises(AccessError):
+        user_profile_sethandle('INVALID_TOKEN', 'string')

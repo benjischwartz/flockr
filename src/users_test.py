@@ -3,6 +3,7 @@ from auth import auth_register
 from user import user_profile_sethandle
 from users import users_all
 from other import clear
+from error import InputError, AccessError
 
 def test_users_all_positive_test():
     clear()
@@ -27,3 +28,11 @@ def test_users_all_positive_test():
         'email' : 'seconduser@gmail.com'
     }
     ])
+
+def test_users_all_invalid_token():
+    clear()
+
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+
+    with pytest.raises(AccessError):
+        users_all("invalidtoken")
