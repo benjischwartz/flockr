@@ -143,9 +143,8 @@ def test_user_sethandle_positive_case():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_profile_sethandle(userOne['token'], '12345')
 
-    randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
-    details = channel_details(userOne['token'], randomChannel_id['channel_id'])
-    assert(details['owner_members']['handle_str'] == '12345')
+    details = user_profile(userOne['token'], userOne['u_id'])
+    assert(details['handle'] == '12345')
 
 def test_user_sethandle_length_short():
     clear()

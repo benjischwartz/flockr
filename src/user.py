@@ -26,8 +26,6 @@ def user_profile(token, u_id):
     else:
         selected_data.pop('password')
     selected_data['email'] = selected_email
-        
-    print(selected_data)
 
     return selected_data
 
@@ -74,8 +72,8 @@ def user_profile_sethandle(token, handle_str):
     
     #for tokens, data in users.items():
 
-    for tokens, data in users.items():
-        if data['handle'] == handle_str:
+    for email in users:
+        if users[email]['handle'] == handle_str:
             raise InputError("handle is already being used by another user.")
 
     users[token]['handle'] = handle_str
