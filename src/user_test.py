@@ -117,6 +117,7 @@ def test_user_setemail_invalid_token_after_logout():
 #TODO: BRIAN
 # User Profile Tests
 def test_user_profile_positive_case():
+    ''' Positive case to determine whether the pratial detail of the user has returned'''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
@@ -131,6 +132,7 @@ def test_user_profile_positive_case():
     })
 
 def test_user_profile_uid_not_valid():
+    ''' Test if error raise when the input u_id is invalid '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
 
@@ -138,14 +140,25 @@ def test_user_profile_uid_not_valid():
         user_profile(userOne['token'], '0')
     
 def test_user_profile_invalid_token():
+    ''' Test if Error is raised as expected if token is invalid '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
     with pytest.raises(AccessError):
-        user_profile('INVALID_TOKEN', 'newemail@gmail.com')
+        user_profile('INVALID_TOKEN', userOne['u_id'])
+
+def test_user_profile_invalid_token_after_logout():
+    ''' Test if Error Returned as Expected if the Token is Invalid after Logout'''
+    clear()
+    #Creating First User
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    auth_logout(userOne['token'])
+    with pytest.raises(AccessError):
+        user_profile(userOne['token'], userOne['u_id'])
 
 # User Sethandle Tests
 def test_user_sethandle_positive_case():
+    ''' Positive case to determine whether the handle changes '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_profile_sethandle(userOne['token'], '12345')
@@ -154,6 +167,7 @@ def test_user_sethandle_positive_case():
     assert(details['handle'] == '12345')
 
 def test_user_sethandle_length_short():
+    ''' Test if error returned as expected if handle length is too short '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
@@ -161,6 +175,7 @@ def test_user_sethandle_length_short():
         user_profile_sethandle(userOne['token'], "12")
 
 def test_user_sethandle_lenth_long():
+    ''' Test if error returned as expected if handle length is too long '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
@@ -169,6 +184,7 @@ def test_user_sethandle_lenth_long():
 
 
 def test_user_sethandle_handle_already_used():
+    ''' Test if error is raised if handle already in use '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_profile_sethandle(userOne['token'], "12345")
@@ -178,8 +194,9 @@ def test_user_sethandle_handle_already_used():
         user_profile_sethandle(userTwo['token'], "12345")
     
 def test_user_profile_invalid_token():
+    ''' Test if Error is Returned if Token is Invalid '''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
     with pytest.raises(AccessError):
-        user_profile_sethandle('INVALID_TOKEN', 'string')
+        user_profile_sethandle('INVALID_TOKEN', '12345')
