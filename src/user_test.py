@@ -196,7 +196,7 @@ def test_user_sethandle_handle_already_used():
 def test_user_profile_invalid_token():
     ''' Test if Error is Returned if Token is Invalid '''
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     
     with pytest.raises(AccessError):
         user_profile_sethandle('INVALID_TOKEN', '12345')

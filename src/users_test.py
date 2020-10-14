@@ -31,7 +31,7 @@ def test_users_all_positive_test():
 def test_users_all_invalid_token():
     ''' Test if Error Returned as Expected if the Token is Invalid '''
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
 
     with pytest.raises(AccessError):
         users_all("invalidtoken")
