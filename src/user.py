@@ -11,15 +11,30 @@ def check(email):
         return("Invalid Email")
 
 def user_profile(token, u_id):
-    return {
-        'user': {
-        	'u_id': 1,
-        	'email': 'cs1531@cse.unsw.edu.au',
-        	'name_first': 'Hayden',
-        	'name_last': 'Jacobs',
-        	'handle': 'hjacobs',
-        },
+    validid = 0
+    selected_data = {}
+    selected_email = ' '
+    result = {}
+
+    for tokens, data in users.items():
+        if data['u_id'] == u_id:
+            validid = 1
+            selected_data = data
+            selected_email = tokens
+
+    if validid == 0:
+        raise InputError("Invalid ID.")
+        
+    print(selected_data)
+    result = {
+        'u_id': selected_data['u_id']
+        'email': selected_email
+        'name_first': selected_data['name_first']
+        'name_last': selected_data['name_last']
+        'handle_str': selected_data['handle']
     }
+
+    return result
 
 def user_profile_setname(token, name_first, name_last):
     #Error Checking: Raise an Input Error if Names not Between 1 & 50 Characters
