@@ -5,7 +5,8 @@ users = {
         'u_id' : " ",
         'name_first' : " ",
         'name_last' : " ",
-        'password' : " "
+        'password' : " ",
+        'handle' : " "
         }
     }
 
