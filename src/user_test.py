@@ -6,7 +6,6 @@ from other import clear
 from channels import channels_create
 from channel import channel_details
 
-#TODO: ETHAN 
 #User Setname Tests
 def test_user_setname_positive_case():
     ''' Positive Case To Determine Whether the Name Changes '''
@@ -14,10 +13,10 @@ def test_user_setname_positive_case():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_profile_setname(userOne['token'], 'New First', 'New Last')
     #Create a Channel and Find Its Details to See if the Name has Changed
-    randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
-    details = channel_details(userOne['token'], randomChannel_id['channel_id'])
-    assert(details['owner_members']['name_first'] == 'New First')
-    assert(details['owner_members']['name_last'] == 'New Last')
+    #randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
+    details = user_profile(userOne['token'], userOne['u_id'])
+    assert(details['name_first'] == 'New First')
+    assert(details['name_last'] == 'New Last')
     pass
 
 def test_user_setname_name_first_short():
@@ -74,7 +73,6 @@ def test_user_setemail_positive_case():
     #Logging Out & Logging Back In With New Email
     auth_logout(userOne['token'])
     auth_login('newemail@gmail.com', '123abc!@#')
-    pass
 
 def test_user_setemail_already_used():
     ''' Test if Error is Returned if Email is Already Used '''
