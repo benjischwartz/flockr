@@ -3,6 +3,7 @@ import pytest
 from auth import auth_register, auth_logout
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_create
+from message import message_send
 from error import InputError, AccessError
 from other import clear
 
@@ -204,12 +205,75 @@ def test_channel_details_not_member():
 
 # check that channel_messages returns the correct dictionary given valid input
 # with the user calling it being the flockr owner
-def test_channel_messages_valid_input():
+def test_channel_messages_valid_input_no_messages():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     randMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
     assert randMessages == {'messages': [], 'start': 0, 'end': -1}
+
+def test_channel_messages_valid_input_3_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(3):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    for j in range(3):
+        assert randMessages['messages'][j]['u_id'] == userOne['u_id']
+        assert randMessages['messages'][j]['message'] == 'Hello'
+        j += 1
+    assert randMessages['start'] == 0
+    assert randMessages['end'] == -1
+
+def test_channel_messages_valid_input_49_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(49):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    assert len(randMessages['messages']) == 49
+    assert randMessages['start'] == 0
+    assert randMessages['end'] == -1
+
+def test_channel_message_valid_input_50_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(50):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    assert len(randMessages['messages']) == 50
+    assert randMessages['start'] == 0
+    assert randMessages['end'] == 50
+
+def test_channel_message_valid_input_start_non_zero_end_negative():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(50):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 25)
+    assert len(randMessages['messages']) == 25
+    assert randMessages['start'] == 25
+    assert randMessages['end'] == -1
+
+def test_channel_messages_valid_input_start_non_zero_end_positive():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(100):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 25)
+    assert len(randMessages['messages']) == 50
+    assert randMessages['start'] == 25
+    assert randMessages['end'] == 75
 
 # check that channel_messages returns the same dictionary whether the channel
 # is public or private

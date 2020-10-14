@@ -163,9 +163,25 @@ def test_message_remove_valid_channel_member():
     message = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
     all_messages_init = channel_messages(userTwo['token'], randChannel['channel_id'],0)    
     assert len(all_messages_init['messages']) == 1
-    message_remove(userTwo['token'],message['message_id'])
+    assert message_remove(userTwo['token'],message['message_id']) == {}
     all_messages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
     assert all_messages == {'messages': [], 'start': 0, 'end': -1}
+
+def test_message_remove_valid_input_multiple_messages_remove_middle():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(3):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    message = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    for i in range(3):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    all_messages_init = channel_messages(userOne['token'], randChannel['channel_id'],0)    
+    assert len(all_messages_init['messages']) == 7
+    assert message_remove(userOne['token'],message['message_id']) == {}
+    all_messages_after = channel_messages(userOne['token'], randChannel['channel_id'],0)
+    assert len(all_messages_after['messages']) == 6
+    #TODO: check that message['message_id'] is not in the list of all_messages_after['messages']
 
 # check message remove works if the user calling it is the owner of the channel
 # (and is also not the owener of flockr and not the person who sent the message originally)
@@ -179,9 +195,12 @@ def test_message_remove_valid_channel_owner():
     message = message_send(userThree['token'], randChannel['channel_id'], 'Hello')
     all_messages_init = channel_messages(userTwo['token'], randChannel['channel_id'],0)    
     assert len(all_messages_init['messages']) == 1
-    message_remove(userTwo['token'],message['message_id'])
+    assert message_remove(userTwo['token'],message['message_id']) == {}
     all_messages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
     assert all_messages == {'messages': [], 'start': 0, 'end': -1}
+    
+
+
 
 # check message remove works if the user calling it is the owner of Flockr
 # (and not the owner of the channel and not the person who sent the message originally)
@@ -199,7 +218,7 @@ def test_message_remove_valid_flockr_owner():
     assert all_messages_after == {'messages': [], 'start': 0, 'end': -1}
 
 
-# raise an accesserror if the owner of flockr tries to delete a message but they 
+# raise an accesserror if the owner of flockr tries to remove a message but they 
 # are not a member of the channel 
 def test_message_remove_invalid_flockr_owner():
     clear()
