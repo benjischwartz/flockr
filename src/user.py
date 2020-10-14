@@ -14,7 +14,6 @@ def user_profile(token, u_id):
     validid = 0
     selected_data = {}
     selected_email = ' '
-    result = {}
 
     for tokens, data in users.items():
         if data['u_id'] == u_id:
@@ -24,17 +23,13 @@ def user_profile(token, u_id):
 
     if validid == 0:
         raise InputError("Invalid ID.")
+    else:
+        selected_data.pop('password')
+    selected_data['email'] = selected_email
         
     print(selected_data)
-    result = {
-        'u_id': selected_data['u_id']
-        'email': selected_email
-        'name_first': selected_data['name_first']
-        'name_last': selected_data['name_last']
-        'handle_str': selected_data['handle']
-    }
 
-    return result
+    return selected_data
 
 def user_profile_setname(token, name_first, name_last):
     #Error Checking: Raise an Input Error if Names not Between 1 & 50 Characters
