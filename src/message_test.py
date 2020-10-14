@@ -1,6 +1,6 @@
 import pytest
 from auth import auth_register, auth_logout
-from channel import channel_messages, channel_join
+from channel import channel_messages, channel_join, channel_leave
 from channels import channels_create
 from message import message_send, message_remove, message_edit
 from error import InputError, AccessError
@@ -47,6 +47,8 @@ def test_message_send_valid_input_5_chars():
     randChannel = channels_create(userOne['token'], 'randChannel', True)
     assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
     # TODO: add channel_messages
+    all_messages = channel_messages(userOne['token'], randChannel['channel_id'],0)
+    assert len(all_messages['messages']) == 1
 
 def test_message_send_valid_input_1000_chars():
     clear()
@@ -128,24 +130,6 @@ def test_message_send_invalid_channel_id():
         message_send(userOne['token'], 0, 'Hello')
 
 # tests for message_remove
-'''
-def test_message_remove_valid_channel_member():
-    clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-        
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-
-def test_message_remove_valid_channel_owner():
-
-
-def test_message_remove_valid_flockr_owner():
-
-
-def test_message_remove_invalid_flockr_owner():
-'''
-# raise accesserror 
 
 
 # valid tests
@@ -159,10 +143,87 @@ def test_message_remove_invalid_flockr_owner():
 # accesserror 
     # a normal member (not the member that sent the channel, nor owner of flockr or a channel_owner) tries to delete the message
     # token is invalid
-    # ASSUMPTION someone not in the channel at all is trying to delete a message 
+    # ASSUMPTION accesserror: someone not in the channel at all is trying to delete a message eg. they sent the message but left the channel 
     # ASSUMPTION owner of flockr tries to delete but they arent a member of the channel
 
-     
+# assumption: must be a member of the channel to use message_remove
+    # relevant to the owner of flockr removing (can't remove if not in channel)
+    # relevant to the original person who sent the message (if they left the channel 
+    # they cannot remove the message)
+
+
+# check message_remove works if the user calling it is the user who sent the 
+# message originally and is also just a regular member of flockr and the channel
+def test_message_remove_valid_channel_member():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    channel_join(userTwo['token'], randChannel['channel_id'])
+    message = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+    all_messages_init = channel_messages(userTwo['token'], randChannel['channel_id'],0)    
+    assert len(all_messages_init['messages']) == 1
+    message_remove(userTwo['token'],message['message_id'])
+    all_messages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
+    assert all_messages == {'messages': [], 'start': 0, 'end': -1}
+
+# check message remove works if the user calling it is the owner of the channel
+# (and is also not the owener of flockr and not the person who sent the message originally)
+def test_message_remove_valid_channel_owner():
+    clear()
+    auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    userThree = auth_register('thirduser@gmail.com', '456abc!@#', 'Third', 'User')
+    randChannel = channels_create(userTwo['token'], 'randChannel', True)
+    channel_join(userThree['token'], randChannel['channel_id'])
+    message = message_send(userThree['token'], randChannel['channel_id'], 'Hello')
+    all_messages_init = channel_messages(userTwo['token'], randChannel['channel_id'],0)    
+    assert len(all_messages_init['messages']) == 1
+    message_remove(userTwo['token'],message['message_id'])
+    all_messages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
+    assert all_messages == {'messages': [], 'start': 0, 'end': -1}
+
+# check message remove works if the user calling it is the owner of Flockr
+# (and not the owner of the channel and not the person who sent the message originally)
+def test_message_remove_valid_flockr_owner():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userTwo['token'], 'randChannel', True)
+    channel_join(userOne['token'], randChannel['channel_id'])
+    message = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+    all_messages_init = channel_messages(userTwo['token'], randChannel['channel_id'],0)    
+    assert len(all_messages_init['messages']) == 1
+    message_remove(userOne['token'],message['message_id'])
+    all_messages_after = channel_messages(userTwo['token'], randChannel['channel_id'],0)
+    assert all_messages_after == {'messages': [], 'start': 0, 'end': -1}
+
+
+# raise an accesserror if the owner of flockr tries to delete a message but they 
+# are not a member of the channel 
+def test_message_remove_invalid_flockr_owner():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userTwo['token'], 'randChannel', True)
+    message = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+    all_messages_init = channel_messages(userTwo['token'], randChannel['channel_id'],0)    
+    with pytest.raises(AccessError):
+        message_remove(userOne['token'],message['message_id'])
+
+# check an accesserror is raised when the user that sent the message has left 
+# the channel and is trying to delete the channel
+def test_message_remove_user_not_part_of_channel():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    channel_join(userTwo['token'], randChannel['channel_id'])
+    message = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+    channel_leave(userTwo['token'], randChannel['channel_id'])
+    with pytest.raises(AccessError):
+        message_remove(userTwo['token'],message['message_id'])
+   
 # check an accesserror is raised when token is not valid
 def test_message_remove_invalid_token():
     clear()
@@ -191,7 +252,7 @@ def test_message_remove_no_messages():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', False)
     with pytest.raises(InputError):
-        message_remove(userOne['token'], 0])
+        message_remove(userOne['token'], 0)
 
 # check an inputerror is raised when the message being removed has already been
 # deleted

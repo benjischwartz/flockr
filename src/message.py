@@ -15,7 +15,6 @@ def message_send(token, channel_id, message):
         raise InputError("Channel ID is invalid.")
         
     # raise accesserror if user with token 'token' is not part of the channel
-    token_u_id = user_id_given_token(token)
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError ("User is not authorised to invite to this channel.")
     
@@ -48,8 +47,44 @@ def message_send(token, channel_id, message):
     }
 
 def message_remove(token, message_id):
-    return {
-    }
+    # raise accesserror if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError("Token passed is not valid.")
+    
+    # raise inputerror if the message_id is invalid
+    message_valid = False
+    for a_channel in channel:
+        message_index = 0
+        for a_message in channel[a_channel]['messages']:
+            if a_message['message_id'] == message_id:
+               message_u_id = a_message['u_id']
+               message_channel = a_channel
+               message_valid = True
+               break
+            message_index += 1
+        if message_valid == True:
+            break
+    
+    if message_valid == False:
+        raise InputError("The message id is not valid.")
+       
+        
+    # raise accesserror if user with token 'token' is not part of the channel
+    # that the message is part of 
+    if token_u_id not in channel[message_channel]['all_members']:
+        raise AccessError ("User is not authorised to invite to this channel.")
+    
+    
+    # permissions to remove
+    if token_u_id == message_u_id or token_u_id == 1 or token_u_id in channel[message_channel]['owner_members']:
+        channel[message_channel]['messages'].pop(message_index)
+    else:
+        raise AccessError("This user is not authorised to remove this message.")
+    return {}
+    
+    
+    
 
 def message_edit(token, message_id, message):
     return {
