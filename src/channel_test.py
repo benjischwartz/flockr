@@ -212,6 +212,8 @@ def test_channel_messages_valid_input_no_messages():
     randMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
     assert randMessages == {'messages': [], 'start': 0, 'end': -1}
 
+# check that channel_messages returns the correct return dictionary when there
+# are 3 messages 
 def test_channel_messages_valid_input_3_messages():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -227,6 +229,8 @@ def test_channel_messages_valid_input_3_messages():
     assert randMessages['start'] == 0
     assert randMessages['end'] == -1
 
+# check that channel_messages returns the correct return dictionary when there
+# are 49 messages
 def test_channel_messages_valid_input_49_messages():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -239,6 +243,8 @@ def test_channel_messages_valid_input_49_messages():
     assert randMessages['start'] == 0
     assert randMessages['end'] == -1
 
+# check that channel_messages returns the correct return dictionary when there
+# are 50 messages
 def test_channel_message_valid_input_50_messages():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
@@ -251,19 +257,23 @@ def test_channel_message_valid_input_50_messages():
     assert randMessages['start'] == 0
     assert randMessages['end'] == 50
 
-def test_channel_message_valid_input_start_non_zero_end_negative():
+# check that channel_messages returns the correct return dictionary when there
+# are 50 messages but start is nonzero
+def test_channel_message_valid_input_50_messages_start_is_1():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
     for i in range(50):
         message_send(userOne['token'], randChannel['channel_id'], 'Hello')
         i += 1
-    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 25)
-    assert len(randMessages['messages']) == 25
-    assert randMessages['start'] == 25
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 1)
+    assert len(randMessages['messages']) == 49
+    assert randMessages['start'] == 1
     assert randMessages['end'] == -1
 
-def test_channel_messages_valid_input_start_non_zero_end_positive():
+# check that channel_messages returns the correct return dictionary when there
+# are 100 messages and start is 25
+def test_channel_messages_valid_input_100_messages_start_25():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
