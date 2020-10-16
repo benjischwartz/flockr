@@ -8,6 +8,7 @@ users = {
         'password' : " ",
         'permission_id' : 1 # Global flocker permission_id
         # 1 for owner of flocker, 2 for regular members 
+        'handle' : " "
         }
     }
 
