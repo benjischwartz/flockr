@@ -26,7 +26,7 @@ def test_users_all_positive_test():
         'name_first' : 'Second',
         'name_last' : 'User',
         'handle' : '123456',
-        'permission_id': 2,
+        'permission_id' : 2,
     }
     })
 

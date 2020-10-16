@@ -129,7 +129,6 @@ def test_user_profile_positive_case():
         'name_last' : 'User',
         'handle' : '12345',
         'email' : 'seconduser@gmail.com',
-        'permission_id' : 2,
     })
 
 def test_user_profile_uid_not_valid():

@@ -28,6 +28,7 @@ def user_profile(token, u_id):
         raise InputError("Invalid ID.")
     else:
         selected_data.pop('password')
+        selected_data.pop('permission_id')
     selected_data['email'] = selected_email
 
     return selected_data
