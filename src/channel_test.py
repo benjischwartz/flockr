@@ -64,7 +64,6 @@ def test_channel_invite_invalid_channel_id():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-
     with pytest.raises(InputError):
         channel_invite(userOne['token'], invalidChannel_id, userTwo['u_id'])
     
@@ -74,7 +73,6 @@ def test_channel_invite_invalid_u_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     invalidu_id = 0
-
     with pytest.raises(InputError):
         channel_invite(userOne['token'], randChannel_id['channel_id'], invalidu_id)
 
@@ -186,7 +184,6 @@ def test_channel_details_invalid_channel_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-
     with pytest.raises(InputError):
         channel_details(userOne['token'], invalidChannel_id)
 
@@ -336,7 +333,6 @@ def test_channel_messages_invalid_channel_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-
     with pytest.raises(InputError):
         channel_messages(userOne['token'], invalidChannel_id, 0)
 
@@ -368,8 +364,7 @@ def test_channel_leave_invalid_user():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
-    userchannel_id = channels_create(user['token'], 'userchannel', True)
-    
+    userchannel_id = channels_create(user['token'], 'userchannel', True)    
     with pytest.raises(AccessError):
         channel_leave(leaver['token'], userchannel_id['channel_id'])
 
@@ -381,7 +376,6 @@ def test_channel_leave_invalid_channel():
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
     channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
-
     with pytest.raises(InputError):
         channel_leave(leaver['token'], invalid_id)
 
@@ -391,8 +385,7 @@ def test_channel_leave_normal_case():
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)   
     channel_join(leaver['token'], userchannel_id['channel_id'])
-    channel_leave(leaver['token'], userchannel_id['channel_id'])
-    
+    channel_leave(leaver['token'], userchannel_id['channel_id'])    
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['all_members'] == [
     {
@@ -410,7 +403,6 @@ def test_channel_leave_normal_case_owner():
     channel_join(leaver['token'], userchannel_id['channel_id'])
     channel_addowner(leaver['token'], userchannel_id['channel_id'], leaver['u_id'])
     channel_leave(leaver['token'], userchannel_id['channel_id'])
-
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['owner_members'] == [
     {
@@ -443,7 +435,6 @@ def test_channel_join_invalid_channel():
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
-
     with pytest.raises(InputError):
         channel_join(joiner['token'], invalid_id)
         
@@ -453,8 +444,7 @@ def test_channel_join_private_no_invite():
     #if the channel is private, but no invite is given to the user
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
-    userchannel_id = channels_create(user['token'], 'userchannel', False)    
-    
+    userchannel_id = channels_create(user['token'], 'userchannel', False)        
     with pytest.raises(AccessError):
         channel_join(joiner['token'], userchannel_id['channel_id'])
     
@@ -462,8 +452,7 @@ def test_channel_join_private_no_invite():
 def test_channel_join_already_in_channel():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
-    userchannel_id = channels_create(user['token'], 'userchannel', True)
-    
+    userchannel_id = channels_create(user['token'], 'userchannel', True)   
     with pytest.raises(AccessError):
         channel_join(user['token'], userchannel_id['channel_id'])
 
@@ -473,8 +462,7 @@ def test_channel_join_normal_case():
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)   
-    channel_join(joiner['token'], userchannel_id['channel_id'])
-    
+    channel_join(joiner['token'], userchannel_id['channel_id'])    
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['all_members'] == [
     {
@@ -496,8 +484,7 @@ def test_channel_join_private_owner():
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', False)
-    channel_join(joiner['token'], userchannel_id['channel_id'])    
-    
+    channel_join(joiner['token'], userchannel_id['channel_id'])        
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['all_members'] == [
     {
