@@ -28,10 +28,4 @@ def permission_id_given_token(email):
     returns the permission id given a valid token
     otherwise return None
     """
- #   for i in users:
- #       if email == i:
- #           return i["permission_id"]
- #   return None
-
-# def get_handle(u_id):
     return users[email]["permission_id"]
