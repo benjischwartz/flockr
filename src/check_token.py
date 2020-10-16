@@ -26,6 +26,6 @@ def permission_id_given_token(email):
     # TODO: update from email to token once token hashing is integrated
     """
     returns the permission id given a valid token
-    otherwise return None
+    otherwise raises KeyError
     """
     return users[email]["permission_id"]
