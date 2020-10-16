@@ -6,6 +6,7 @@ from channels import channels_create
 from message import message_send
 from error import InputError, AccessError
 from other import clear
+from time import time
 
 # note: any function other than the one being tested for (as per the test name)
 # assumed to be working correctly in these tests
@@ -218,6 +219,7 @@ def test_channel_messages_valid_input_3_messages():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
+    prior_send = time()
     for i in range(3):
         message_send(userOne['token'], randChannel['channel_id'], 'Hello')
         i += 1
@@ -226,6 +228,9 @@ def test_channel_messages_valid_input_3_messages():
         assert randMessages['messages'][j]['u_id'] == userOne['u_id']
         assert randMessages['messages'][j]['message'] == 'Hello'
         j += 1
+    assert randMessages['messages'][2]['time_created'] > prior_send
+    assert randMessages['messages'][1]['time_created'] > randMessages['messages'][2]['time_created']
+    assert randMessages['messages'][0]['time_created'] > randMessages['messages'][1]['time_created']
     assert randMessages['start'] == 0
     assert randMessages['end'] == -1
 

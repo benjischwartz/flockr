@@ -5,12 +5,10 @@ from channels import channels_create
 from message import message_send, message_remove, message_edit
 from error import InputError, AccessError
 from other import clear
+from time import time
 
 
-# tests for message_send    
-
-# TODO: check time_created that is returned in channel_messages is a valid time object
-
+# tests for message_send
 
 # check that message_send returns the correct dictionary and unique message_ids starting
 # from 1 and incrementing by 1 for each subsequent message as per the assumption
@@ -36,18 +34,37 @@ def test_message_send_valid_input_multiple_channels():
     chanMessages2 = channel_messages(userOne['token'], randChannel2['channel_id'],0)
     assert len(chanMessages1['messages']) == 2
     assert len(chanMessages2['messages']) == 1
-    
+
+# check that message_send creates a time_created property for the message based
+# on when message_send is called
+def test_channel_messages_valid_input_3_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    prior_send = time()
+    for i in range(3):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    assert randMessages['messages'][2]['time_created'] > prior_send
+    assert randMessages['messages'][1]['time_created'] > randMessages['messages'][2]['time_created']
+    assert randMessages['messages'][0]['time_created'] > randMessages['messages'][1]['time_created']
+    assert randMessages['start'] == 0
+    assert randMessages['end'] == -1
+
 # check a message of 5 characters is successfully sent
 def test_message_send_valid_input_5_chars():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
+    prior_send = time()
     assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
     chanMessages = channel_messages(userOne['token'], randChannel['channel_id'],0)
     assert len(chanMessages['messages']) == 1
     assert chanMessages['messages'][0]['message_id'] == 1
     assert chanMessages['messages'][0]['u_id'] == userOne['u_id']
     assert chanMessages['messages'][0]['message'] == 'Hello'
+    assert chanMessages['messages'][0]['time_created'] > prior_send
 
 # check a message of 1000 characters is successfully sent
 def test_message_send_valid_input_1000_chars():
@@ -59,11 +76,13 @@ def test_message_send_valid_input_1000_chars():
     for i in range(999):
         message_long  += 'a'
         i += 1
+    prior_send = time()
     assert message_send(userOne['token'], randChannel['channel_id'], message_long) == {'message_id': 1}
     chanMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
     assert chanMessages['messages'][0]['message_id'] == 1
     assert chanMessages['messages'][0]['u_id'] == userOne['u_id']
     assert chanMessages['messages'][0]['message'] == message_long
+    assert chanMessages['messages'][0]['time_created'] > prior_send
 
 # check an inputerror is raised if the the input 'message' is an empty string
 def test_message_send_empty_message():
@@ -245,10 +264,19 @@ def test_message_edit_valid_input_channel_member():
     randChannel = channels_create(userOne['token'], 'randChannel', True)
     channel_join(userTwo['token'], randChannel['channel_id'])
     randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+    chanMessages_init = channel_messages(userTwo['token'], randChannel['channel_id'], 0)
     message_edit(userTwo['token'], randMessage['message_id'], 'Hello World') == {}
-    chanMessages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
-    assert chanMessages['messages'][0]['message'] == 'Hello World'
-
+    chanMessages_after = channel_messages(userTwo['token'], randChannel['channel_id'], 0)
+    assert chanMessages_after == { 
+        'messages': [{
+            'message_id': chanMessages_init['messages'][0]['message_id'],
+            'u_id': chanMessages_init['messages'][0]['u_id'],
+            'message' : 'Hello World',
+            'time_created' : chanMessages_init['messages'][0]['time_created']
+        }],
+        'start' : 0,
+        'end': -1
+    }
 # check message_edit edits the message if the user calling it is the owner of 
 # the channel 
 def test_message_edit_valid_input_channel_owner():
@@ -258,9 +286,19 @@ def test_message_edit_valid_input_channel_owner():
     randChannel = channels_create(userTwo['token'], 'randChannel', True)
     channel_join(userOne['token'], randChannel['channel_id'])
     randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    chanMessages_init = channel_messages(userTwo['token'], randChannel['channel_id'], 0)
     assert message_edit(userTwo['token'],randMessage['message_id'], 'Hello World') == {}
-    chanMessages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
-    assert chanMessages['messages'][0]['message'] == 'Hello World'
+    chanMessages_after = channel_messages(userTwo['token'], randChannel['channel_id'],0)
+    assert chanMessages_after == { 
+        'messages': [{
+            'message_id': chanMessages_init['messages'][0]['message_id'],
+            'u_id': chanMessages_init['messages'][0]['u_id'],
+            'message' : 'Hello World',
+            'time_created' : chanMessages_init['messages'][0]['time_created']
+        }],
+        'start' : 0,
+        'end': -1
+    }
 
 # check message_edit edits the message if the user calling it is an owner of 
 # flockr 
@@ -271,9 +309,19 @@ def test_message_edit_valid_input_flockr_owner():
     randChannel = channels_create(userTwo['token'], 'randChannel', True)
     channel_join(userOne['token'], randChannel['channel_id'])
     randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+    chanMessages_init = channel_messages(userOne['token'], randChannel['channel_id'], 0)
     assert message_edit(userOne['token'],randMessage['message_id'], 'Hello World') == {}
-    chanMessages = channel_messages(userOne['token'], randChannel['channel_id'],0)
-    assert chanMessages['messages'][0]['message'] == 'Hello World'
+    chanMessages_after = channel_messages(userOne['token'], randChannel['channel_id'],0)
+    assert chanMessages_after == { 
+        'messages': [{
+            'message_id': chanMessages_init['messages'][0]['message_id'],
+            'u_id': chanMessages_init['messages'][0]['u_id'],
+            'message' : 'Hello World',
+            'time_created' : chanMessages_init['messages'][0]['time_created']
+        }],
+        'start' : 0,
+        'end': -1
+    }
 
 # check message_edit edits the correct message if there are multiple 
 # messages in the channel    
@@ -307,14 +355,24 @@ def test_message_edit_valid_input_1000_characters():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
     randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    chanMessages_init = channel_messages(userOne['token'], randChannel['channel_id'], 0)
     # create a message that is 1000 characters long
     message_long = 'a'
     for i in range(999):
         message_long  += 'a'
         i += 1
     assert message_edit(userOne['token'], randMessage['message_id'], message_long) == {}
-    chanMessages = channel_messages(userOne['token'], randChannel['channel_id'],0)
-    assert chanMessages['messages'][0]['message'] == message_long
+    chanMessages_after = channel_messages(userOne['token'], randChannel['channel_id'],0)
+    assert chanMessages_after == { 
+        'messages': [{
+            'message_id': chanMessages_init['messages'][0]['message_id'],
+            'u_id': chanMessages_init['messages'][0]['u_id'],
+            'message' : message_long,
+            'time_created' : chanMessages_init['messages'][0]['time_created']
+        }],
+        'start': 0,
+        'end': -1
+    }
 
 # check an inputerror is raised if the message is greater than 1000 characters
 def test_message_edit_over_1000_characters():
