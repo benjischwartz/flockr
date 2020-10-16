@@ -19,12 +19,14 @@ def test_users_all_positive_test():
         'name_first' : 'First',
         'name_last' : 'User',
         'handle' : '12345',
+        'permission_id': 1,
     },
     'seconduser@gmail.com' : {
         'u_id' : userTwo['u_id'],
         'name_first' : 'Second',
         'name_last' : 'User',
         'handle' : '123456',
+        'permission_id' : 2,
     }
     })
 

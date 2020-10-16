@@ -1,6 +1,6 @@
 from data import users, channel
 from error import InputError, AccessError
-from check_token import user_id_given_token
+from check_token import user_id_given_token, permission_id_given_token
 from auth import auth_register
 from channels import channels_create
 from other import clear
@@ -210,7 +210,8 @@ def channel_join(token, channel_id):
     # check if channel is public or private
     # if the channel is private only the owner of flockr can join 
     # token_u_id 1 is the owner of flockr
-    if channel[channel_id]['is_public'] == False and token_u_id != 1:
+    permission_id = permission_id_given_token(token)
+    if channel[channel_id]['is_public'] == False and permission_id != 1:
         raise AccessError("User does not have access to this channel.")
     
     channel[channel_id]['all_members'][token_u_id] = True
@@ -235,7 +236,8 @@ def channel_addowner(token, channel_id, u_id):
     
     # if current token is not an owner of the channel, they can addowner if 
     # they are the owner of flockr (owner of flockr has u_id of 1)
-    if token_u_id == 1:
+    permission_id = permission_id_given_token(token)
+    if permission_id == 1:
         # raise accesserror if owner of Flockr is not a member of the channel
         if token_u_id not in channel[channel_id]['all_members']:
             raise AccessError("Owner of Flockr is not a member of the channel.")
@@ -267,7 +269,8 @@ def channel_removeowner(token, channel_id, u_id):
 
     # if current token is not an owner of the channel, they can removeonwer if 
     # they are the owner of flockr (owner of flockr has u_id of 1)
-    if token_u_id == 1:
+    permission_id = permission_id_given_token(token)
+    if permission_id == 1:
         # raise accesserror if owner of Flockr is not a member of the channel
         if token_u_id not in channel[channel_id]['all_members']:
             raise AccessError("Owner of Flockr is not a member of the channel.")
