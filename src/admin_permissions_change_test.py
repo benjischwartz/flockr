@@ -5,6 +5,7 @@ from auth import auth_register, auth_logout
 from other import clear
 # TODO: remove data import once changed to black box
 from data import users
+from check_token import permission_id_given_token
 
 # test change from non-owner of flocker to owner
 def test_change_to_owner():
