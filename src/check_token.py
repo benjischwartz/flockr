@@ -21,3 +21,20 @@ def email_given_user_id(u_id):
         if u_id == users[email]['u_id']:
             return email
     return None
+
+def permission_id_given_token(email):
+    # TODO: update from email to token once token hashing is integrated
+    """
+    returns the permission id given a valid token
+    otherwise return None
+    """
+    for i in users:
+        if email == i:
+            return i["permission_id"]
+    return None
+
+# def get_handle(u_id):
+#     for email in users.keys():
+#         if u_id == users[email]['u_id']:
+#             return users[email]['handle']
+#     return
