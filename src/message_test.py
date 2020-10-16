@@ -183,15 +183,18 @@ def test_message_remove_valid_input_multiple_messages_remove_middle():
     randChannel = channels_create(userOne['token'], 'randChannel', True)
     for i in range(3):
         message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
     randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
     for j in range(3):
         message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        j += 1
     chanMessages_init = channel_messages(userOne['token'], randChannel['channel_id'],0)    
     assert message_remove(userOne['token'], randMessage['message_id']) == {}
     chanMessages_after = channel_messages(userOne['token'], randChannel['channel_id'],0)
     assert len(chanMessages_after['messages']) == len(chanMessages_init['messages']) - 1
     for k in range(len(chanMessages_after['messages'])):
         assert chanMessages_after['messages'][k]['message_id'] != randMessage['message_id']
+        k += 1
 
 # check an accesserror is raised if an owner of flockr tries to remove a message 
 # from a channel they are not a member of
@@ -201,7 +204,6 @@ def test_message_remove_invalid_flockr_owner():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel = channels_create(userTwo['token'], 'randChannel', True)
     randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
-    all_messages_init = channel_messages(userTwo['token'], randChannel['channel_id'],0)    
     with pytest.raises(AccessError):
         message_remove(userOne['token'], randMessage['message_id'])
         
