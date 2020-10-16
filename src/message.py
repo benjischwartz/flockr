@@ -1,6 +1,6 @@
 from data import users, channel
 from error import InputError, AccessError
-from check_token import user_id_given_token
+from check_token import user_id_given_token, permission_id_given_token
 from time import time
 
 def message_send(token, channel_id, message):
@@ -75,8 +75,10 @@ def message_remove(token, message_id):
     if token_u_id not in channel[message_channel]['all_members']:
         raise AccessError ("User is not part of the channel with this message.")
     
-    # permissions to remove
-    if token_u_id == message_u_id or token_u_id == 1 or token_u_id in channel[message_channel]['owner_members']:
+    token_permission_id = permission_id_given_token(token)
+    # check permissions to remove and if permitted then remove message; if not 
+    # raise an accesserror
+    if token_u_id == message_u_id or token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
         channel[message_channel]['messages'].pop(message_index)
     else:
         raise AccessError("This user is not authorised to remove this message.")
@@ -120,9 +122,10 @@ def message_edit(token, message_id, message):
     elif len(message) > 1000:
         raise InputError ("This message is too long.")
     
-    # check permissions to edit and if permitted then change message; if not raise
-    # accesserror
-    if token_u_id == message_u_id or token_u_id == 1 or token_u_id in channel[message_channel]['owner_members']:
+    token_permission_id = permission_id_given_token(token)
+    # check permissions to edit and if permitted then change message; if not 
+    # raise and accesserror
+    if token_u_id == message_u_id or token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
         channel[message_channel]['messages'][message_index]['message_content'] = message
     else:
         raise AccessError("This user is not authorised to remove this message.")
