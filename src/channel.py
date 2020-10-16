@@ -1,6 +1,6 @@
 from data import users, channel
 from error import InputError, AccessError
-from check_token import user_id_given_token
+from check_token import user_id_given_token, permission_id_given_token
 
 
 def channel_invite(token, channel_id, u_id):
@@ -234,7 +234,8 @@ def channel_addowner(token, channel_id, u_id):
     
     # if current token is not an owner of the channel, they can addowner if 
     # they are the owner of flockr (owner of flockr has u_id of 1)
-    if token_u_id == 1:
+    permission_id = permission_id_given_token(token)
+    if permission_id == 1:
         # raise accesserror if owner of Flockr is not a member of the channel
         if token_u_id not in channel[channel_id]['all_members']:
             raise AccessError("Owner of Flockr is not a member of the channel.")
