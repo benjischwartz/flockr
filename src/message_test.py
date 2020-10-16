@@ -37,7 +37,7 @@ def test_message_send_valid_input_multiple_channels():
 
 # check that message_send creates a time_created property for the message based
 # on when message_send is called
-def test_channel_messages_valid_input_3_messages():
+def test_channel_send_valid_input_time_created():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
