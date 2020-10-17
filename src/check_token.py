@@ -37,3 +37,11 @@ def jwt_given_email(email):
     email as the `payload`
     """
     return jwt.encode({'email': email}, 'secret')
+
+def email_given_jwt(token):
+    """
+    returns user's email given their jwt hashed
+    token
+    """
+    decoded_jwt = jwt.decode(token, 'secret')
+    return decoded_jwt['email']
