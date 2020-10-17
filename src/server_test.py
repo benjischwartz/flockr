@@ -47,3 +47,27 @@ def test_auth_register(url):
         "name_last" : "Bloggs"})
     # TODO: update token email after hashing done
     assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+
+def test_auth_logout_login(url):
+    """
+    Testing server auth_login
+    """
+    clear()
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "Joe",
+        "name_last" : "Bloggs"})
+    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+    r = requests.post(f"{url}/auth/logout", json= {
+        "token" : "first@person.com"})
+        # TODO: update token after hashing
+    assert r.json() == {"is_success" : True}
+    r = requests.post(f"{url}/auth/login", json= {
+        "email" : "first@person.com",
+        "password" : "catdog"})
+    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+    assert r.json() == {"token" : "first@person.com", "u_id" : 1}
+        # TODO: update token after hashing
+
+
