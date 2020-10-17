@@ -40,7 +40,7 @@ def test_auth_register(url):
     Testing server auth_register
     """
     clear()
-    r = requests.post(f"{url}/auth/register/", json={
+    r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
         "name_first" : "Joe",

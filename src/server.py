@@ -3,6 +3,7 @@ from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
+import auth
 
 def defaultHandler(err):
     response = err.get_response()
@@ -24,15 +25,21 @@ APP.register_error_handler(Exception, defaultHandler)
 # Example
 @APP.route("/echo", methods=['GET'])
 def echo():
-    data = request.args.get('data')
-    if data == 'echo':
+    payload = request.args.get('data')
+    if payload == 'echo':
    	    raise InputError(description='Cannot echo "echo"')
     return dumps({
-        'data': data
+        'data': payload
     })
 
-
-
+@APP.route("/auth/register/", methods=['POST'])
+def auth_register():
+    """
+    creating a user in data.py's users dictionary
+    return {u_id : ___ , token: _____ }
+    """
+    payload = request.get_json()
+    return auth.auth_register(payload["email"], payload["password"], payload["name_first"], payload["name_last"])
 
 
 ### Keep code above this ###
