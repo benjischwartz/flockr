@@ -1,4 +1,5 @@
 from data import users, tokens
+import jwt
 
 def user_id_given_token(token):
     '''
@@ -29,3 +30,10 @@ def permission_id_given_token(email):
     otherwise raises KeyError
     """
     return users[email]["permission_id"]
+
+def jwt_given_email(email):
+    """
+    returns a jwt hashed token given the user's 
+    email as the `payload`
+    """
+    return jwt.encode({'email': email}, 'secret')
