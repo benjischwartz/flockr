@@ -43,7 +43,10 @@ def jwt_given_email(email):
 def email_given_jwt(token):
     """
     returns user's email given their jwt hashed
-    token
+    token if valid jwt is given, otherwise returns None
     """
-    decoded_jwt = jwt.decode(token, 'secret')
-    return decoded_jwt['email']
+    try:
+        decoded_jwt = jwt.decode(token, 'secret')
+        return decoded_jwt['email']
+    except Exception:
+        return None
