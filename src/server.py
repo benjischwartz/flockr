@@ -4,6 +4,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
 import auth
+import channels
 
 def defaultHandler(err):
     response = err.get_response()
@@ -58,6 +59,15 @@ def auth_login():
     """
     payload = request.get_json()
     return auth.auth_login(payload["email"], payload["password"])
+
+@APP.route("/channels/create/", methods=['POST'])
+def channels_create():
+    """
+    Creates a new channel and returns {"channel_id": ____ }
+    if successful
+    """
+    payload = request.get_json()
+    return channels.channels_create(payload["token"], payload["name"], payload["is_public"])
 
 ### Keep code above this ###
 if __name__ == "__main__":
