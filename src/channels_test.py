@@ -80,6 +80,18 @@ def test_channels_list_user_view():
     assert len(channels_list(userOne['token'])['channels']) == 1, "channel list per user sees unexpected number"
     assert len(channels_listall(userOne['token'])['channels']) == 2,  "channel listall per user sees unexpected number"
     assert len(channels_listall(userTwo['token'])['channels']) == 2, "channel listall per user sees unexpected number"
+    assert channels_listall(userTwo['token']) == {
+        "channels" : [
+            {
+                "channel_id" : 1,
+                "name" : "validchannel1"
+            },
+            {
+                "channel_id" : 2,
+                "name" : "validchannel2"
+            }            
+        ]    
+    }
     
 # check channels_create raises input error when name is too long
 def test_channels_create_too_long_name():

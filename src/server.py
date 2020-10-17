@@ -70,6 +70,22 @@ def channels_create():
     payload = request.get_json()
     return channels.channels_create(payload["token"], payload["name"], payload["is_public"])
 
+@APP.route("/channels/list/", methods=['GET'])
+def channels_list():
+    """
+    Lists all channels the user, whose token is passed, is a member of
+    """
+    payload = request.get_json()
+    return channels.channels_list(payload["token"])
+
+@APP.route("/channels/listall/", methods=['GET'])
+def channels_listall():
+    """
+    Lists all channels, regardless of membership or private/public
+    """
+    payload = request.get_json()
+    return channels.channels_listall(payload["token"])
+
 @APP.route("/channel/join/", methods=['POST'])
 def channel_join():
     """
