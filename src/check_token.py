@@ -12,3 +12,10 @@ def user_id_given_token(token):
             return user_id
     return None
 
+
+def get_handle(u_id):
+    for email in users.keys():
+        if u_id == users[email]['u_id']:
+            return users[email]['handle']
+    return
+

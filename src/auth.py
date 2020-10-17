@@ -107,9 +107,3 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : newU_id,
         'token' : email,
     }
-
-def get_handle(u_id):
-    for email in users.keys():
-        if u_id == users[email]['u_id']:
-            return users[email]['handle']
-    return
