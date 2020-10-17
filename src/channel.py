@@ -1,7 +1,9 @@
 from data import users, channel
 from error import InputError, AccessError
-from check_token import user_id_given_token
-
+from check_token import user_id_given_token, permission_id_given_token
+from auth import auth_register
+from channels import channels_create
+from other import clear
 
 def channel_invite(token, channel_id, u_id):
 
@@ -24,7 +26,6 @@ def channel_invite(token, channel_id, u_id):
         raise InputError("Channel ID is invalid.")
         
     # raise accesserror if user with token 'token' is not part of the channel
-    token_u_id = user_id_given_token(token)
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError ("User is not authorised to invite to this channel.")
     
@@ -51,7 +52,6 @@ def channel_details(token, channel_id):
     
 
     # raise accesserror if user with token 'token' is not part of the channel
-    token_u_id = user_id_given_token(token)
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError ("This user is not authorised to view the details of this channel.")
     
@@ -99,7 +99,6 @@ def channel_details(token, channel_id):
     #   ],
     # }
 
-    
 
 def channel_messages(token, channel_id, start):
     
@@ -113,7 +112,6 @@ def channel_messages(token, channel_id, start):
         raise InputError("Channel ID is invalid.")
     
     # raise accesserror if user with token 'token' is not part of the channel
-    token_u_id = user_id_given_token(token)
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError ("This user is not authorised to view the messages of this channel.")
    
@@ -187,7 +185,7 @@ def channel_leave(token, channel_id):
         
     # if the user is an owner, remove them from the list
     if token_u_id in channel[channel_id]['owner_members']:
-        channel[channel_id]['owner_member'].pop(token_u_id)
+        channel[channel_id]['owner_members'].pop(token_u_id)
         
     return {}
 
@@ -209,7 +207,8 @@ def channel_join(token, channel_id):
     # check if channel is public or private
     # if the channel is private only the owner of flockr can join 
     # token_u_id 1 is the owner of flockr
-    if channel[channel_id]['is_public'] == False and token_u_id != 1:
+    permission_id = permission_id_given_token(token)
+    if channel[channel_id]['is_public'] == False and permission_id != 1:
         raise AccessError("User does not have access to this channel.")
     
     channel[channel_id]['all_members'][token_u_id] = True
@@ -234,7 +233,8 @@ def channel_addowner(token, channel_id, u_id):
     
     # if current token is not an owner of the channel, they can addowner if 
     # they are the owner of flockr (owner of flockr has u_id of 1)
-    if token_u_id == 1:
+    permission_id = permission_id_given_token(token)
+    if permission_id == 1:
         # raise accesserror if owner of Flockr is not a member of the channel
         if token_u_id not in channel[channel_id]['all_members']:
             raise AccessError("Owner of Flockr is not a member of the channel.")
@@ -266,7 +266,8 @@ def channel_removeowner(token, channel_id, u_id):
 
     # if current token is not an owner of the channel, they can removeonwer if 
     # they are the owner of flockr (owner of flockr has u_id of 1)
-    if token_u_id == 1:
+    permission_id = permission_id_given_token(token)
+    if permission_id == 1:
         # raise accesserror if owner of Flockr is not a member of the channel
         if token_u_id not in channel[channel_id]['all_members']:
             raise AccessError("Owner of Flockr is not a member of the channel.")
