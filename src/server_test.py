@@ -90,6 +90,62 @@ def test_channels_create_public(url):
     })
     assert r.json() == {"channel_id" : 1 }
 
+def test_channels_list_listall(url):
+    """
+    Create two users to test channels_list and channels_listall
+    """
+    clear()
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "Joe",
+        "name_last" : "Bloggs"})
+    # TODO: update token email after hashing done
+    assert user_one.json() == {"u_id" : 1, "token" : "first@person.com"}
+    user_two = requests.post(f"{url}/auth/register", json={
+        "email" : "second@person.com",
+        "password" : "catdog",
+        "name_first" : "Mary",
+        "name_last" : "Brown"})
+    # TODO: update token email after hashing done
+    assert user_two.json() == {"u_id" : 2, "token" : "second@person.com"}
+    # after register, create channels
+    channel_one = requests.post(f"{url}/channels/create", json={
+        "token" : "first@person.com",
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    assert channel_one.json() == {"channel_id" : 1 } 
+    channel_two = requests.post(f"{url}/channels/create", json={
+        "token" : "second@person.com",
+        "name" : "channel_two",
+        "is_public" : True
+    })
+    assert channel_two.json() == {"channel_id" : 2 } 
+    # after creating channels, test channels_list and listall
+    list_first = requests.get(f"{url}/channels/list", json={"token":"first@person.com"})
+    assert list_first.json() == {
+        "channels" : [
+            {
+                "channel_id" : 1,
+                "name" : "channel_one"
+            }
+        ]
+    }
+    list_all_first =  requests.get(f"{url}/channels/listall", json={"token":"first@person.com"})
+    assert list_all_first.json() == {
+        "channels" : [
+            {
+                "channel_id" : 1,
+                "name" : "channel_one"
+            },
+            {
+                "channel_id" : 2,
+                "name" : "channel_two"
+            }            
+        ]
+    }
+
 def test_channel_join(url):
     """
     Testing server channel_join
