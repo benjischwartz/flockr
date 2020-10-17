@@ -175,3 +175,36 @@ def test_channel_join(url):
         "channel_id" : channelidj["channel_id"]
     })
     assert j.json() == {}
+
+def test_admin_permissions_change(url):
+    """
+    Testing changing admin privileges
+    user one makes user two admin, then user two removes user one
+    Works if test does not throw error
+    """
+    clear()
+    user_one = requests.post(f"{url}/auth/register", json={
+    "email" : "first@person.com",
+    "password" : "catdog",
+    "name_first" : "Joe",
+    "name_last" : "Bloggs"})
+    # TODO: update token email after hashing done
+    assert user_one.json() == {"u_id" : 1, "token" : "first@person.com"}
+    user_two = requests.post(f"{url}/auth/register", json={
+        "email" : "second@person.com",
+        "password" : "catdog",
+        "name_first" : "Mary",
+        "name_last" : "Brown"})
+    # TODO: update token email after hashing done
+    assert user_two.json() == {"u_id" : 2, "token" : "second@person.com"}
+    made_admin = requests.post(f"{url}/admin/userpermission/change", json={
+        "token": "first@person.com",
+        "u_id" : 1,
+        "permission_id" : 1})
+    assert made_admin.json() == {}
+    remove_admin = requests.post(f"{url}/admin/userpermission/change", json={
+        "token": "second@person.com",
+        "u_id" : 2,
+        "permission_id" : 2})
+    assert remove_admin.json() == {}
+     
