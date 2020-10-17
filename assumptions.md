@@ -11,11 +11,6 @@
     who is already in the channel, a message will be printed out notifying the
     the user that the user they are inviting is already in the channel and the function 
     will return an empty dictionary; no exception is raised
-* any member of the channel can call these functions (whether they are owner or not is irrelevant)
-    - channel_invite
-    - channel_details
-    - channel_messages
-    - channel_leave
 * Functions which behave the same whether the channel is private or public are:
     - channel_invite
     - channel_details
@@ -39,3 +34,14 @@ authenticated token
 * auth_register - first user registered will have u_id `1`, and subsequent u_id's will be determined from the number of people registered, thus always unique
 * auth_logout - logging out twice will return {'is_success': False}
 * owner of flockr is the first user registered, and will thus have u_id of `1`
+
+
+## message.py assumptiosn
+* message_send - first message will have message_id `1`, and subsequent message_ids will be each incremented by 1, thus always unique
+* must be a member of the channel with the message to use message_edit or message_remove, thus
+    * owners of flockr cannot remove/edit a message if they are not at least a regular member of the channel, and
+    * the user who sent the message cannot remove/edit the message if they have left the channel 
+* message_send - raise an InputError if the input 'message' is an empty string
+* message_edit - 'time_created' is NOT updated when a message is edited 
+* message_edit - raise an InputError if the input 'message' is over 1000 characters
+
