@@ -6,7 +6,7 @@ from other import clear
 
 # checking the successful registration of a user
 # checking the successful login of a user
-def register_return_values():
+def test_register_return_values():
     clear()
     result = auth_register('validemail@gmail.com', '123abc!@#', 'hello', 'goodbye')
     assert type(result) is dict
@@ -17,9 +17,8 @@ def test_register_multiple():
     clear()
     result1 = auth_register('validemail@gmail.com', '123abc!@#', 'first', 'person')
     result2 = auth_register('validemail2@gmail.com', '123abc!@#', 'second', 'person')
-    assert result1['u_id'] != result2['u_id']
-    assert result1['token'] == 'validemail@gmail.com'
-    assert result2['token'] == 'validemail2@gmail.com'
+    assert result1['u_id'] != result2['u_id']          
+    assert result1['token'] != result2['token']
     clear()
 
 def test_register_multiple_fail_login():
@@ -48,7 +47,7 @@ def test_register_logout_login():
     clear()
     result = auth_register('validemail@gmail.com', '123abc!@#', 'Firstname', 'Lastname')
     assert type(result) is dict
-    assert(auth_logout('validemail@gmail.com')) == {'is_success': True}
+    assert(auth_logout(result['token']) == {'is_success': True})
     login_result = auth_login('validemail@gmail.com', '123abc!@#')
     assert type(login_result) is dict
 
@@ -101,7 +100,7 @@ def test_logout_invalidate_token():
     clear()
     result1 = auth_register('validemaillogout@gmail.com', '123abc!@#', 'hello', 'goodbye')
     assert type(result1) is dict
-    result2 = auth_logout('validemaillogout@gmail.com') 
+    result2 = auth_logout(result1['token']) 
     assert result2 == {'is_success': True} #expect to return true since token is valid
     result3 = auth_login('validemaillogout@gmail.com', '123abc!@#')
     assert type(result3) is dict
@@ -117,9 +116,9 @@ def test_logout_twice():
     clear()
     result = auth_register('validemaillogout@gmail.com', '123abc!@#', 'hello', 'goodbye')
     assert type(result) is dict
-    assert (auth_logout('validemaillogout@gmail.com')) == {'is_success': True}
+    assert (auth_logout(result['token'])) == {'is_success': True}
     # expect false since already logged out
-    assert (auth_logout('validemaillogout@gmail.com')) == {'is_success': False}
+    assert (auth_logout(result['token'])) == {'is_success': False}
 
 def test_get_handle():
     clear()
