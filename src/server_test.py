@@ -100,16 +100,22 @@ def test_channel_join(url):
         "password" : "catdog",
         "name_first" : "Joe",
         "name_last" : "Bloggs"})
+    
     assert r.json() == {"u_id" : 1, "token" : "first@person.com"} # TODO change token when handle has been changed.
     channelid = requests.post(f"{url}/channels/create", json = {
         "token" : "first@person.com",
         "name" : "channelname",
         "is_public" : True
     })
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "second@person.com",
+        "password" : "catdog",
+        "name_first" : "James",
+        "name_last" : "Lee"})
     assert channelid.json() == {'channel_id' : 1}
     channelidj = channelid.json()
     j = requests.post(f"{url}/channel/join", json = {
-        "token" : "first@person.com",
-        "channel_id" : channelidj['channel_id']
+        "token" : "second@person.com",
+        "channel_id" : channelidj["channel_id"]
     })
     assert j.json() == {}

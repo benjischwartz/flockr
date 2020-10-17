@@ -5,6 +5,7 @@ from flask_cors import CORS
 from error import InputError
 import auth
 import channels
+import channel
 
 def defaultHandler(err):
     response = err.get_response()
@@ -69,6 +70,15 @@ def channels_create():
     payload = request.get_json()
     return channels.channels_create(payload["token"], payload["name"], payload["is_public"])
 
+@APP.route("/channel/join/", methods=['POST'])
+def channel_join():
+    """
+    User joins channel
+    return {}
+    """
+    payload = request.get_json()
+    return channel.channel_join(payload["token"], payload["channel_id"])
+    
 ### Keep code above this ###
 if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port
