@@ -70,4 +70,26 @@ def test_auth_logout_login(url):
     assert r.json() == {"token" : "first@person.com", "u_id" : 1}
         # TODO: update token after hashing
 
-
+def test_channel_join(url):
+    """
+    Testing server channel_join
+    """
+    clear()
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "Joe",
+        "name_last" : "Bloggs"})
+    assert r.json() == {"u_id" : 1, "token" : "first@person.com"} # TODO change token when handle has been changed.
+    channelid = requests.post(f"{url}/channels/create", json = {
+        "token" : "first@person.com",
+        "name" : "channelname",
+        "is_public" : True
+    })
+    assert channelid.json() == {'channel_id' : 1}
+    channelidj = channelid.json()
+    j = requests.post(f"{url}/channel/join", json = {
+        "token" : "first@person.com",
+        "channel_id" : channelidj['channel_id']
+    })
+    assert j.json() == {}
