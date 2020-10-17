@@ -41,6 +41,23 @@ def auth_register():
     payload = request.get_json()
     return auth.auth_register(payload["email"], payload["password"], payload["name_first"], payload["name_last"])
 
+@APP.route("/auth/logout/", methods=['POST'])
+def auth_logout():
+    """
+    logging out a user given a valid token
+    return {"is_success": True} if successful, otherwise {"is_success": False}
+    """
+    payload = request.get_json()
+    return auth.auth_logout(payload["token"])
+
+@APP.route("/auth/login/", methods=['POST'])
+def auth_login():
+    """
+    logging in a user given a valid email and username
+    return {"u_id": ____, "token": ___} if successful, otherwise error
+    """
+    payload = request.get_json()
+    return auth.auth_login(payload["email"], payload["password"])
 
 ### Keep code above this ###
 if __name__ == "__main__":
