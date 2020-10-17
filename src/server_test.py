@@ -199,12 +199,12 @@ def test_admin_permissions_change(url):
     assert user_two.json() == {"u_id" : 2, "token" : "second@person.com"}
     made_admin = requests.post(f"{url}/admin/userpermission/change", json={
         "token": "first@person.com",
-        "u_id" : 1,
+        "u_id" : 2,
         "permission_id" : 1})
     assert made_admin.json() == {}
     remove_admin = requests.post(f"{url}/admin/userpermission/change", json={
         "token": "second@person.com",
-        "u_id" : 2,
+        "u_id" : 1,
         "permission_id" : 2})
     assert remove_admin.json() == {}
      

@@ -6,6 +6,7 @@ from error import InputError
 import auth
 import channels
 import channel
+import admin_permissions_change
 
 def defaultHandler(err):
     response = err.get_response()
@@ -94,6 +95,15 @@ def channel_join():
     """
     payload = request.get_json()
     return channel.channel_join(payload["token"], payload["channel_id"])
+
+@APP.route("/admin/userpermission/change/", methods=['POST'])
+def change_permissions():
+    """
+    Allows the changing of permissions levels for users/owners
+    return {} if successful, otherwise throws error
+    """
+    payload = request.get_json()
+    return admin_permissions_change.change_permissions(payload["token"], payload["u_id"], payload["permission_id"])
     
 ### Keep code above this ###
 if __name__ == "__main__":
