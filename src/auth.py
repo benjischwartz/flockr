@@ -55,10 +55,9 @@ def auth_register(email, password, name_first, name_last):
         raise InputError ("Invalid email")
 
     # raise an inputerror if email already registered to a user
-    else:
-        for emails in users.keys():
-            if email == emails:
-                raise InputError("Email already belongs to a user")
+    for emails in users.keys():
+        if email == emails:
+            raise InputError("Email already belongs to a user")
 
     # raise an inputerror if first and last name are not between 1 and 50 
     # inclusive
@@ -74,11 +73,34 @@ def auth_register(email, password, name_first, name_last):
     totalUsers = len(users)
     newU_id = totalUsers + 1
 
+    # give first user owner permission_id, member for all else
+    permission_id = 2 if newU_id != 1 else 1
+    # CHANGES MADE 13/10/2020
+
+    #create a unique handle -> a concatenation of lower-case only
+    #first and last name. Cut off at 20 characters. 
+    concatenate = name_first.lower() + name_last.lower()
+    if len(concatenate) > 20:
+        concatenate = concatenate[0:20]
+
+    # if already taken, remove last two letters and add len(users) to make unique
+    for key in users.keys():
+        if concatenate == users[key]['handle']:
+            concatenate = concatenate[0:18]    # trim two digits off the end
+            totalUsers = len(users) - 1
+            if totalUsers < 10:
+                concatenate = concatenate + str(0) + str(totalUsers)
+            else:
+                concatenate = concatenate + str(totalUsers)
+
+
     users[email] = {
             'u_id' : newU_id,
             'name_first' : name_first,
             'name_last' : name_last,
-            'password' : password
+            'password' : password,
+            'permission_id' : permission_id, 
+            'handle' : concatenate
         }
     
     # validate token
@@ -88,3 +110,9 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : newU_id,
         'token' : email,
     }
+
+def get_handle(u_id):
+    for email in users.keys():
+        if u_id == users[email]['u_id']:
+            return users[email]['handle']
+    return
