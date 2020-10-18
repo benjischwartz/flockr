@@ -96,6 +96,24 @@ def channel_join():
     payload = request.get_json()
     return channel.channel_join(payload["token"], payload["channel_id"])
 
+@APP.route("/channel/addowner/", methods=['POST'])
+def channel_addowner():
+    """
+    User adding owner
+    return {}
+    """
+    payload = request.get_json()
+    return channel.channel_addowner(payload["token"], payload["channel_id"], payload["u_id"])
+
+@APP.route("/channel/removeowner/", methods=['POST'])
+def channel_removeowner():
+    """
+    User removing owner
+    return {}
+    """
+    payload = request.get_json()
+    return channel.channel_removeowner(payload["token"], payload["channel_id"], payload["u_id"])
+
 @APP.route("/admin/userpermission/change/", methods=['POST'])
 def change_permissions():
     """
