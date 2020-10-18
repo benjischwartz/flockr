@@ -2,8 +2,8 @@ from data import users, tokens
 import re
 from error import InputError
 import hashlib
-from passlib.hash import sha256_crypt
-
+#from passlib.hash import sha256_crypt
+from passlib174.passlib.hash import sha256_crypt
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
     if(re.search(regex,email)):
