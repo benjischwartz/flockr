@@ -176,6 +176,105 @@ def test_channel_join(url):
     })
     assert j.json() == {}
 
+def test_channel_addowner(url):
+    clear()
+    #Registering First User
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "Joe",
+        "name_last" : "Bloggs"})
+    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+
+    #Creating a Channel with the First User
+    channelid = requests.post(f"{url}/channels/create", json = {
+        "token" : "first@person.com",
+        "name" : "channelname",
+        "is_public" : True
+    })
+    assert channelid.json() == {'channel_id' : 1}
+
+    #Registering Second User
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "second@person.com",
+        "password" : "catdog",
+        "name_first" : "James",
+        "name_last" : "Lee"})
+    
+    #First User Adding Second User as Owner
+    r = requests.post(f"{url}/channel/addowner", json={
+        "token": "firstuser@person.com",
+        "channel_id": 1,
+        "u_id": 1,
+    })
+
+    #Checking the Owners
+    r = requests.get(f"{url}/channel/details", json={
+        "token": "firstuser@person.com",
+        "channel_id": 1,
+    })
+    assert r.json() == {"name": "channelname", 
+    "owner_members": ["firstuser@person.com", "second@person.com"],
+    "all_members": ["firstuser@person.com", "second@person.com"],
+    }
+
+def test_channel_removeowner(url):
+    clear()
+    #Registering First User
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "Joe",
+        "name_last" : "Bloggs"})
+    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+
+    #Creating a Channel with the First User
+    channelid = requests.post(f"{url}/channels/create", json = {
+        "token" : "first@person.com",
+        "name" : "channelname",
+        "is_public" : True
+    })
+    assert channelid.json() == {'channel_id' : 1}
+
+    #Registering Second User
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "second@person.com",
+        "password" : "catdog",
+        "name_first" : "James",
+        "name_last" : "Lee"})
+    
+    #First User Adding Second User as Owner
+    r = requests.post(f"{url}/channel/addowner", json={
+        "token": "firstuser@person.com",
+        "channel_id": 1,
+        "u_id": 1,
+    })
+
+    #Checking the Owners
+    r = requests.get(f"{url}/channel/details", json={
+        "token": "firstuser@person.com",
+        "channel_id": 1,
+    })
+    assert r.json() == {"name": "channelname", 
+    "owner_members": ["firstuser@person.com", "second@person.com"],
+    "all_members": ["firstuser@person.com", "second@person.com"],
+    }
+
+    #First User Removing Second User
+    r = requests.post(f"{url}/channel/removeowner", json={
+        "token": "firstuser@person.com",
+        "channel_id": 1,
+        "u_id": 2,
+    })
+    r = requests.get(f"{url}/channel/details", json={
+        "token": "firstuser@person.com",
+        "channel_id": 1,
+    })
+    assert r.json() == {"name": "channelname", 
+    "owner_members": ["firstuser@person.com"],
+    "all_members": ["firstuser@person.com", "second@person.com"],
+    }
+
 def test_admin_permissions_change(url):
     """
     Testing changing admin privileges
