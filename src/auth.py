@@ -1,6 +1,8 @@
 from data import users, tokens
 import re
 from error import InputError
+import hashlib
+from passlib.hash import sha256_crypt
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -23,7 +25,7 @@ def auth_login(email, password):
     # check if email is registered
     for emails in users.keys():
         if email == emails:            
-            if users[email]['password'] == password:
+            if sha256_crypt.verify(password, users[email]['password']): # compare hashed passwords
                 #validate token
                 tokens.append(email)
                 return {
@@ -98,7 +100,7 @@ def auth_register(email, password, name_first, name_last):
             'u_id' : newU_id,
             'name_first' : name_first,
             'name_last' : name_last,
-            'password' : password,
+            'password' : sha256_crypt.hash(password),   # hashed password
             'permission_id' : permission_id, 
             'handle' : concatenate
         }
