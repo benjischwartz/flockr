@@ -1,8 +1,9 @@
 # test suite for auth_* capabilities/functions
-from auth import auth_login, auth_logout, auth_register, get_handle
+from auth import auth_login, auth_logout, auth_register
 import pytest
 from error import InputError
 from other import clear
+from check_token import get_handle
 
 # checking the successful registration of a user
 # checking the successful login of a user
