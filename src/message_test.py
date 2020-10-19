@@ -447,4 +447,25 @@ def test_message_edit_invalid_flockr_owner():
     with pytest.raises(AccessError):
         message_edit(userOne['token'],randMessage['message_id'], 'Hello World')
 
-
+def test_unlimited_pagination():
+    """
+    checking return values for `start` and `end` when calling 
+    channel_messages for numbers not multiples of 50.
+    """
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')   
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(149):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    messages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    assert(messages['start'] == 0)
+    assert(messages['end'] == 50)       # get first 50 messages
+    messages2 = channel_messages(userOne['token'], randChannel['channel_id'], 50)
+    assert(messages2['start'] == 50)
+    assert(messages2['end'] == 100)     # get next 50 messages
+    messages3 = channel_messages(userOne['token'], randChannel['channel_id'], 100)
+    assert(messages3['start'] == 100)
+    assert(messages3['end'] == -1)      # get remaining 49 messages
+    assert(len(messages3['messages']) == 49)
+    with pytest.raises(InputError):     # checking that we get an error when loading beyond 149 messages
+        channel_messages(userOne['token'], randChannel['channel_id'], 150)  
