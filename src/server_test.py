@@ -157,7 +157,8 @@ def test_channel_join(url):
         "name_first" : "Joe",
         "name_last" : "Bloggs"})
     
-    assert r.json() == {"u_id" : 1, "token" : "first@person.com"} # TODO change token when handle has been changed.
+    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+    # TODO: update token email after hashing done
     channelid = requests.post(f"{url}/channels/create", json = {
         "token" : "first@person.com",
         "name" : "channelname",
@@ -175,6 +176,46 @@ def test_channel_join(url):
         "channel_id" : channelidj["channel_id"]
     })
     assert j.json() == {}
+
+def test_channel_leave(url):
+    """
+    Test for channel_leave function
+    """
+    clear()
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "Joe",
+        "name_last" : "Bloggs"})
+    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "second@person.com",
+        "password" : "catdog",
+        "name_first" : "James",
+        "name_last" : "Lee"})
+    assert r.json() == {"u_id" : 2, "token" : "second@person.com"}
+
+    channelid = requests.post(f"{url}/channels/create", json = {
+        "token" : "first@person.com",
+        "name" : "channelname",
+        "is_public" : True
+    })
+    assert channelid.json() == {'channel_id' : 1}
+
+    channelidj = channelid.json()
+    j = requests.post(f"{url}/channel/join", json = {
+        "token" : "second@person.com",
+        "channel_id" : channelidj["channel_id"]
+    })
+    assert j.json() == {}
+
+    j = requests.post(f"{url}/channel/leave", json = {
+        "token" : "second@person.com",
+        "channel_id" : channelidj["channel_id"]
+    })
+    assert j.json() == {}
+
 
 def test_channel_addowner(url):
     clear()

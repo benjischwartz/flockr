@@ -96,6 +96,15 @@ def channel_join():
     payload = request.get_json()
     return channel.channel_join(payload["token"], payload["channel_id"])
 
+@APP.route("/channel/leave/", methods=['POST'])
+def channel_leave():
+    """
+    User leaves channel
+    return {}
+    """
+    payload = request.get_json()
+    return channel.channel_leave(payload["token"], payload["channel_id"])
+
 @APP.route("/channel/addowner/", methods=['POST'])
 def channel_addowner():
     """
