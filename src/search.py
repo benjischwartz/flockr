@@ -28,7 +28,7 @@ def search(token, query_string):
         messages = channel[channel_id]['messages']
         for message in messages:
             # if there is match, append to result
-            if query_string in message.get('message_content', None) != None:
+            if query_string in message.get('message', None) != None:
                 result.append(message) 
             else:
                 pass

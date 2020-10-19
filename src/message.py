@@ -34,7 +34,7 @@ def message_send(token, channel_id, message):
     message_info = {
         'message_id' : message_id,
         'u_id': token_u_id,
-        'message_content' : message,
+        'message' : message,
         'time_created' : time()
     }
     
