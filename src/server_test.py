@@ -7,7 +7,6 @@ import requests
 import urllib
 from other import clear
 
-
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():
@@ -69,6 +68,41 @@ def test_auth_logout_login(url):
     assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
     assert r.json() == {"token" : "first@person.com", "u_id" : 1}
         # TODO: update token after hashing
+
+def test_channel_details(url):
+    clear()
+    userOne = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    randChannel = requests.post(f"{url}/channels/create", json={
+        "token" : "first@person.com",
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    randChannel_details = requests.get(f"{url}/channel/details", json={
+        "token" : "first@person.com",
+        "channel_id" : 1
+    })
+    assert randChannel_details.json() == {    
+        "name": "channel_one",
+        "owner_members": [
+            {
+                "u_id": 1,
+                "name_first": "First",
+                "name_last": "Bloggs"
+            }
+        ],
+        "all_members": [
+            {
+                "u_id": 1,
+                "name_first": "First",
+                "name_last": "User"
+            }
+        ]
+    }
 
 def test_channels_create_public(url):
     """
