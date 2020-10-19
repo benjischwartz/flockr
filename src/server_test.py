@@ -514,7 +514,7 @@ def test_message_send(url):
         "channel_id" : 1,
         "message" : "Hello"
     })
-    assert sendMessage.json() == {}
+    assert sendMessage.json() == {"message_id" : 1}
     chanMessages = requests.get(f"{url}/channel/messages", json={
         "token" : "first@person.com",
         "channel_id" : 1,
