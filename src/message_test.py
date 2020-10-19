@@ -455,8 +455,10 @@ def test_unlimited_pagination():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')   
     randChannel = channels_create(userOne['token'], 'randChannel', True)
-    for i in range(149):
+    i = 0
+    while i < 149:
         message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
     messages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
     assert(messages['start'] == 0)
     assert(messages['end'] == 50)       # get first 50 messages
