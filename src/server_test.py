@@ -99,7 +99,7 @@ def test_channel_details(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "User"
+                "name_last": "Bloggs"
             }
         ]
     }
