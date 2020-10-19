@@ -14,6 +14,13 @@ def user_id_given_token(token):
             return user_id
     return None
 
+
+def get_handle(u_id):
+    for email in users.keys():
+        if u_id == users[email]['u_id']:
+            return users[email]['handle']
+    return
+
 def email_given_user_id(u_id):
     '''
     returns the email if the u_id is valid,
@@ -25,7 +32,6 @@ def email_given_user_id(u_id):
     return None
 
 def permission_id_given_token(token):
-    # TODO: update from email to token once token hashing is integrated
     """
     returns the permission id given a valid token
     otherwise raises KeyError
@@ -50,3 +56,4 @@ def email_given_jwt(token):
         return decoded_jwt['email']
     except Exception:
         return None
+

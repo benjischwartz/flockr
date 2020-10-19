@@ -3,8 +3,10 @@ import pytest
 from auth import auth_register, auth_logout
 from channel import channel_invite, channel_details, channel_messages, channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_create
+from message import message_send
 from error import InputError, AccessError
 from other import clear
+from time import time
 
 # note: any function other than the one being tested for (as per the test name)
 # assumed to be working correctly in these tests
@@ -62,7 +64,6 @@ def test_channel_invite_invalid_channel_id():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-
     with pytest.raises(InputError):
         channel_invite(userOne['token'], invalidChannel_id, userTwo['u_id'])
     
@@ -72,7 +73,6 @@ def test_channel_invite_invalid_u_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     invalidu_id = 0
-
     with pytest.raises(InputError):
         channel_invite(userOne['token'], randChannel_id['channel_id'], invalidu_id)
 
@@ -184,7 +184,6 @@ def test_channel_details_invalid_channel_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-
     with pytest.raises(InputError):
         channel_details(userOne['token'], invalidChannel_id)
 
@@ -204,12 +203,89 @@ def test_channel_details_not_member():
 
 # check that channel_messages returns the correct dictionary given valid input
 # with the user calling it being the flockr owner
-def test_channel_messages_valid_input():
+def test_channel_messages_valid_input_no_messages():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     randMessages = channel_messages(userOne['token'], randChannel_id['channel_id'], 0)
     assert randMessages == {'messages': [], 'start': 0, 'end': -1}
+
+# check that channel_messages returns the correct return dictionary when there
+# are 3 messages 
+def test_channel_messages_valid_input_3_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    prior_send = time()
+    for i in range(3):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    for j in range(3):
+        assert randMessages['messages'][j]['u_id'] == userOne['u_id']
+        assert randMessages['messages'][j]['message'] == 'Hello'
+        j += 1
+    assert randMessages['messages'][2]['time_created'] > prior_send
+    assert randMessages['messages'][1]['time_created'] > randMessages['messages'][2]['time_created']
+    assert randMessages['messages'][0]['time_created'] > randMessages['messages'][1]['time_created']
+    assert randMessages['start'] == 0
+    assert randMessages['end'] == -1
+
+# check that channel_messages returns the correct return dictionary when there
+# are 49 messages
+def test_channel_messages_valid_input_49_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(49):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    assert len(randMessages['messages']) == 49
+    assert randMessages['start'] == 0
+    assert randMessages['end'] == -1
+
+# check that channel_messages returns the correct return dictionary when there
+# are 50 messages
+def test_channel_message_valid_input_50_messages():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(50):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    assert len(randMessages['messages']) == 50
+    assert randMessages['start'] == 0
+    assert randMessages['end'] == 50
+
+# check that channel_messages returns the correct return dictionary when there
+# are 50 messages but start is nonzero
+def test_channel_message_valid_input_50_messages_start_is_1():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(50):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 1)
+    assert len(randMessages['messages']) == 49
+    assert randMessages['start'] == 1
+    assert randMessages['end'] == -1
+
+# check that channel_messages returns the correct return dictionary when there
+# are 100 messages and start is 25
+def test_channel_messages_valid_input_100_messages_start_25():
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for i in range(100):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        i += 1
+    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 25)
+    assert len(randMessages['messages']) == 50
+    assert randMessages['start'] == 25
+    assert randMessages['end'] == 75
 
 # check that channel_messages returns the same dictionary whether the channel
 # is public or private
@@ -257,7 +333,6 @@ def test_channel_messages_invalid_channel_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channels_create(userOne['token'], 'randChannel', True)
     invalidChannel_id = 0
-
     with pytest.raises(InputError):
         channel_messages(userOne['token'], invalidChannel_id, 0)
 
@@ -289,8 +364,7 @@ def test_channel_leave_invalid_user():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
-    userchannel_id = channels_create(user['token'], 'userchannel', True)
-    
+    userchannel_id = channels_create(user['token'], 'userchannel', True)    
     with pytest.raises(AccessError):
         channel_leave(leaver['token'], userchannel_id['channel_id'])
 
@@ -302,7 +376,6 @@ def test_channel_leave_invalid_channel():
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
     channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
-
     with pytest.raises(InputError):
         channel_leave(leaver['token'], invalid_id)
 
@@ -312,8 +385,7 @@ def test_channel_leave_normal_case():
     leaver = auth_register('leaver@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)   
     channel_join(leaver['token'], userchannel_id['channel_id'])
-    channel_leave(leaver['token'], userchannel_id['channel_id'])
-    
+    channel_leave(leaver['token'], userchannel_id['channel_id'])    
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['all_members'] == [
     {
@@ -331,7 +403,6 @@ def test_channel_leave_normal_case_owner():
     channel_join(leaver['token'], userchannel_id['channel_id'])
     channel_addowner(leaver['token'], userchannel_id['channel_id'], leaver['u_id'])
     channel_leave(leaver['token'], userchannel_id['channel_id'])
-
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['owner_members'] == [
     {
@@ -364,7 +435,6 @@ def test_channel_join_invalid_channel():
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     channels_create(user['token'], 'userchannel', True)
     invalid_id = 0
-
     with pytest.raises(InputError):
         channel_join(joiner['token'], invalid_id)
         
@@ -374,8 +444,7 @@ def test_channel_join_private_no_invite():
     #if the channel is private, but no invite is given to the user
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
-    userchannel_id = channels_create(user['token'], 'userchannel', False)    
-    
+    userchannel_id = channels_create(user['token'], 'userchannel', False)        
     with pytest.raises(AccessError):
         channel_join(joiner['token'], userchannel_id['channel_id'])
     
@@ -383,8 +452,7 @@ def test_channel_join_private_no_invite():
 def test_channel_join_already_in_channel():
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
-    userchannel_id = channels_create(user['token'], 'userchannel', True)
-    
+    userchannel_id = channels_create(user['token'], 'userchannel', True)   
     with pytest.raises(AccessError):
         channel_join(user['token'], userchannel_id['channel_id'])
 
@@ -394,8 +462,7 @@ def test_channel_join_normal_case():
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', True)   
-    channel_join(joiner['token'], userchannel_id['channel_id'])
-    
+    channel_join(joiner['token'], userchannel_id['channel_id'])    
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['all_members'] == [
     {
@@ -417,8 +484,7 @@ def test_channel_join_private_owner():
     joiner = auth_register('joiner@gmail.com', '123abc!@#', 'first', 'last')
     user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
     userchannel_id = channels_create(user['token'], 'userchannel', False)
-    channel_join(joiner['token'], userchannel_id['channel_id'])    
-    
+    channel_join(joiner['token'], userchannel_id['channel_id'])        
     randChannel_details = channel_details(user['token'], userchannel_id['channel_id'])
     assert(randChannel_details['all_members'] == [
     {
