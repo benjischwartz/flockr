@@ -12,6 +12,13 @@ def user_id_given_token(token):
             return user_id
     return None
 
+
+def get_handle(u_id):
+    for email in users.keys():
+        if u_id == users[email]['u_id']:
+            return users[email]['handle']
+    return
+
 def email_given_user_id(u_id):
     '''
     returns the email if the u_id is valid,
@@ -29,3 +36,4 @@ def permission_id_given_token(email):
     otherwise raises KeyError
     """
     return users[email]["permission_id"]
+
