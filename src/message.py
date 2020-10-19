@@ -126,7 +126,7 @@ def message_edit(token, message_id, message):
     # check permissions to edit and if permitted then change message; if not 
     # raise and accesserror
     if token_u_id == message_u_id or token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
-        channel[message_channel]['messages'][message_index]['message_content'] = message
+        channel[message_channel]['messages'][message_index]['message'] = message
     else:
         raise AccessError("This user is not authorised to remove this message.")
     

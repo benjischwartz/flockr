@@ -32,7 +32,7 @@ channel = { # 'channel_id' are the int values themselves, per channel
         'messages' : [ {
             'message_id': 1,
             'u_id' : 1,
-            'message_content' : 'Hello',
+            'message' : 'Hello',
             'time_created' : 3
             }]
     }
