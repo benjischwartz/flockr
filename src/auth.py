@@ -1,6 +1,6 @@
-import os, sys
-file_path = 'AdditionalModules/'
-sys.path.append(os.path.dirname(file_path))
+#import os, sys
+#file_path = 'AdditionalModules/'
+#sys.path.append(os.path.dirname(file_path))
 # Now python also searches AdditionalModules folder for importing modules as we have set it on the PYTHONPATH.
 from data import users, tokens
 import re
