@@ -62,24 +62,33 @@ def auth_login():
     payload = request.get_json()
     return auth.auth_login(payload["email"], payload["password"])
 
+@APP.route("/channel/invite/", methods=['POST'])
+def channel_invite():
+    """
+    enables a valid user of a channel to add a user to a channel
+    returns {}
+    """
+    payload = request.get_json()
+    return channel.channel_invite(payload["token"], payload["channel_id"], payload["u_id"])
+    
 @APP.route("/channel/details/", methods=['GET'])
 def channel_details():
     """
     gets the details of a specified channel
     returns {
-        'name': 'Hayden',
+        'name': _____,
         'owner_members': [
             {    
-                'u_id': 1,
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
+                'u_id': ____,
+                'name_first': ______,
+                'name_last': ______,
             }
         ],
         'all_members': [
             {
-                'u_id': 1,
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
+                'u_id': _,
+                'name_first': ______,
+                'name_last': ______,
             }
         ],
       }
