@@ -378,7 +378,7 @@ def test_channel_addowner(url):
         "u_id": 2,
     })
     assert r.json() == {}
-    #TODO: Checking the Owners
+    #Checking the Owners
     r = requests.get(f"{url}/channel/details", json={
         "token": "first@person.com",
         "channel_id": 1,
@@ -444,7 +444,7 @@ def test_channel_removeowner(url):
     })
     assert r.json() == {}
 
-    #TODO: Checking the Owners
+    #Checking the Owners
     r = requests.get(f"{url}/channel/details", json={
         "token": "first@person.com",
         "channel_id": 1,
