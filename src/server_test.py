@@ -530,3 +530,33 @@ def test_message_send(url):
     assert chanMessages["messages"][0]["u_id"] == userOne['u_id']
     assert chanMessages["messages"][0]["message"] == 'Hello'
     assert prior_send < chanMessages["messages"][0]["time_created"] < after_send
+
+def test_search_single_message(url):
+    clear()
+    userOne = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    userOne = userOne.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : "first@person.com",
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    sendMessage = requests.post(f"{url}/message/send", json={
+        "token" : "first@person.com",
+        "channel_id" : 1,
+        "message" : "Hello World"
+    })
+    assert sendMessage.json() == {"message_id" : 1}
+    searchResult = requests.get(f"{url}/search" , json={
+        "token" : userOne["token"],
+        "query_str" : "World"
+    })
+    searchResult = searchResult.json()
+    assert len(searchResult) == 1
+    assert searchResult[0]['message_id'] == 1
+    assert searchResult[0]['u_id'] == 1
+    assert searchResult[0]['message'] == "Hello World"
