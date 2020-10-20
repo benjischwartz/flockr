@@ -616,15 +616,16 @@ def test_search_single_message(url):
     assert searchResult[0]['u_id'] == 1
     assert searchResult[0]['message'] == "Hello World"
 
-def test_user_profile_setname():
+def test_user_profile_setname(url):
     clear()
     #Register First User
-    requests.post(f"{url}/auth/register", json={
+    r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
         "name_first" : "First",
         "name_last" : "Bloggs"
     })
+    assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})
     #First User Changes Name
     nameChange = requests.put(f"{url}/user/profile/setname", json={
         "token" : "first@person.com",
@@ -646,15 +647,16 @@ def test_user_profile_setname():
     })
     '''
 
-def test_user_profile_setemail():
+def test_user_profile_setemail(url):
     clear()
     #Register First User
-    requests.post(f"{url}/auth/register", json={
+    r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
         "name_first" : "First",
         "name_last" : "Bloggs"
     })
+    assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})
     #First User Changes Name
     nameChange = requests.put(f"{url}/user/profile/setemail", json={
         "token" : "first@person.com",
