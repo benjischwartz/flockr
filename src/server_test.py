@@ -70,6 +70,9 @@ def test_auth_logout_login(url):
         # TODO: update token after hashing
 
 def test_channel_invite(url):    
+    """
+    Testing channel_invite
+    """
     clear()
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -77,28 +80,29 @@ def test_channel_invite(url):
         "name_first" : "First",
         "name_last" : "Bloggs"
     })
-    userTwo = requests.post(f"{url}/auth/register", json={
+    userOne = userOne.json()
+    requests.post(f"{url}/auth/register", json={
         "email" : "second@person.com",
         "password" : "catdog",
         "name_first" : "Second",
         "name_last" : "Bloggs"})
-    channel_one = requests.post(f"{url}/channels/create", json={
-        "token" : "first@person.com",
-        "name" : "channel_one",
+    requests.post(f"{url}/channels/create", json={
+        "token" : userOne["token"],
+        "name" : "randChannel",
         "is_public" : True
     })
     r = requests.post(f"{url}/channel/invite", json={
-        "token" : 'first@person.com',
+        "token" : userOne["token"],
         "channel_id" : 1,
         "u_id" : 2
     })
     assert r.json() == {}
-    channel_one_details = requests.get(f"{url}/channel/details", json={
-        "token" : "first@person.com",
+    randChannel_details = requests.get(f"{url}/channel/details", json={
+        "token" : userOne["token"],
         "channel_id" : 1
     })
-    assert channel_one_details.json() == {
-        "name": "channel_one",
+    assert randChannel_details.json() == {
+        "name": "randChannel",
         "owner_members": [
             {
                 "u_id": 1,
@@ -120,6 +124,9 @@ def test_channel_invite(url):
         ]
     }
 def test_channel_details(url):
+    """
+    Testing channel_details
+    """
     clear()
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -127,17 +134,18 @@ def test_channel_details(url):
         "name_first" : "First",
         "name_last" : "Bloggs"
     })
-    randChannel = requests.post(f"{url}/channels/create", json={
-        "token" : "first@person.com",
-        "name" : "channel_one",
+    userOne = userOne.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : userOne["token"],
+        "name" : "randChannel",
         "is_public" : True
     })
     randChannel_details = requests.get(f"{url}/channel/details", json={
-        "token" : "first@person.com",
+        "token" : userOne["token"],
         "channel_id" : 1
     })
     assert randChannel_details.json() == {    
-        "name": "channel_one",
+        "name": "randChannel",
         "owner_members": [
             {
                 "u_id": 1,
@@ -154,6 +162,9 @@ def test_channel_details(url):
         ]
     }
 def test_channel_messages_no_message(url):
+    """
+    Testing channel_messages with no messages
+    """
     clear()
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -161,13 +172,14 @@ def test_channel_messages_no_message(url):
         "name_first" : "First",
         "name_last" : "Bloggs"
     })
-    randChannel = requests.post(f"{url}/channels/create", json={
-        "token" : "first@person.com",
+    userOne = userOne.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : userOne["token"],
         "name" : "channel_one",
         "is_public" : True
     })
     chanMessages = requests.get(f"{url}/channel/messages", json={
-        "token" : "first@person.com",
+        "token" : userOne["token"],
         "channel_id" : 1,
         "start" : 0
     })
@@ -178,6 +190,9 @@ def test_channel_messages_no_message(url):
     }
     
 def test_channel_messages_one_message(url):
+    """
+    Testing channel_messages with one message
+    """
     clear()
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -186,19 +201,19 @@ def test_channel_messages_one_message(url):
         "name_last" : "Bloggs"
     })
     userOne = userOne.json()
-    randChannel = requests.post(f"{url}/channels/create", json={
+    requests.post(f"{url}/channels/create", json={
         "token" : "first@person.com",
         "name" : "channel_one",
         "is_public" : True
     })
     prior_send = time()
-    sendMessage = requests.post(f"{url}/message/send", json={
-        "token" : "first@person.com",
+    requests.post(f"{url}/message/send", json={
+        "token" : userOne["token"],
         "channel_id" : 1,
         "message" : "Hello"
     })
     chanMessages = requests.get(f"{url}/channel/messages", json={
-        "token" : "first@person.com",
+        "token" : userOne["token"],
         "channel_id" : 1,
         "start" : 0
     })
@@ -498,6 +513,9 @@ def test_admin_permissions_change(url):
     assert remove_admin.json() == {}
      
 def test_message_send(url):
+    """
+    Testing message_send 
+    """
     clear()
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -507,29 +525,17 @@ def test_message_send(url):
     })
     userOne = userOne.json()
     requests.post(f"{url}/channels/create", json={
-        "token" : "first@person.com",
+        "token" : userOne["token"],
         "name" : "channel_one",
         "is_public" : True
     })
     prior_send = time()
     sendMessage = requests.post(f"{url}/message/send", json={
-        "token" : "first@person.com",
+        "token" : userOne["token"],
         "channel_id" : 1,
         "message" : "Hello"
     })
     assert sendMessage.json() == {"message_id" : 1}
-    chanMessages = requests.get(f"{url}/channel/messages", json={
-        "token" : "first@person.com",
-        "channel_id" : 1,
-        "start" : 0
-    })
-    after_send = time()
-    chanMessages = chanMessages.json()
-    assert len(chanMessages["messages"]) == 1
-    assert chanMessages["messages"][0]["message_id"] == 1
-    assert chanMessages["messages"][0]["u_id"] == userOne['u_id']
-    assert chanMessages["messages"][0]["message"] == 'Hello'
-    assert prior_send < chanMessages["messages"][0]["time_created"] < after_send
 
 def test_search_single_message(url):
     clear()

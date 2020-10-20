@@ -99,6 +99,24 @@ def channel_details():
     """
     payload = request.get_json()
     return dumps(channel.channel_details(payload["token"], payload["channel_id"]))
+    
+@APP.route("/channel/messages/", methods=['GET'])
+def channel_messages():
+    """
+    gets all the messages that have been sent in the channel
+    returns {
+        'messages' : [
+            'message_id' : ____
+            'u_id' : _____
+            'message' : '_____'
+            'time_created' : ______
+            ]
+        'start' : _____
+        'end' : ______
+    }
+    """
+    payload = request.get_json()
+    return dumps(channel.channel_messages(payload['token'], payload['channel_id'], payload['start']))
 
 @APP.route("/channels/create/", methods=['POST'])
 def channels_create():
@@ -172,13 +190,14 @@ def change_permissions():
 
 @APP.route("/message/send/", methods=['POST'])
 def message_send():
+    """
+    sends a message to a specified channel
+    returns {"message_id" : ____}
+    """
     payload = request.get_json()
     return dumps(message.message_send(payload['token'], payload['channel_id'], payload['message']))
 
-@APP.route("/channel/messages/", methods=['GET'])
-def channel_messages():
-    payload = request.get_json()
-    return dumps(channel.channel_messages(payload['token'], payload['channel_id'], payload['start']))
+
 
 @APP.route("/search", methods=["GET"])
 def search_messages():
