@@ -177,6 +177,7 @@ def channel_messages():
     payload = request.get_json()
     return channel.channel_messages(payload['token'], payload['channel_id'], payload['start'])
 
+@APP.route("/channel/")
     
 ### Keep code above this ###
 if __name__ == "__main__":
