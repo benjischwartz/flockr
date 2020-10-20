@@ -185,6 +185,7 @@ def test_channel_messages_one_message(url):
         "name_first" : "First",
         "name_last" : "Bloggs"
     })
+    userOne = userOne.json()
     randChannel = requests.post(f"{url}/channels/create", json={
         "token" : "first@person.com",
         "name" : "channel_one",
@@ -201,10 +202,11 @@ def test_channel_messages_one_message(url):
         "channel_id" : 1,
         "start" : 0
     })
-    chanMessages_dict = chanMessages.json()
-    assert len(chanMessages_dict["messages"]) == 1
-    assert chanMessages_dict["messages"][0]["message_id"] == 1
-    assert chanMessages["messages"][0]["u_id"].json() == userOne['u_id']
+    after_send = time()
+    chanMessages = chanMessages.json()
+    assert len(chanMessages["messages"]) == 1
+    assert chanMessages["messages"][0]["message_id"] == 1
+    assert chanMessages["messages"][0]["u_id"] == userOne['u_id']
     assert chanMessages["messages"][0]["message"] == 'Hello'
     assert prior_send < chanMessages["messages"][0]["time_created"] < after_send
     
@@ -503,7 +505,8 @@ def test_message_send(url):
         "name_first" : "First",
         "name_last" : "Bloggs"
     })
-    randChannel = requests.post(f"{url}/channels/create", json={
+    userOne = userOne.json()
+    requests.post(f"{url}/channels/create", json={
         "token" : "first@person.com",
         "name" : "channel_one",
         "is_public" : True
@@ -521,8 +524,9 @@ def test_message_send(url):
         "start" : 0
     })
     after_send = time()
-    assert len(chanMessages["messages"].json()) == 1
-    assert chanMessages["messages"][0]["message_id"].json() == 1
-    assert chanMessages["messages"][0]["u_id"].json() == userOne['u_id']
+    chanMessages = chanMessages.json()
+    assert len(chanMessages["messages"]) == 1
+    assert chanMessages["messages"][0]["message_id"] == 1
+    assert chanMessages["messages"][0]["u_id"] == userOne['u_id']
     assert chanMessages["messages"][0]["message"] == 'Hello'
     assert prior_send < chanMessages["messages"][0]["time_created"] < after_send

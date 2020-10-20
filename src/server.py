@@ -7,6 +7,7 @@ import auth
 import channels
 import channel
 import admin_permissions_change
+import message
 
 def defaultHandler(err):
     response = err.get_response()
@@ -165,6 +166,17 @@ def change_permissions():
     """
     payload = request.get_json()
     return admin_permissions_change.change_permissions(payload["token"], payload["u_id"], payload["permission_id"])
+
+@APP.route("/message/send/", methods=['POST'])
+def message_send():
+    payload = request.get_json()
+    return message.message_send(payload['token'], payload['channel_id'], payload['message'])
+
+@APP.route("/channel/messages/", methods=['GET'])
+def channel_messages():
+    payload = request.get_json()
+    return channel.channel_messages(payload['token'], payload['channel_id'], payload['start'])
+
     
 ### Keep code above this ###
 if __name__ == "__main__":
