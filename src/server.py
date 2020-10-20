@@ -209,6 +209,24 @@ def search_messages():
         return dumps(search.search(token, query))
     else:
         return dumps(InputError)
+
+@APP.route("/user/profile/setname/", methods=['PUT'])
+def user_profile_setname():
+    """
+    User set name
+    return {}
+    """
+    payload = request.get_json()
+    return dumps(user.user_profile_setname(payload["token"], payload["name_first"], payload["name_last"]))
+
+@APP.route("/user/profile/setemail/", methods=['PUT'])
+def user_profile_setemail():
+    """
+    User set email
+    return {}
+    """
+    payload = request.get_json()
+    return dumps(user.user_profile_setemail(payload["token"], payload["email"]))
     
 ### Keep code above this ###
 if __name__ == "__main__":
