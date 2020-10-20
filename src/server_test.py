@@ -85,7 +85,8 @@ def test_channel_invite(url):
         "email" : "second@person.com",
         "password" : "catdog",
         "name_first" : "Second",
-        "name_last" : "Bloggs"})
+        "name_last" : "Bloggs"
+    })
     requests.post(f"{url}/channels/create", json={
         "token" : userOne["token"],
         "name" : "randChannel",
