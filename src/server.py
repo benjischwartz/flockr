@@ -2,7 +2,6 @@ import sys
 from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
-import urllib
 import requests
 from error import InputError
 import auth
@@ -12,6 +11,7 @@ import admin_permissions_change
 import message
 import search
 import user
+import other
 
 def defaultHandler(err):
     response = err.get_response()
@@ -245,6 +245,14 @@ def user_profile_setemail():
     payload = request.get_json()
     return dumps(user.user_profile_setemail(payload["token"], payload["email"]))
     
+@APP.route("/clear/", methods=['DELETE'])
+def clear():
+    """
+    Check if all the data is cleared
+    should return a empty dictionary
+    """
+    return other.clear()
+
 ### Keep code above this ###
 if __name__ == "__main__":
     APP.run(port=0) # Do not edit this port

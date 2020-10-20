@@ -38,7 +38,7 @@ def test_auth_register(url):
     """
     Testing server auth_register
     """
-    clear()
+     
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -51,7 +51,7 @@ def test_auth_logout_login(url):
     """
     Testing server auth_login
     """
-    clear()
+     
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -73,7 +73,7 @@ def test_channel_invite(url):
     """
     Testing channel_invite
     """
-    clear()
+     
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -128,7 +128,7 @@ def test_channel_details(url):
     """
     Testing channel_details
     """
-    clear()
+     
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -167,7 +167,7 @@ def test_channel_messages_one_message(url):
     """
     Testing channel_messages with one message
     """
-    clear()
+     
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -203,7 +203,7 @@ def test_channels_create_public(url):
     """
     Testing creating a public channel
     """
-    clear()
+     
     r = requests.post(f"{url}/auth/register", json={
     "email" : "first@person.com",
     "password" : "catdog",
@@ -223,7 +223,7 @@ def test_channels_list_listall(url):
     """
     Create two users to test channels_list and channels_listall
     """
-    clear()
+     
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -279,7 +279,7 @@ def test_channel_join(url):
     """
     Testing server channel_join
     """
-    clear()
+     
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -310,7 +310,7 @@ def test_channel_leave(url):
     """
     Test for channel_leave function
     """
-    clear()
+     
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -347,7 +347,7 @@ def test_channel_leave(url):
 
 
 def test_channel_addowner(url):
-    clear()
+     
     #Registering First User
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -412,7 +412,7 @@ def test_channel_addowner(url):
     }
 
 def test_channel_removeowner(url):
-    clear()
+     
     #Registering First User
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -518,7 +518,7 @@ def test_admin_permissions_change(url):
     user one makes user two admin, then user two removes user one
     Works if test does not throw error
     """
-    clear()
+     
     user_one = requests.post(f"{url}/auth/register", json={
     "email" : "first@person.com",
     "password" : "catdog",
@@ -548,7 +548,7 @@ def test_message_send(url):
     """
     Testing message_send 
     """
-    clear()
+     
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -573,7 +573,7 @@ def test_message_remove(url):
     """
     testing message_remove
     """
-    clear()
+     
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -611,7 +611,7 @@ def test_message_edit(url):
     """
     testing message_edit
     """
-    clear()
+     
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -643,7 +643,7 @@ def test_message_edit(url):
     assert chanMessages['messages'][0]['message'] == "Hi world" 
     
 def test_search_single_message(url):
-    clear()
+     
     userOne = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -675,7 +675,7 @@ def test_search_single_message(url):
     assert searchResult[0]['message'] == "Hello World"
 
 def test_user_profile_setname(url):
-    clear()
+     
     #Register First User
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -706,7 +706,7 @@ def test_user_profile_setname(url):
     '''
 
 def test_user_profile_setemail(url):
-    clear()
+     
     #Register First User
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -734,3 +734,32 @@ def test_user_profile_setemail(url):
         "handle": "firstbloggs"
     })
     '''
+
+def test_clear(url):
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})
+
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
+
+    user_two = requests.post(f"{url}/auth/register", json={
+        "email" : "second@person.com",
+        "password" : "catdog",
+        "name_first" : "Mary",
+        "name_last" : "Brown"})
+    
+    r = requests.get(f"{url}/users/all", json={
+        "token" : "second@person.com"
+    })
+    rj = r.json
+    assert(rj == {
+        "email" : "second@person.com",
+        "password" : "catdog",
+        "name_first" : "Mary",
+        "name_last" : "Brown"
+    })
