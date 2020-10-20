@@ -735,6 +735,51 @@ def test_user_profile_setemail(url):
     })
     '''
 
+def test_users_all(url):
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})    
+
+    r = requests.get(f"{url}/users/all", json={
+        "token" : "first@person.com"
+    })
+    rj = r.json()
+    assert(rj == {
+        "first@person.com" : {
+            "u_id" : "1",
+            "name_first" : "First",
+            "name_last" : "Bloggs"
+            #"handle" : rj['handle']
+        }
+    })
+
+def test_users_all(url):
+    r = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})    
+
+    r = requests.get(f"{url}/users/all", json={
+        "token" : "first@person.com"
+    })
+    rj = r.json()
+    assert(rj == {
+        "first@person.com" : {
+            "u_id" : "1",
+            "name_first" : "First",
+            "name_last" : "Bloggs"
+            #"handle" : rj['u_id']
+        }
+    })
+
+
 def test_clear(url):
     r = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -758,8 +803,10 @@ def test_clear(url):
     })
     rj = r.json
     assert(rj == {
-        "email" : "second@person.com",
-        "password" : "catdog",
-        "name_first" : "Mary",
-        "name_last" : "Brown"
+        "second@person.com" : {
+            "u_id" : "1",
+            "name_first" : "Mary",
+            "name_last" : "Brown"
+            #"handle" : rj['u_id']
+        }
     })
