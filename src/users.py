@@ -11,5 +11,6 @@ def users_all(token):
     
     for token in temp:
         temp[token].pop('password')
+        temp[token].pop('permission_id')
 
     return temp
