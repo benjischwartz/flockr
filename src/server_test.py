@@ -568,3 +568,62 @@ def test_search_single_message(url):
     assert searchResult[0]['message_id'] == 1
     assert searchResult[0]['u_id'] == 1
     assert searchResult[0]['message'] == "Hello World"
+
+def test_user_profile_setname():
+    clear()
+    #Register First User
+    requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    #First User Changes Name
+    nameChange = requests.put(f"{url}/user/profile/setname", json={
+        "token" : "first@person.com",
+        "name_first" : "New First",
+        "name_last": "New Last"
+    })
+    assert(nameChange.json() == {})
+    '''
+    userProfile = requests.get(f"{url}/user/profile", json={
+        "token": "first@person.com",
+        "u_id": 1
+    })
+    assert(userProfile.json() == {
+        "user_id": 1,
+        "email": "first@person.com",
+        "name_first": "New First",
+        "name_last": "New Last",
+        "handle": "firstbloggs"
+    })
+    '''
+
+def test_user_profile_setemail():
+    clear()
+    #Register First User
+    requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    #First User Changes Name
+    nameChange = requests.put(f"{url}/user/profile/setemail", json={
+        "token" : "first@person.com",
+        "email": "newemail@person.com"
+    })
+    assert(nameChange.json() == {})
+    '''
+    userProfile = requests.get(f"{url}/user/profile", json={
+        "token": "first@person.com",
+        "u_id": 1
+    })
+    assert(userProfile.json() == {
+        "user_id": 1,
+        "email": "newemail@person.com",
+        "name_first": "First",
+        "name_last": "Bloggs",
+        "handle": "firstbloggs"
+    })
+    '''
