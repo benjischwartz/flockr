@@ -251,7 +251,7 @@ def clear():
     Check if all the data is cleared
     should return a empty dictionary
     """
-    return other.clear()
+    return dumps(other.clear())
 
 ### Keep code above this ###
 if __name__ == "__main__":

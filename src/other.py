@@ -4,6 +4,7 @@ def clear():
     users.clear()
     tokens.clear()
     channel.clear()
+    return {}
 
 def users_all(token):
     return {
