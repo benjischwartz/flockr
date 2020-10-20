@@ -11,6 +11,7 @@ import channel
 import admin_permissions_change
 import message
 import search
+import user
 
 def defaultHandler(err):
     response = err.get_response()
