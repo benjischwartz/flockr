@@ -379,16 +379,37 @@ def test_channel_addowner(url):
     })
     assert r.json() == {}
     #TODO: Checking the Owners
-    '''
     r = requests.get(f"{url}/channel/details", json={
-        "token": "firstuser@person.com",
+        "token": "first@person.com",
         "channel_id": 1,
     })
-    assert r.json() == {"name": "channelname", 
-    "owner_members": ["firstuser@person.com", "second@person.com"],
-    "all_members": ["firstuser@person.com", "second@person.com"],
+    assert r.json() == {
+        "name": "channelname", 
+        "owner_members": [
+            {
+                "u_id": 1, 
+                "name_first" : "Joe",
+                "name_last" : "Bloggs"
+            },
+            {
+                "u_id": 2, 
+                "name_first" : "James",
+                "name_last" : "Lee"
+            }
+        ],
+        "all_members": [
+            {
+                "u_id": 1, 
+                "name_first" : "Joe",
+                "name_last" : "Bloggs"
+            },
+            {
+                "u_id": 2, 
+                "name_first" : "James",
+                "name_last" : "Lee"
+            }
+        ],
     }
-    '''
 
 def test_channel_removeowner(url):
     clear()
@@ -424,16 +445,37 @@ def test_channel_removeowner(url):
     assert r.json() == {}
 
     #TODO: Checking the Owners
-    '''
     r = requests.get(f"{url}/channel/details", json={
-        "token": "firstuser@person.com",
+        "token": "first@person.com",
         "channel_id": 1,
     })
-    assert r.json() == {"name": "channelname", 
-    "owner_members": ["firstuser@person.com", "second@person.com"],
-    "all_members": ["firstuser@person.com", "second@person.com"],
+    assert r.json() == {
+        "name": "channelname", 
+        "owner_members": [
+            {
+                "u_id": 1, 
+                "name_first" : "Joe",
+                "name_last" : "Bloggs"
+            },
+            {
+                "u_id": 2, 
+                "name_first" : "James",
+                "name_last" : "Lee"
+            }
+        ],
+        "all_members": [
+            {
+                "u_id": 1, 
+                "name_first" : "Joe",
+                "name_last" : "Bloggs"
+            },
+            {
+                "u_id": 2, 
+                "name_first" : "James",
+                "name_last" : "Lee"
+            }
+        ],
     }
-    '''
 
     #First User Removing Second User
     r = requests.post(f"{url}/channel/removeowner", json={
@@ -442,17 +484,33 @@ def test_channel_removeowner(url):
         "u_id": 2,
     })
     assert r.json() == {}
-    #TODO
-    '''
+    #Checking Owner Members
     r = requests.get(f"{url}/channel/details", json={
-        "token": "firstuser@person.com",
+        "token": "first@person.com",
         "channel_id": 1,
     })
-    assert r.json() == {"name": "channelname", 
-    "owner_members": ["firstuser@person.com"],
-    "all_members": ["firstuser@person.com", "second@person.com"],
+    assert r.json() == {
+        "name": "channelname", 
+        "owner_members": [
+            {
+                "u_id": 1, 
+                "name_first" : "Joe",
+                "name_last" : "Bloggs"
+            }
+        ],
+        "all_members": [
+            {
+                "u_id": 1, 
+                "name_first" : "Joe",
+                "name_last" : "Bloggs"
+            },
+            {
+                "u_id": 2, 
+                "name_first" : "James",
+                "name_last" : "Lee"
+            }
+        ],
     }
-    '''
 
 def test_admin_permissions_change(url):
     """
