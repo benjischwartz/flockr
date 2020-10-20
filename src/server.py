@@ -197,7 +197,23 @@ def message_send():
     payload = request.get_json()
     return dumps(message.message_send(payload['token'], payload['channel_id'], payload['message']))
 
+@APP.route("/message/remove/", methods=['DELETE'])
+def message_remove():
+    """
+    remove a message with a specified message_id
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_remove(payload['token'], payload['message_id']))
 
+@APP.route("/message/edit/", methods=['PUT'])
+def message_edit():
+    """
+    edits a message with a specified message_id
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_edit(payload['token'], payload['message_id'], payload['message']))
 
 @APP.route("/search", methods=["GET"])
 def search_messages():

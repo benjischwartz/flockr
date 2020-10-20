@@ -85,7 +85,8 @@ def test_channel_invite(url):
         "email" : "second@person.com",
         "password" : "catdog",
         "name_first" : "Second",
-        "name_last" : "Bloggs"})
+        "name_last" : "Bloggs"
+    })
     requests.post(f"{url}/channels/create", json={
         "token" : userOne["token"],
         "name" : "randChannel",
@@ -160,33 +161,6 @@ def test_channel_details(url):
                 "name_last": "Bloggs"
             }
         ]
-    }
-def test_channel_messages_no_message(url):
-    """
-    Testing channel_messages with no messages
-    """
-    clear()
-    userOne = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    userOne = userOne.json()
-    requests.post(f"{url}/channels/create", json={
-        "token" : userOne["token"],
-        "name" : "channel_one",
-        "is_public" : True
-    })
-    chanMessages = requests.get(f"{url}/channel/messages", json={
-        "token" : userOne["token"],
-        "channel_id" : 1,
-        "start" : 0
-    })
-    assert chanMessages.json() == {
-        'messages' : [],
-        'start' : 0,
-        'end' : -1
     }
     
 def test_channel_messages_one_message(url):
@@ -536,7 +510,80 @@ def test_message_send(url):
         "message" : "Hello"
     })
     assert sendMessage.json() == {"message_id" : 1}
+    
+def test_message_remove(url):
+    """
+    testing message_remove
+    """
+    clear()
+    userOne = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    userOne = userOne.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : userOne["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/message/send", json={
+        "token" : userOne["token"],
+        "channel_id" : 1,
+        "message" : "Hello"
+    })
+    r = requests.delete(f"{url}/message/remove", json={
+        "token" : userOne["token"],
+        "channel_id" : 1,
+        "message_id" : 1
+    })
+    chanMessages = requests.get(f"{url}/channel/messages", json={
+        "token" : userOne["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    assert chanMessages.json() == {
+        'messages' : [],
+        'start' : 0,
+        'end' : -1
+    }
 
+def test_message_edit(url):
+    """
+    testing message_edit
+    """
+    clear()
+    userOne = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    userOne = userOne.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : userOne["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/message/send", json={
+        "token" : userOne["token"],
+        "channel_id" : 1,
+        "message" : "Hello"
+    })
+    r = requests.put(f"{url}/message/edit", json={
+        "token" : userOne["token"],
+        "message_id" : 1,
+        "message" : "Hi world"
+    })
+    chanMessages = requests.get(f"{url}/channel/messages", json={
+        "token" : userOne["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    chanMessages = chanMessages.json()
+    assert chanMessages['messages'][0]['message'] == "Hi world" 
+    
 def test_search_single_message(url):
     clear()
     userOne = requests.post(f"{url}/auth/register", json={
