@@ -551,10 +551,12 @@ def test_search_single_message(url):
         "message" : "Hello World"
     })
     assert sendMessage.json() == {"message_id" : 1}
-    searchResult = requests.get(f"{url}/search" , json={
-        "token" : userOne["token"],
-        "query_str" : "World"
-    })
+
+    # get variables for input into search
+    token = "first@person.com"
+    query_str = "Hello"
+
+    searchResult = requests.get(f"{url}/search?token={token}&query_str={query_str}")
     searchResult = searchResult.json()
     assert len(searchResult) == 1
     assert searchResult[0]['message_id'] == 1

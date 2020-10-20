@@ -2,12 +2,15 @@ import sys
 from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
+import urllib
+import requests
 from error import InputError
 import auth
 import channels
 import channel
 import admin_permissions_change
 import message
+import search
 
 def defaultHandler(err):
     response = err.get_response()
@@ -52,7 +55,7 @@ def auth_logout():
     return {"is_success": True} if successful, otherwise {"is_success": False}
     """
     payload = request.get_json()
-    return auth.auth_logout(payload["token"])
+    return dumps(auth.auth_logout(payload["token"]))
 
 @APP.route("/auth/login/", methods=['POST'])
 def auth_login():
@@ -61,7 +64,7 @@ def auth_login():
     return {"u_id": ____, "token": ___} if successful, otherwise error
     """
     payload = request.get_json()
-    return auth.auth_login(payload["email"], payload["password"])
+    return dumps(auth.auth_login(payload["email"], payload["password"]))
 
 @APP.route("/channel/invite/", methods=['POST'])
 def channel_invite():
@@ -70,7 +73,7 @@ def channel_invite():
     returns {}
     """
     payload = request.get_json()
-    return channel.channel_invite(payload["token"], payload["channel_id"], payload["u_id"])
+    return dumps(channel.channel_invite(payload["token"], payload["channel_id"], payload["u_id"]))
     
 @APP.route("/channel/details/", methods=['GET'])
 def channel_details():
@@ -95,7 +98,7 @@ def channel_details():
       }
     """
     payload = request.get_json()
-    return channel.channel_details(payload["token"], payload["channel_id"])
+    return dumps(channel.channel_details(payload["token"], payload["channel_id"]))
 
 @APP.route("/channels/create/", methods=['POST'])
 def channels_create():
@@ -104,7 +107,7 @@ def channels_create():
     if successful
     """
     payload = request.get_json()
-    return channels.channels_create(payload["token"], payload["name"], payload["is_public"])
+    return dumps(channels.channels_create(payload["token"], payload["name"], payload["is_public"]))
 
 @APP.route("/channels/list/", methods=['GET'])
 def channels_list():
@@ -112,7 +115,7 @@ def channels_list():
     Lists all channels the user, whose token is passed, is a member of
     """
     payload = request.get_json()
-    return channels.channels_list(payload["token"])
+    return dumps(channels.channels_list(payload["token"]))
 
 @APP.route("/channels/listall/", methods=['GET'])
 def channels_listall():
@@ -120,7 +123,7 @@ def channels_listall():
     Lists all channels, regardless of membership or private/public
     """
     payload = request.get_json()
-    return channels.channels_listall(payload["token"])
+    return dumps(channels.channels_listall(payload["token"]))
 
 @APP.route("/channel/join/", methods=['POST'])
 def channel_join():
@@ -129,7 +132,7 @@ def channel_join():
     return {}
     """
     payload = request.get_json()
-    return channel.channel_join(payload["token"], payload["channel_id"])
+    return dumps(channel.channel_join(payload["token"], payload["channel_id"]))
 
 @APP.route("/channel/leave/", methods=['POST'])
 def channel_leave():
@@ -138,7 +141,7 @@ def channel_leave():
     return {}
     """
     payload = request.get_json()
-    return channel.channel_leave(payload["token"], payload["channel_id"])
+    return dumps(channel.channel_leave(payload["token"], payload["channel_id"]))
 
 @APP.route("/channel/addowner/", methods=['POST'])
 def channel_addowner():
@@ -147,7 +150,7 @@ def channel_addowner():
     return {}
     """
     payload = request.get_json()
-    return channel.channel_addowner(payload["token"], payload["channel_id"], payload["u_id"])
+    return dumps(channel.channel_addowner(payload["token"], payload["channel_id"], payload["u_id"]))
 
 @APP.route("/channel/removeowner/", methods=['POST'])
 def channel_removeowner():
@@ -156,7 +159,7 @@ def channel_removeowner():
     return {}
     """
     payload = request.get_json()
-    return channel.channel_removeowner(payload["token"], payload["channel_id"], payload["u_id"])
+    return dumps(channel.channel_removeowner(payload["token"], payload["channel_id"], payload["u_id"]))
 
 @APP.route("/admin/userpermission/change/", methods=['POST'])
 def change_permissions():
@@ -165,18 +168,28 @@ def change_permissions():
     return {} if successful, otherwise throws error
     """
     payload = request.get_json()
-    return admin_permissions_change.change_permissions(payload["token"], payload["u_id"], payload["permission_id"])
+    return dumps(admin_permissions_change.change_permissions(payload["token"], payload["u_id"], payload["permission_id"]))
 
 @APP.route("/message/send/", methods=['POST'])
 def message_send():
     payload = request.get_json()
-    return message.message_send(payload['token'], payload['channel_id'], payload['message'])
+    return dumps(message.message_send(payload['token'], payload['channel_id'], payload['message']))
 
 @APP.route("/channel/messages/", methods=['GET'])
 def channel_messages():
     payload = request.get_json()
-    return channel.channel_messages(payload['token'], payload['channel_id'], payload['start'])
+    return dumps(channel.channel_messages(payload['token'], payload['channel_id'], payload['start']))
 
+@APP.route("/search", methods=["GET"])
+def search_messages():
+    token = request.args.get("token")
+    query = request.args.get("query_str")
+    token = token if token is not None else False
+    query = query if query is not None else False
+    if token and query:
+        return dumps(search.search(token, query))
+    else:
+        return dumps(InputError)
     
 ### Keep code above this ###
 if __name__ == "__main__":
