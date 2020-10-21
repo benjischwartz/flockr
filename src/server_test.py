@@ -774,10 +774,10 @@ def test_users_all(url):
     rj = r.json()
     assert(rj == {
         "first@person.com" : {
-            "u_id" : "1",
+            'handle': 'firstbloggs',
+            "u_id" : 1,
             "name_first" : "First",
             "name_last" : "Bloggs"
-            #"handle" : rj['u_id']
         }
     })
 
@@ -804,10 +804,11 @@ def test_clear(url):
 
     r = requests.get(f"{url}/users/all/?token={token}")
 
-    rj = r.json
+    rj = r.json()
     assert(rj == {
         "second@person.com" : {
-            "u_id" : "1",
+            "handle" : "marybrown",
+            "u_id" : 1,
             "name_first" : "Mary",
             "name_last" : "Brown"
             #"handle" : rj['u_id']
