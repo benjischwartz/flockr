@@ -770,7 +770,7 @@ def test_users_all(url):
     #variable for looking input
     token = "first@person.com"
 
-    r = requests.get(f"{url}/users/all/?token={token}")
+    r = requests.get(f"{url}/users/all?token={token}")
     rj = r.json()
     assert(rj == {
         "first@person.com" : {
@@ -791,6 +791,22 @@ def test_clear(url):
     })
     assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})
 
+    r = r.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : r["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    list_all_first =  requests.get(f"{url}/channels/listall", json={"token":"first@person.com"})
+    assert list_all_first.json() == {
+        "channels" : [
+            {
+                "channel_id" : 1,
+                "name" : "channel_one"
+            }
+        ]
+    }    
+
     clear = requests.delete(f"{url}/clear")
     assert(clear.json() == {})
 
@@ -802,7 +818,7 @@ def test_clear(url):
     
     token = "second@person.com"
 
-    r = requests.get(f"{url}/users/all/?token={token}")
+    r = requests.get(f"{url}/users/all?token={token}")
 
     rj = r.json()
     assert(rj == {
@@ -814,3 +830,8 @@ def test_clear(url):
             #"handle" : rj['u_id']
         }
     })
+
+    list_all_first =  requests.get(f"{url}/channels/listall", json={"token":"second@person.com"})
+    assert list_all_first.json() == {
+    "channels" : []
+    }        
