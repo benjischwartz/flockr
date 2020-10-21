@@ -744,9 +744,10 @@ def test_users_all(url):
     })
     assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})    
 
-    r = requests.get(f"{url}/users/all", json={
-        "token" : "first@person.com"
-    })
+    #set variable for looking input
+    token = "first@person.com"
+
+    r = requests.get(f"{url}/users/all?token={token}")
     rj = r.json()
     assert(rj == {
         "first@person.com" : {
@@ -766,9 +767,10 @@ def test_users_all(url):
     })
     assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})    
 
-    r = requests.get(f"{url}/users/all", json={
-        "token" : "first@person.com"
-    })
+    #variable for looking input
+    token = "first@person.com"
+
+    r = requests.get(f"{url}/users/all/?token={token}")
     rj = r.json()
     assert(rj == {
         "first@person.com" : {
@@ -798,9 +800,10 @@ def test_clear(url):
         "name_first" : "Mary",
         "name_last" : "Brown"})
     
-    r = requests.get(f"{url}/users/all", json={
-        "token" : "second@person.com"
-    })
+    token = "second@person.com"
+
+    r = requests.get(f"{url}/users/all/?token={token}")
+
     rj = r.json
     assert(rj == {
         "second@person.com" : {

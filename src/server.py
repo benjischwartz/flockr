@@ -11,6 +11,7 @@ import admin_permissions_change
 import message
 import search
 import user
+import users
 import other
 
 def defaultHandler(err):
@@ -244,7 +245,20 @@ def user_profile_setemail():
     """
     payload = request.get_json()
     return dumps(user.user_profile_setemail(payload["token"], payload["email"]))
-    
+
+@APP.route("/users/all/", methods=['GET'])
+def users_all():
+    """
+    Returns all the user information
+    """
+    token = request.args.get("token")
+    token = token if not None else False
+
+    if token:
+        return dumps(users.users_all(token))
+    else:
+        return dumps(InputError)
+
 @APP.route("/clear/", methods=['DELETE'])
 def clear():
     """
