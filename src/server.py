@@ -235,6 +235,17 @@ def search_messages():
     else:
         raise  InputError(description="token or qeury string is invalid")
 
+@APP.route("/user/profile", methods=["GET"])
+def user_profile():
+    token = request.args.get("token")
+    u_id = request.args.get("u_id")
+    token = token if token is not None else False
+    u_id = u_id if u_id is not None else False
+    if token and u_id:
+        return dumps(user.user_profile(token, u_id))
+    else:
+        raise InputError(description="token or u_id is invalid")
+
 @APP.route("/user/profile/setname/", methods=['PUT'])
 def user_profile_setname():
     """

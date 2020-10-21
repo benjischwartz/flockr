@@ -686,6 +686,31 @@ def test_search_single_message(url):
     assert searchResult[0]['u_id'] == 1
     assert searchResult[0]['message'] == "Hello World"
 
+def test_user_profile(url):
+    
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    assert user_one == {"u_id" : 1, "token" : "first@person.com"}
+
+    #variable for looking input
+    token = user_one["token"]
+    u_id = user_one["u_id"]
+
+    r = requests.get(f"{url}/user/profile?token={token}&u_id={u_id}")
+    rj = r.json()
+    assert rj == {
+        "u_id" : 1,
+        "name_first" : "First",
+        "name_last" : "Bloggs",
+        "handle" : "firstbloggs",
+        "email" : "first@person.com"
+    }
+
 def test_user_profile_setname(url):
      
     #Register First User
@@ -771,12 +796,11 @@ def test_user_profile_sethandle(url):
         "u_id": 1
     })
     assert(userProfile.json() == {
-        "first@person.com" : {
         "user_id": 1,
         "name_first": "First",
         "name_last": "Bloggs",
-        "handle": "newfirst"
-        }
+        "handle": "firstbloggs"
+        "email": "newemail@person.com",
     })
     '''
 
@@ -856,5 +880,5 @@ def test_clear(url):
 
     list_all_first =  requests.get(f"{url}/channels/listall", params={"token":user_two["token"]})
     assert list_all_first.json() == {
-    "channels" : []
+        "channels" : []
     }        
