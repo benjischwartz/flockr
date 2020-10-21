@@ -749,6 +749,36 @@ def test_user_profile_setemail(url):
     })
     '''
 
+def test_user_profile_sethandle(url):
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    assert(user_one == {"u_id" : 1, "token" : "first@person.com"})    
+
+    newhandle = requests.put(f"{url}/user/profile/sethandle", json={
+        "token" : user_one["token"],
+        "handle": "newfirst"
+    })
+    assert(newhandle.json() == {})
+
+    '''
+    userProfile = requests.get(f"{url}/user/profile", params={
+        "token": "first@person.com",
+        "u_id": 1
+    })
+    assert(userProfile.json() == {
+        "first@person.com" : {
+        "user_id": 1,
+        "name_first": "First",
+        "name_last": "Bloggs",
+        "handle": "newfirst"
+        }
+    })
+    '''
 
 def test_users_all(url):
     user_one = requests.post(f"{url}/auth/register", json={

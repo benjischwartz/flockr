@@ -253,6 +253,15 @@ def user_profile_setemail():
     payload = request.get_json()
     return dumps(user.user_profile_setemail(payload["token"], payload["email"]))
 
+@APP.route("/user/profile/sethandle/", methods=['PUT'])
+def user_profile_sethandle():
+    '''
+    User set handle
+    return {}
+    '''
+    payload = request.get_json()
+    return dumps(user.user_profile_sethandle(payload["token"], payload["handle"]))
+
 @APP.route("/users/all", methods=['GET'])
 def users_all():
     """
