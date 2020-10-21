@@ -253,7 +253,7 @@ def user_profile_setemail():
     payload = request.get_json()
     return dumps(user.user_profile_setemail(payload["token"], payload["email"]))
 
-@APP.route("/users/all/", methods=['GET'])
+@APP.route("/users/all", methods=['GET'])
 def users_all():
     """
     Returns all the user information
