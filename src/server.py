@@ -2,7 +2,6 @@ import sys
 from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
-import requests
 from error import InputError
 import auth
 import channels
@@ -77,7 +76,7 @@ def channel_invite():
     payload = request.get_json()
     return dumps(channel.channel_invite(payload["token"], payload["channel_id"], payload["u_id"]))
     
-@APP.route("/channel/details/", methods=['GET'])
+@APP.route("/channel/details", methods=['GET'])
 def channel_details():
     """
     gets the details of a specified channel
@@ -99,10 +98,16 @@ def channel_details():
         ],
       }
     """
-    payload = request.get_json()
-    return dumps(channel.channel_details(payload["token"], payload["channel_id"]))
+    token = request.args.get("token")
+    channel_id = request.args.get("channel_id")
+    token = token if not None else False
+    channel_id = channel_id if not None else False
+    if token and channel_id:
+        return dumps(channel.channel_details(token, channel_id))
+    else:
+        raise InputError(description="channel_id or token can't be read")
     
-@APP.route("/channel/messages/", methods=['GET'])
+@APP.route("/channel/messages", methods=['GET'])
 def channel_messages():
     """
     gets all the messages that have been sent in the channel
@@ -117,8 +122,10 @@ def channel_messages():
         'end' : ______
     }
     """
-    payload = request.get_json()
-    return dumps(channel.channel_messages(payload['token'], payload['channel_id'], payload['start']))
+    token = request.args.get("token")
+    channel_id = request.args.get("channel_id")
+    start = request.args.get("start")
+    return dumps(channel.channel_messages(token, channel_id, start))
 
 @APP.route("/channels/create/", methods=['POST'])
 def channels_create():
@@ -129,21 +136,21 @@ def channels_create():
     payload = request.get_json()
     return dumps(channels.channels_create(payload["token"], payload["name"], payload["is_public"]))
 
-@APP.route("/channels/list/", methods=['GET'])
+@APP.route("/channels/list", methods=['GET'])
 def channels_list():
     """
     Lists all channels the user, whose token is passed, is a member of
     """
-    payload = request.get_json()
-    return dumps(channels.channels_list(payload["token"]))
+    token = request.args.get("token")
+    return dumps(channels.channels_list(token))
 
-@APP.route("/channels/listall/", methods=['GET'])
+@APP.route("/channels/listall", methods=['GET'])
 def channels_listall():
     """
     Lists all channels, regardless of membership or private/public
     """
-    payload = request.get_json()
-    return dumps(channels.channels_listall(payload["token"]))
+    token = request.args.get("token")
+    return dumps(channels.channels_listall(token))
 
 @APP.route("/channel/join/", methods=['POST'])
 def channel_join():
@@ -226,7 +233,7 @@ def search_messages():
     if token and query:
         return dumps(search.search(token, query))
     else:
-        return dumps(InputError)
+        raise  InputError(description="token or qeury string is invalid")
 
 @APP.route("/user/profile/setname/", methods=['PUT'])
 def user_profile_setname():
@@ -257,7 +264,7 @@ def users_all():
     if token:
         return dumps(users.users_all(token))
     else:
-        return dumps(InputError)
+        raise InputError(description="token passed in is None")
 
 @APP.route("/clear/", methods=['DELETE'])
 def clear():

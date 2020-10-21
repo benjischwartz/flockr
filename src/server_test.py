@@ -98,10 +98,9 @@ def test_channel_invite(url):
         "u_id" : 2
     })
     assert r.json() == {}
-    randChannel_details = requests.get(f"{url}/channel/details", json={
-        "token" : userOne["token"],
-        "channel_id" : 1
-    })
+    token = "first@person.com"
+    channel_id = 1
+    randChannel_details = requests.get(f"{url}/channel/details?token={token}&channel_id={channel_id}")
     assert randChannel_details.json() == {
         "name": "randChannel",
         "owner_members": [
@@ -141,10 +140,8 @@ def test_channel_details(url):
         "name" : "randChannel",
         "is_public" : True
     })
-    randChannel_details = requests.get(f"{url}/channel/details", json={
-        "token" : userOne["token"],
-        "channel_id" : 1
-    })
+    token = userOne["token"]
+    randChannel_details = requests.get(f"{url}/channel/details?token={token}&channel_id=1")
     assert randChannel_details.json() == {    
         "name": "randChannel",
         "owner_members": [
@@ -186,7 +183,7 @@ def test_channel_messages_one_message(url):
         "channel_id" : 1,
         "message" : "Hello"
     })
-    chanMessages = requests.get(f"{url}/channel/messages", json={
+    chanMessages = requests.get(f"{url}/channel/messages", params={
         "token" : userOne["token"],
         "channel_id" : 1,
         "start" : 0
@@ -250,9 +247,10 @@ def test_channels_list_listall(url):
         "name" : "channel_two",
         "is_public" : True
     })
-    assert channel_two.json() == {"channel_id" : 2 } 
+    assert channel_two.json() == {"channel_id" : 2 }
+   
     # after creating channels, test channels_list and listall
-    list_first = requests.get(f"{url}/channels/list", json={"token":"first@person.com"})
+    list_first = requests.get(f"{url}/channels/list", params={"token":"first@person.com"})
     assert list_first.json() == {
         "channels" : [
             {
@@ -261,7 +259,7 @@ def test_channels_list_listall(url):
             }
         ]
     }
-    list_all_first =  requests.get(f"{url}/channels/listall", json={"token":"first@person.com"})
+    list_all_first =  requests.get(f"{url}/channels/listall", params={"token":"first@person.com"})
     assert list_all_first.json() == {
         "channels" : [
             {
@@ -379,7 +377,7 @@ def test_channel_addowner(url):
     })
     assert r.json() == {}
     #Checking the Owners
-    r = requests.get(f"{url}/channel/details", json={
+    r = requests.get(f"{url}/channel/details", params={
         "token": "first@person.com",
         "channel_id": 1,
     })
@@ -445,7 +443,7 @@ def test_channel_removeowner(url):
     assert r.json() == {}
 
     #Checking the Owners
-    r = requests.get(f"{url}/channel/details", json={
+    r = requests.get(f"{url}/channel/details", params={
         "token": "first@person.com",
         "channel_id": 1,
     })
@@ -485,7 +483,7 @@ def test_channel_removeowner(url):
     })
     assert r.json() == {}
     #Checking Owner Members
-    r = requests.get(f"{url}/channel/details", json={
+    r = requests.get(f"{url}/channel/details", params={
         "token": "first@person.com",
         "channel_id": 1,
     })
@@ -596,11 +594,11 @@ def test_message_remove(url):
         "channel_id" : 1,
         "message_id" : 1
     })
-    chanMessages = requests.get(f"{url}/channel/messages", json={
+    chanMessages = requests.get(f"{url}/channel/messages", params={
         "token" : userOne["token"],
         "channel_id" : 1,
         "start" : 0
-    })
+    },)
     assert chanMessages.json() == {
         'messages' : [],
         'start' : 0,
@@ -634,7 +632,7 @@ def test_message_edit(url):
         "message_id" : 1,
         "message" : "Hi world"
     })
-    chanMessages = requests.get(f"{url}/channel/messages", json={
+    chanMessages = requests.get(f"{url}/channel/messages", params={
         "token" : userOne["token"],
         "channel_id" : 1,
         "start" : 0
@@ -692,7 +690,7 @@ def test_user_profile_setname(url):
     })
     assert(nameChange.json() == {})
     '''
-    userProfile = requests.get(f"{url}/user/profile", json={
+    userProfile = requests.get(f"{url}/user/profile", params={
         "token": "first@person.com",
         "u_id": 1
     })
@@ -722,7 +720,7 @@ def test_user_profile_setemail(url):
     })
     assert(nameChange.json() == {})
     '''
-    userProfile = requests.get(f"{url}/user/profile", json={
+    userProfile = requests.get(f"{url}/user/profile", params={
         "token": "first@person.com",
         "u_id": 1
     })
@@ -735,28 +733,6 @@ def test_user_profile_setemail(url):
     })
     '''
 
-def test_users_all(url):
-    r = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    assert(r.json() == {"u_id" : 1, "token" : "first@person.com"})    
-
-    #set variable for looking input
-    token = "first@person.com"
-
-    r = requests.get(f"{url}/users/all?token={token}")
-    rj = r.json()
-    assert(rj == {
-        "first@person.com" : {
-            "u_id" : "1",
-            "name_first" : "First",
-            "name_last" : "Bloggs"
-            #"handle" : rj['handle']
-        }
-    })
 
 def test_users_all(url):
     r = requests.post(f"{url}/auth/register", json={
@@ -797,7 +773,7 @@ def test_clear(url):
         "name" : "channel_one",
         "is_public" : True
     })
-    list_all_first =  requests.get(f"{url}/channels/listall", json={"token":"first@person.com"})
+    list_all_first =  requests.get(f"{url}/channels/listall", params={"token":"first@person.com"})
     assert list_all_first.json() == {
         "channels" : [
             {
@@ -831,7 +807,7 @@ def test_clear(url):
         }
     })
 
-    list_all_first =  requests.get(f"{url}/channels/listall", json={"token":"second@person.com"})
+    list_all_first =  requests.get(f"{url}/channels/listall", params={"token":"second@person.com"})
     assert list_all_first.json() == {
     "channels" : []
     }        
