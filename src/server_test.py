@@ -135,13 +135,17 @@ def test_channel_details(url):
         "name_last" : "Bloggs"
     })
     userOne = userOne.json()
-    requests.post(f"{url}/channels/create", json={
+    assert userOne == { "token": "first@person.com", "u_id" : 1}
+    channel_one = requests.post(f"{url}/channels/create", json={
         "token" : userOne["token"],
         "name" : "randChannel",
         "is_public" : True
     })
-    token = userOne["token"]
-    randChannel_details = requests.get(f"{url}/channel/details?token={token}&channel_id=1")
+    assert channel_one.json() == {"channel_id" : 1}
+    randChannel_details = requests.get(f"{url}/channel/details", params={
+        "token" : userOne["token"],
+        "channel_id" : channel_one.json()["channel_id"]
+    })
     assert randChannel_details.json() == {    
         "name": "randChannel",
         "owner_members": [

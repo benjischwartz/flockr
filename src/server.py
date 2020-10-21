@@ -101,7 +101,7 @@ def channel_details():
     token = request.args.get("token")
     channel_id = request.args.get("channel_id")
     token = token if not None else False
-    channel_id = channel_id if not None else False
+    channel_id = int(channel_id) if not None else False
     if token and channel_id:
         return dumps(channel.channel_details(token, channel_id))
     else:
@@ -123,8 +123,8 @@ def channel_messages():
     }
     """
     token = request.args.get("token")
-    channel_id = request.args.get("channel_id")
-    start = request.args.get("start")
+    channel_id = int(request.args.get("channel_id"))
+    start = int(request.args.get("start"))
     return dumps(channel.channel_messages(token, channel_id, start))
 
 @APP.route("/channels/create/", methods=['POST'])
