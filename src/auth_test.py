@@ -164,17 +164,17 @@ def test_multiple_same_name():
     result2 = auth_register('bobby2@gmail.com', '123abc!@#', 'Bobby', 'Brown')
     assert get_handle(result2['u_id']) == 'bobbybrown00'
 
-    result3 = auth_register('bobby3@gmail.com', '123abc!@#', 'Bobby', 'Brown')
-    result4 = auth_register('bobby4@gmail.com', '123abc!@#', 'Bobby', 'Brown')
-    result5 = auth_register('bobby5@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby3@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby4@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby5@gmail.com', '123abc!@#', 'Bobby', 'Brown')
     result6 = auth_register('bobby6@gmail.com', '123abc!@#', 'Bobby', 'Brown')
     assert get_handle(result6['u_id']) == 'bobbybrown04'
 
-    result7 = auth_register('bobby7@gmail.com', '123abc!@#', 'Bobby', 'Brown')
-    result8 = auth_register('bobby8@gmail.com', '123abc!@#', 'Bobby', 'Brown')
-    result9 = auth_register('bobby9@gmail.com', '123abc!@#', 'Bobby', 'Brown')
-    result10 = auth_register('bobby10@gmail.com', '123abc!@#', 'Bobby', 'Brown')
-    result11 = auth_register('bobby11@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby7@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby8@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby9@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby10@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby11@gmail.com', '123abc!@#', 'Bobby', 'Brown')
     assert get_handle(result11['u_id']) == 'bobbybrown09'
 
     result12 = auth_register('bobby12@gmail.com', '123abc!@#', 'Bobby', 'Brown')
