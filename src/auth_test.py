@@ -1,8 +1,9 @@
 # test suite for auth_* capabilities/functions
-from auth import auth_login, auth_logout, auth_register 
+from auth import auth_login, auth_logout, auth_register
 import pytest
 from error import InputError
 from other import clear
+from check_token import get_handle
 
 # checking the successful registration of a user
 # checking the successful login of a user
@@ -120,3 +121,24 @@ def test_logout_twice():
     assert (auth_logout('validemaillogout@gmail.com')) == {'is_success': True}
     # expect false since already logged out
     assert (auth_logout('validemaillogout@gmail.com')) == {'is_success': False}
+
+def test_get_handle():
+    clear()
+    result = auth_register('bobby@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    assert get_handle(result['u_id']) == 'bobbybrown'
+
+def test_get_handle_unique():
+    clear()
+    result1 = auth_register('bobby1@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    result2 = auth_register('bobby2@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    result3 = auth_register('bobby3@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+
+    # test that all three handles are unique
+    assert get_handle(result1['u_id']) == 'bobbybrown'
+    assert get_handle(result2['u_id']) != 'bobbybrown'
+    assert get_handle(result3['u_id']) != 'bobbybrown'
+    assert get_handle(result3['u_id']) != get_handle(result2['u_id'])
+    
+
+    
+
