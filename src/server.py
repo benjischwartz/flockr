@@ -238,7 +238,7 @@ def search_messages():
 @APP.route("/user/profile", methods=["GET"])
 def user_profile():
     token = request.args.get("token")
-    u_id = request.args.get("u_id")
+    u_id = int(request.args.get("u_id"))
     token = token if token is not None else False
     u_id = u_id if u_id is not None else False
     if token and u_id:
