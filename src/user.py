@@ -1,6 +1,6 @@
 from data import users, channel
 from error import InputError, AccessError
-from check_token import user_id_given_token
+from check_token import user_id_given_token, email_given_jwt
 import re
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
@@ -29,7 +29,7 @@ def user_profile(token, u_id):
     else:
         selected_data.pop('password')
         selected_data.pop('permission_id')
-    selected_data['email'] = selected_email
+        selected_data['email'] = selected_email
 
     return selected_data
 
@@ -45,8 +45,9 @@ def user_profile_setname(token, name_first, name_last):
     if token_u_id is None:
         raise AccessError("Token passed is not valid.")
 
-    users[token]['name_first'] = name_first
-    users[token]['name_last'] = name_last
+    email = email_given_jwt(token)
+    users[email]['name_first'] = name_first
+    users[email]['name_last'] = name_last
 
     return {
     }
@@ -64,8 +65,9 @@ def user_profile_setemail(token, email):
     #Error Checking: Raise an InputError if email is already used
     if email in users:
         raise InputError("Email is already used.")
-
-    users[email] = users.pop(token)
+    
+    old_email = email_given_jwt(token)
+    users[email] = users.pop(old_email)
 
     return {
     }
@@ -83,8 +85,9 @@ def user_profile_sethandle(token, handle_str):
     for email in users:
         if users[email]['handle'] == handle_str:
             raise InputError("handle is already being used by another user.")
-
-    users[token]['handle'] = handle_str
+    
+    email = email_given_jwt(token)
+    users[email]['handle'] = handle_str
     
     return {
     }

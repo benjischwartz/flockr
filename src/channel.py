@@ -136,7 +136,7 @@ def channel_messages(token, channel_id, start):
         if num_message >= start and num_message < (start + 50):
             msg_id = message['message_id']
             msg_u_id = message['u_id']
-            msg_content = message['message_content']
+            msg_content = message['message']
             msg_time = message['time_created']
             msg_dict = {'message_id': msg_id, 'u_id' : msg_u_id, 
                 'message' : msg_content, 'time_created' : msg_time}
