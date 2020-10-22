@@ -1,5 +1,6 @@
 import pytest
-from check_token import user_id_given_token, get_handle, email_given_user_id, permission_id_given_token, jwt_given_email
+from check_token import user_id_given_token, get_handle, email_given_user_id, permission_id_given_token
+from check_token import jwt_given_email, email_given_jwt
 from auth import auth_register, auth_logout
 from other import clear
 
@@ -57,4 +58,10 @@ def test_permission_id_given_token_normal_user():
 def test_jwt_given_email():
     clear()
     assert type(jwt_given_email("firstemail@gmail.com")) is bytes
+
+def test_email_given_jwt():
+    clear()
+    # registering first user 
+    first_user = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    assert(email_given_jwt(first_user['token']) == "randemail@gmail.com")
 
