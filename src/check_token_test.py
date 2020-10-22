@@ -25,6 +25,10 @@ def test_get_handle():
     register_first_result_uid = user_id_given_token(register_first_result['token'])
     assert(get_handle(register_first_result_uid) == "janecitizen")
 
+def test_get_handle_negative_case():
+    clear()
+    assert(get_handle(10) == None)
+
 def test_email_given_user_id():
     clear()
     # registering first user 
@@ -35,7 +39,7 @@ def test_email_given_user_id():
 def test_email_given_user_id_false_case():
     clear()
     assert(email_given_user_id(5) == None)
-    
+
 def test_permission_id_given_token_flockr():
     clear()
     # registering first user 
