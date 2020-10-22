@@ -32,6 +32,10 @@ def test_email_given_user_id():
     register_first_result_uid = user_id_given_token(register_first_result['token'])
     assert(email_given_user_id(register_first_result_uid) == "randemail@gmail.com")
 
+def test_email_given_user_id_false_case():
+    clear()
+    assert(email_given_user_id(5) == None)
+    
 def test_permission_id_given_token_flockr():
     clear()
     # registering first user 
