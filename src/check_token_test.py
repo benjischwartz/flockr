@@ -32,8 +32,16 @@ def test_email_given_user_id():
     register_first_result_uid = user_id_given_token(register_first_result['token'])
     assert(email_given_user_id(register_first_result_uid) == "randemail@gmail.com")
 
-def test_permission_id_given_token():
+def test_permission_id_given_token_flockr():
     clear()
     # registering first user 
     register_first_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
     assert(permission_id_given_token(register_first_result['token']) == 1)
+
+def test_permission_id_given_token_normal_user():
+    clear()
+    # registering first user 
+    auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    # registering second user 
+    register_second_result = auth_register('secondemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    assert(permission_id_given_token(register_second_result['token']) == 2)
