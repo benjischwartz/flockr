@@ -90,7 +90,7 @@ def test_message_send_empty_message():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     randChannel = channels_create(userOne['token'], 'randChannel', True)
     with pytest.raises(InputError):
-         message_send(userOne['token'], randChannel['channel_id'], '') == {}
+         message_send(userOne['token'], randChannel['channel_id'], '')
                  
 # check an inputerror is raised if the message is greater than 1000 characters
 def test_message_send_over_1000_characters():
@@ -101,7 +101,6 @@ def test_message_send_over_1000_characters():
     message_long = 'a'
     for i in range(1000):
         message_long  += 'a'
-        i += 1
     with pytest.raises(InputError):
         message_send(userOne['token'], randChannel['channel_id'], message_long)
 
