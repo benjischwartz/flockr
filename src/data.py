@@ -29,7 +29,12 @@ channel = { # 'channel_id' are the int values themselves, per channel
             223423 : True,
             567 : True
         },
-        'messages' : []
+        'messages' : [ {
+            'message_id': 1,
+            'u_id' : 1,
+            'message' : 'Hello',
+            'time_created' : 3
+            }]
     }
 }      
 

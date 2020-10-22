@@ -26,7 +26,6 @@ def channel_invite(token, channel_id, u_id):
         raise InputError("Channel ID is invalid.")
         
     # raise accesserror if user with token 'token' is not part of the channel
-    token_u_id = user_id_given_token(token)
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError ("User is not authorised to invite to this channel.")
     
@@ -53,7 +52,6 @@ def channel_details(token, channel_id):
     
 
     # raise accesserror if user with token 'token' is not part of the channel
-    token_u_id = user_id_given_token(token)
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError ("This user is not authorised to view the details of this channel.")
     
@@ -114,7 +112,6 @@ def channel_messages(token, channel_id, start):
         raise InputError("Channel ID is invalid.")
     
     # raise accesserror if user with token 'token' is not part of the channel
-    token_u_id = user_id_given_token(token)
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError ("This user is not authorised to view the messages of this channel.")
    
@@ -139,7 +136,7 @@ def channel_messages(token, channel_id, start):
         if num_message >= start and num_message < (start + 50):
             msg_id = message['message_id']
             msg_u_id = message['u_id']
-            msg_content = message['message_content']
+            msg_content = message['message']
             msg_time = message['time_created']
             msg_dict = {'message_id': msg_id, 'u_id' : msg_u_id, 
                 'message' : msg_content, 'time_created' : msg_time}
