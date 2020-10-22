@@ -47,7 +47,7 @@ def auth_register():
     return {u_id : ___ , token: _____ }
     """
     payload = request.get_json()
-    return auth.auth_register(payload["email"], payload["password"], payload["name_first"], payload["name_last"])
+    return dumps(auth.auth_register(payload["email"], payload["password"], payload["name_first"], payload["name_last"]))
 
 @APP.route("/auth/logout/", methods=['POST'])
 def auth_logout():
