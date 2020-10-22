@@ -1,5 +1,5 @@
 import pytest
-from check_token import user_id_given_token, get_handle, email_given_user_id, permission_id_given_token
+from check_token import user_id_given_token, get_handle, email_given_user_id, permission_id_given_token, jwt_given_email
 from auth import auth_register, auth_logout
 from other import clear
 
@@ -53,3 +53,8 @@ def test_permission_id_given_token_normal_user():
     # registering second user 
     register_second_result = auth_register('secondemail@gmail.com', 'password1234', 'Jane', 'Citizen')
     assert(permission_id_given_token(register_second_result['token']) == 2)
+
+def test_jwt_given_email():
+    clear()
+    assert type(jwt_given_email("firstemail@gmail.com")) is bytes
+
