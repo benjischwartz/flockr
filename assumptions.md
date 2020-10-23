@@ -8,9 +8,7 @@
 
 ## Channel.py assumptions
 * channel_invite – if the user with token 'token' invites themselves or someone else
-    who is already in the channel, a message will be printed out notifying the
-    the user that the user they are inviting is already in the channel and the function 
-    will return an empty dictionary; no exception is raised
+    who is already in the channel, return an empty dictionary; no exception is raised
 * Functions which behave the same whether the channel is private or public are:
     - channel_invite
     - channel_details

@@ -41,7 +41,7 @@ authenticated token
 * must be a member of the channel with the message to use message_edit or message_remove, thus
     * owners of flockr cannot remove/edit a message if they are not at least a regular member of the channel, and
     * the user who sent the message cannot remove/edit the message if they have left the channel 
-* message_send - raise an inputerror if the input 'message' is an empty string
+* message_send - raise an InputError if the input 'message' is an empty string
 * message_edit - 'time_created' is NOT updated when a message is edited 
-
+* message_edit - raise an InputError if the input 'message' is over 1000 characters
 

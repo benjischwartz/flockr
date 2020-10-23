@@ -6,7 +6,18 @@ from channels import channels_create
 from other import clear
 
 def channel_invite(token, channel_id, u_id):
-
+    '''
+    enables a user in a channel to invite someone outside the channel token
+    to the channel
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr; this user is the inviter
+        channel_id (int): identifies the channel the user is being added to
+        u_id (int): identifies a user on flockr; this user is the invitee
+ 
+    Returns:
+        (dict): {}
+    '''
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -40,7 +51,34 @@ def channel_invite(token, channel_id, u_id):
     return {}
 
 def channel_details(token, channel_id):
+    '''
+    returns a dictionary with details about the name and users of a specified channel
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr; this user is the inviter
+        channel_id (int): identifies the channel that's details are being returned
+ 
+    Returns:
+        (dict): {
+            'name': 'Hayden',
+            'owner_members': [
+               {
+                   'u_id': 1,
+                   'name_first': 'Hayden',
+                   'name_last': 'Jacobs',
+               }
+           ],
+           'all_members': [
+               {
+                   'u_id': 1,
+                   'name_first': 'Hayden',
+                   'name_last': 'Jacobs',
+               }
+           ],
+         }
 
+    '''
+    
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -56,10 +94,10 @@ def channel_details(token, channel_id):
         raise AccessError ("This user is not authorised to view the details of this channel.")
     
     # create return dictionary   
-    chnl_details = {}
-    chnl_details['name'] = channel[channel_id]['channel_name']
-    chnl_details['owner_members'] = []
-    chnl_details['all_members'] = []
+    details = {}
+    details['name'] = channel[channel_id]['channel_name']
+    details['owner_members'] = []
+    details['all_members'] = []
     
     # find owners of channel and  their u_id, first name and last name
     for owner_member in channel[channel_id]['owner_members']:
@@ -67,8 +105,10 @@ def channel_details(token, channel_id):
             if owner_member == users[user]['u_id']:
                 first_name = users[user]['name_first']
                 last_name = users[user]['name_last']
-        owner_dict = { 'u_id' : owner_member, 'name_first' : first_name, 'name_last' : last_name}
-        chnl_details['owner_members'].append(owner_dict)
+        owner_details = {  'u_id' : owner_member, 
+                        'name_first' : first_name, 
+                        'name_last' : last_name }
+        details['owner_members'].append(owner_details)
     
     # find all members of channel and  their u_id, first name and last name  
     for any_member in channel[channel_id]['all_members']:
@@ -76,32 +116,41 @@ def channel_details(token, channel_id):
             if any_member == users[user]['u_id']:
                 first_name = users[user]['name_first']
                 last_name = users[user]['name_last']
-        any_member_dict = { 'u_id' : any_member, 'name_first' : first_name, 'name_last' : last_name}
-        chnl_details['all_members'].append(any_member_dict)
+        any_member_details = { 'u_id' : any_member, 
+                            'name_first' : first_name, 
+                            'name_last' : last_name }
+        details['all_members'].append(any_member_details)
     
-    return chnl_details
-    #### format for return ####
-    # {
-    #   'name': 'Hayden',
-    #   'owner_members': [
-    #       {
-    #           'u_id': 1,
-    #           'name_first': 'Hayden',
-    #           'name_last': 'Jacobs',
-    #       }
-    #   ],
-    #   'all_members': [
-    #       {
-    #           'u_id': 1,
-    #           'name_first': 'Hayden',
-    #           'name_last': 'Jacobs',
-    #       }
-    #   ],
-    # }
+    return details
 
 
 def channel_messages(token, channel_id, start):
-    
+
+    '''
+    returns a dictionary with details about a maximum of 50 messages that are 
+    within a specified channel
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr who is calling this function
+        channel_id (int): identifies the channel that's messages are being returned
+        start: identifies the message index that this function will return from;
+            0 being the most recent message
+ 
+    Returns:
+        (dict): {
+            'messages': [
+               {
+                   'message_id': 1,
+                   'u_id': 1,
+                   'message': 'Hello world',
+                   'time_created': 1582426789,
+               }
+           ],
+           'start': 0,
+           'end': 50,
+         }
+    '''
+        
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -126,9 +175,9 @@ def channel_messages(token, channel_id, start):
         raise InputError ("Start is below zero.")
     
     # create return dictionary
-    chnl_msgs = {}
-    chnl_msgs['messages'] = []
-    chnl_msgs['start'] = start
+    all_messages = {}
+    all_messages['messages'] = []
+    all_messages['start'] = start
     num_message = 0
     
     # find the details of each message in the channel up to start + 50
@@ -138,33 +187,22 @@ def channel_messages(token, channel_id, start):
             msg_u_id = message['u_id']
             msg_content = message['message']
             msg_time = message['time_created']
-            msg_dict = {'message_id': msg_id, 'u_id' : msg_u_id, 
-                'message' : msg_content, 'time_created' : msg_time}
-            chnl_msgs['messages'].append(msg_dict)
+            message_dict = {'message_id': msg_id, 
+                            'u_id' : msg_u_id, 
+                            'message' : msg_content, 
+                            'time_created' : msg_time}
+            all_messages['messages'].append(message_dict)
         num_message += 1
         if num_message == start + 50:
             break
     
-    # create and determine the value for end in the return dictionary
+    # determine and create the value for end in the return dictionary
     if num_message < start + 50:
-        chnl_msgs['end'] = -1
+        all_messages['end'] = -1
     else:
-        chnl_msgs['end'] = num_message
+        all_messages['end'] = num_message
        
-    return chnl_msgs
-    #### format for return ####
-    # {
-    # 'messages': [
-    #       {
-    #           'message_id': 1,
-    #           'u_id': 1,
-    #           'message': 'Hello world',
-    #           'time_created': 1582426789,
-    #       }
-    #   ],
-    #   'start': 0,
-    #   'end': 50,
-    # }
+    return all_messages
 
 def channel_leave(token, channel_id):
     
