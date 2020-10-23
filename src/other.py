@@ -1,4 +1,7 @@
 from data import users, tokens, channel
+from check_token import user_id_given_token
+from user import user_profile
+from error import InputError, AccessError
 
 def clear():
     users.clear()
@@ -6,17 +9,16 @@ def clear():
     channel.clear()
 
 def users_all(token):
-    return {
-        'users': [
-            {
-                'u_id': 1,
-                'email': 'cs1531@cse.unsw.edu.au',
-                'name_first': 'Hayden',
-                'name_last': 'Jacobs',
-                'handle_str': 'hjacobs',
-            },
-        ],
-    }
+    temp = users
+    token_u_id = user_id_given_token(token)
+    if token_u_id is None:
+        raise AccessError("Token passed is not valid.")
+    
+    for token in temp:
+        temp[token].pop('password')
+        temp[token].pop('permission_id')
+
+    return temp
 
 def admin_userpermission_change(token, u_id, permission_id):
     pass
