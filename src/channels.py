@@ -54,7 +54,7 @@ def channels_listall(token):
     for key, value in channel.items():
         eachDict = dict()
         eachDict['channel_id'] = key
-        eachDict['name'] = value
+        eachDict['name'] = value['channel_name']
         returnList.append(eachDict)
     # For testing: print(returnList)
 

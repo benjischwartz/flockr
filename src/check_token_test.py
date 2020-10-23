@@ -63,7 +63,7 @@ def test_permission_id_given_token_normal_user():
 
 def test_jwt_given_email():
     clear()
-    assert type(jwt_given_email("firstemail@gmail.com")) is bytes
+    assert type(jwt_given_email("firstemail@gmail.com")) is str
 
 def test_email_given_jwt():
     clear()

@@ -27,7 +27,7 @@ def auth_login(email, password):
         if email == emails:            
             if sha256_crypt.verify(password, users[email]['password']): # compare hashed passwords
                 #validate token
-                encoded_jwt = jwt.encode({'email': email}, 'secret')
+                encoded_jwt = jwt.encode({'email': email}, 'secret').decode('utf-8')
                 tokens.append(encoded_jwt)
                 return {
                     'u_id': users[email]['u_id'],
@@ -107,8 +107,9 @@ def auth_register(email, password, name_first, name_last):
         }
     
     # validate token
-    encoded_jwt = jwt.encode({'email': email}, 'secret')
+    encoded_jwt = jwt.encode({'email': email}, 'secret').decode('utf-8')
     tokens.append(encoded_jwt)
+    
 
     return {
         'u_id' : newU_id,
