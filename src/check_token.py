@@ -9,9 +9,8 @@ def user_id_given_token(token):
     '''
     e = email_given_jwt(token)
     if token in tokens:
-        if e in users:
-            user_id = users[e]['u_id']
-            return user_id
+        user_id = users[e]['u_id']
+        return user_id
     return None
 
 

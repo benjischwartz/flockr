@@ -1,8 +1,7 @@
 import pytest
 from auth import auth_register, auth_logout
 from user import user_profile_sethandle
-from users import users_all
-from other import clear
+from other import clear, users_all
 from error import InputError, AccessError
 
 def test_users_all_positive_test():
