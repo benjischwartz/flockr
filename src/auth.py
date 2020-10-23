@@ -33,7 +33,7 @@ def auth_login(email, password):
                     'u_id': users[email]['u_id'],
                     'token': encoded_jwt, ## token is a JWT where payload is user's email, secret is 'secret'
                 }
-    raise InputError ("Email not found or password not valid")
+    raise InputError (description="Email not found or password not valid")
     
 
 def auth_logout(token):
@@ -55,21 +55,21 @@ def auth_register(email, password, name_first, name_last):
     
     # raise an inputerror if email is invalid
     if (check(email) != "Valid Email"):
-        raise InputError ("Invalid email")
+        raise InputError (description="Invalid email")
 
     # raise an inputerror if email already registered to a user
     for emails in users.keys():
         if email == emails:
-            raise InputError("Email already belongs to a user")
+            raise InputError(description="Email already belongs to a user")
 
     # raise an inputerror if first and last name are not between 1 and 50 
     # inclusive
     if len(name_first) not in range(1, 51) or len(name_last) not in range(1,51):
-        raise InputError ("First and last name must be between 1 and 50 inclusive")
+        raise InputError (description="First and last name must be between 1 and 50 inclusive")
     
     # raise an inputerror if password is not at least 6 letters
     if len(password) < 6:
-        raise InputError("Password too short")
+        raise InputError(description="Password too short")
 
     # register a user
     # create a unique user_id

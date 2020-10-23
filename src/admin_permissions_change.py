@@ -10,10 +10,10 @@ def admin_userpermission_change(token,u_id,permission_id):
     """
     # token itself is invalid, i.e. not a member or owner
     if user_id_given_token(token) == None:
-        raise AccessError
+        raise AccessError(description="Token passed is not valid.")
     # token does not belong to an existing owner
     if users[email_given_jwt(token)]['permission_id'] != 1:
-        raise AccessError
+        raise AccessError(description="Token passed does not belong to an existing owner.")
 
     # invalid u_id
     userFound = False
@@ -21,11 +21,11 @@ def admin_userpermission_change(token,u_id,permission_id):
         if users[email]['u_id'] == u_id:
             userFound = True 
     if userFound is False:
-        raise InputError
+        raise InputError(description="User ID is invalid.")
     
     # invalid permission_id
     if permission_id != 1 and permission_id != 2:
-        raise InputError
+        raise InputError(description="Permission ID is invalid")
 
     # if no errors, change permission
     users[email_given_user_id(u_id)]['permission_id'] = permission_id
