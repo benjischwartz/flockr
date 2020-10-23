@@ -10,6 +10,12 @@ def test_user_id_given_token_positive_case():
     register_first_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
     assert(user_id_given_token(register_first_result['token']) == 1) 
 
+def test_user_id_given_token_false_token():
+    clear()
+    # registering first user as the first user is the owner of the flockr
+    register_first_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    assert(user_id_given_token(register_first_result['token']) == 1) 
+
 def test_user_id_given_token_after_logout():
     clear()
     # registering first user as the first user is the owner of the flockr
