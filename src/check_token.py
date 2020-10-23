@@ -7,7 +7,6 @@ def user_id_given_token(token):
     if the user is in database AND is logged in
     otherwise returns None
     '''
-    #if e in users
     e = email_given_jwt(token)
     if token in tokens:
         user_id = users[e]['u_id']
