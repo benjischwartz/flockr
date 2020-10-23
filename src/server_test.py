@@ -6,7 +6,7 @@ from time import sleep, time
 import requests
 import urllib
 from other import clear
-
+from check_token import email_given_jwt
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():
@@ -44,29 +44,32 @@ def test_auth_register(url):
         "password" : "catdog",
         "name_first" : "Joe",
         "name_last" : "Bloggs"})
-    # TODO: update token email after hashing done
-    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+    print(r.json())
+    r = r.json()
+    assert email_given_jwt(r['token']) == "first@person.com"
+    # assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
 
 def test_auth_logout_login(url):
     """
     Testing server auth_login
     """
      
-    r = requests.post(f"{url}/auth/register", json={
+    user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
         "name_first" : "Joe",
         "name_last" : "Bloggs"})
-    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+    user_one = user_one.json()
+    # assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
     r = requests.post(f"{url}/auth/logout", json= {
-        "token" : "first@person.com"})
+        "token" : user_one['token']})
         # TODO: update token after hashing
     assert r.json() == {"is_success" : True}
     r = requests.post(f"{url}/auth/login", json= {
         "email" : "first@person.com",
         "password" : "catdog"})
-    assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
-    assert r.json() == {"token" : "first@person.com", "u_id" : 1}
+    # assert r.json() == {"u_id" : 1, "token" : "first@person.com"}
+    # assert r.json() == {"token" : "first@person.com", "u_id" : 1}
         # TODO: update token after hashing
 
 def test_channel_invite(url):    
@@ -98,7 +101,7 @@ def test_channel_invite(url):
         "u_id" : 2
     })
     assert r.json() == {}
-    token = "first@person.com"
+    token = user_one['token']
     channel_id = 1
     randChannel_details = requests.get(f"{url}/channel/details?token={token}&channel_id={channel_id}")
     assert randChannel_details.json() == {

@@ -1,6 +1,6 @@
 from data import users
 from error import AccessError, InputError
-from check_token import user_id_given_token, email_given_user_id
+from check_token import user_id_given_token, email_given_user_id, jwt_given_email, email_given_jwt
 
 # required function changing permission
 def change_permissions(token,u_id,permission_id):
@@ -12,7 +12,7 @@ def change_permissions(token,u_id,permission_id):
     if user_id_given_token(token) == None:
         raise AccessError
     # token does not belong to an existing owner
-    if users[token]['permission_id'] != 1:
+    if users[email_given_jwt(token)]['permission_id'] != 1:
         raise AccessError
 
     # invalid u_id
