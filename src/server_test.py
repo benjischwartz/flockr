@@ -373,7 +373,7 @@ def test_channel_addowner(url):
         "name" : "channelname",
         "is_public" : True
     })
-    # assert channelid.json() == {'channel_id' : 1}
+    assert channelid.json() == {'channel_id' : 1}
 
     #Registering Second User
     user_two = requests.post(f"{url}/auth/register", json={
@@ -606,7 +606,7 @@ def test_message_remove(url):
         "channel_id" : 1,
         "message" : "Hello"
     })
-    r = requests.delete(f"{url}/message/remove", json={
+    requests.delete(f"{url}/message/remove", json={
         "token" : user_one["token"],
         "channel_id" : 1,
         "message_id" : 1
@@ -644,7 +644,7 @@ def test_message_edit(url):
         "channel_id" : 1,
         "message" : "Hello"
     })
-    r = requests.put(f"{url}/message/edit", json={
+    requests.put(f"{url}/message/edit", json={
         "token" : user_one["token"],
         "message_id" : 1,
         "message" : "Hi world"

@@ -57,6 +57,3 @@ def email_given_jwt(token):
     except Exception:
         return None
 
-
-print(jwt_given_email("first@person.com"))
-print(type(jwt_given_email("first@person.com")))

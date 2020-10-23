@@ -10,7 +10,6 @@ import admin_permissions_change
 import message
 import search
 import user
-import users
 import other
 
 def defaultHandler(err):
@@ -195,7 +194,7 @@ def change_permissions():
     return {} if successful, otherwise throws error
     """
     payload = request.get_json()
-    return dumps(admin_permissions_change.change_permissions(payload["token"], payload["u_id"], payload["permission_id"]))
+    return dumps(admin_permissions_change.admin_userpermission_change(payload["token"], payload["u_id"], payload["permission_id"]))
 
 @APP.route("/message/send/", methods=['POST'])
 def message_send():
@@ -282,7 +281,7 @@ def users_all():
     token = token if not None else False
 
     if token:
-        return dumps(users.users_all(token))
+        return dumps(other.users_all(token))
     else:
         raise InputError(description="token passed in is None")
 
