@@ -1,8 +1,7 @@
 import pytest
 from auth import auth_register, auth_logout
 from user import user_profile_sethandle
-from users import users_all
-from other import clear
+from other import clear, users_all
 from error import InputError, AccessError
 
 def test_users_all_positive_test():
@@ -18,15 +17,13 @@ def test_users_all_positive_test():
         'u_id' : userOne['u_id'],
         'name_first' : 'First',
         'name_last' : 'User',
-        'handle' : '12345',
-        'permission_id': 1,
+        'handle' : '12345'
     },
     'seconduser@gmail.com' : {
         'u_id' : userTwo['u_id'],
         'name_first' : 'Second',
         'name_last' : 'User',
         'handle' : '123456',
-        'permission_id' : 2,
     }
     })
 

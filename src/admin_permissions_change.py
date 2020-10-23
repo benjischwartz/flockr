@@ -3,7 +3,7 @@ from error import AccessError, InputError
 from check_token import user_id_given_token, email_given_user_id, jwt_given_email, email_given_jwt
 
 # required function changing permission
-def change_permissions(token,u_id,permission_id):
+def admin_userpermission_change(token,u_id,permission_id):
     """
     Given a User by their user ID, set their permissions
      to new permissions described by permission_id
