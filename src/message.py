@@ -41,7 +41,6 @@ def message_send(token, channel_id, message):
     # append dictionary to messages list of channel with id 'channel_id'
     channel[channel_id]['messages'].append(message_info)
     
-    
     return {
         'message_id': message_id,
     }
@@ -115,7 +114,7 @@ def message_edit(token, message_id, message):
         raise AccessError ("User is not part of the channel with this message.")
     
     # remove message if the message is an empty string or raise an inputerror 
-    # if the message is too long
+    # if the message is over 1000 characters
     if len(message) == 0: 
         message_remove(token, message_id)
         return {}
@@ -124,7 +123,7 @@ def message_edit(token, message_id, message):
     
     token_permission_id = permission_id_given_token(token)
     # check permissions to edit and if permitted then change message; if not 
-    # raise and accesserror
+    # raise an accesserror
     if token_u_id == message_u_id or token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
         channel[message_channel]['messages'][message_index]['message'] = message
     else:

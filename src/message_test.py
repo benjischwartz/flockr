@@ -10,441 +10,545 @@ from time import time
 
 # tests for message_send
 
-# check that message_send returns the correct dictionary and unique message_ids starting
-# from 1 and incrementing by 1 for each subsequent message as per the assumption
+
 def test_message_send_valid_input_multiple_messages():
+    '''
+    check that message_send returns the correct dictionary and unique message_ids starting
+    from 1 and incrementing by 1 for each subsequent message as per the assumption
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
-    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 2}
-    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 3}
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
+    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 2}
+    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 3}
 
-# check that message_send returns the correct dictionary with unique message_ids 
-# even if there are multiple channels in flockr
+
 def test_message_send_valid_input_multiple_channels():
+    '''
+    check that message_send returns the correct dictionary with unique message_ids 
+    even if there are multiple channels in flockr
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel1 = channels_create(userOne['token'], 'randChannel1', True)
-    randChannel2 = channels_create(userOne['token'], 'randChannel2', True)
-    assert message_send(userOne['token'], randChannel1['channel_id'], 'Hello') == {'message_id': 1}
-    assert message_send(userOne['token'], randChannel2['channel_id'], 'Hello') == {'message_id': 2}
-    assert message_send(userOne['token'], randChannel1['channel_id'], 'Hello') == {'message_id': 3}
-    chanMessages1 = channel_messages(userOne['token'], randChannel1['channel_id'],0)
-    chanMessages2 = channel_messages(userOne['token'], randChannel2['channel_id'],0)
-    assert len(chanMessages1['messages']) == 2
-    assert len(chanMessages2['messages']) == 1
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_two = channels_create(user_one['token'], 'channel_two', True)
+    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
+    assert message_send(user_one['token'], channel_two['channel_id'], 'Hello') == {'message_id': 2}
+    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 3}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    channel_two_messages = channel_messages(user_one['token'], channel_two['channel_id'],0)
+    assert len(channel_one_messages['messages']) == 2
+    assert len(channel_two_messages['messages']) == 1
 
-# check that message_send creates a time_created property for the message based
-# on when message_send is called
+
 def test_channel_send_valid_input_time_created():
+    '''
+    check that message_send creates a time_created property for the message based
+    on when message_send is called
+    ''' 
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
     prior_send = time()
-    for i in range(3):
-        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    i = 0
+    while i < 3:
+        message_send(user_one['token'], channel_one['channel_id'], 'Hello')
         i += 1
-    randMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
-    assert randMessages['messages'][2]['time_created'] > prior_send
-    assert randMessages['messages'][1]['time_created'] > randMessages['messages'][2]['time_created']
-    assert randMessages['messages'][0]['time_created'] > randMessages['messages'][1]['time_created']
-    assert randMessages['start'] == 0
-    assert randMessages['end'] == -1
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
+    assert channel_one_messages['messages'][2]['time_created'] > prior_send
+    assert channel_one_messages['messages'][1]['time_created'] > channel_one_messages['messages'][2]['time_created']
+    assert channel_one_messages['messages'][0]['time_created'] > channel_one_messages['messages'][1]['time_created']
+    assert channel_one_messages['start'] == 0
+    assert channel_one_messages['end'] == -1
 
-# check a message of 5 characters is successfully sent
 def test_message_send_valid_input_5_chars():
+    '''
+    check a message of 5 characters is sent successfully
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
     prior_send = time()
-    assert message_send(userOne['token'], randChannel['channel_id'], 'Hello') == {'message_id': 1}
-    chanMessages = channel_messages(userOne['token'], randChannel['channel_id'],0)
-    assert len(chanMessages['messages']) == 1
-    assert chanMessages['messages'][0]['message_id'] == 1
-    assert chanMessages['messages'][0]['u_id'] == userOne['u_id']
-    assert chanMessages['messages'][0]['message'] == 'Hello'
-    assert chanMessages['messages'][0]['time_created'] > prior_send
+    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert len(channel_one_messages['messages']) == 1
+    assert channel_one_messages['messages'][0]['message_id'] == 1
+    assert channel_one_messages['messages'][0]['u_id'] == user_one['u_id']
+    assert channel_one_messages['messages'][0]['message'] == 'Hello'
+    assert channel_one_messages['messages'][0]['time_created'] > prior_send
 
-# check a message of 1000 characters is successfully sent
+
 def test_message_send_valid_input_1000_chars():
+    '''
+    check a message of 1000 characters is successfully sent
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    # create a message that is 1000 characters long
-    message_long = 'a'
-    for i in range(999):
-        message_long  += 'a'
-        i += 1
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_long = 'a'*1000
     prior_send = time()
-    assert message_send(userOne['token'], randChannel['channel_id'], message_long) == {'message_id': 1}
-    chanMessages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
-    assert chanMessages['messages'][0]['message_id'] == 1
-    assert chanMessages['messages'][0]['u_id'] == userOne['u_id']
-    assert chanMessages['messages'][0]['message'] == message_long
-    assert chanMessages['messages'][0]['time_created'] > prior_send
+    assert message_send(user_one['token'], channel_one['channel_id'], message_long) == {'message_id': 1}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
+    assert channel_one_messages['messages'][0]['message_id'] == 1
+    assert channel_one_messages['messages'][0]['u_id'] == user_one['u_id']
+    assert channel_one_messages['messages'][0]['message'] == message_long
+    assert channel_one_messages['messages'][0]['time_created'] > prior_send
 
-# check an inputerror is raised if the the input 'message' is an empty string
+
 def test_message_send_empty_message():
+    '''
+    check an inputerror is raised if the the input 'message' is an empty string
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
     with pytest.raises(InputError):
-         message_send(userOne['token'], randChannel['channel_id'], '')
+         message_send(user_one['token'], channel_one['channel_id'], '')
                  
-# check an inputerror is raised if the message is greater than 1000 characters
-def test_message_send_over_1000_characters():
-    clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel= channels_create(userOne['token'], 'randChannel', True)
-    # create a message that is 1001 characters long
-    message_long = 'a'
-    for i in range(1000):
-        message_long  += 'a'
-        i += 1
-    with pytest.raises(InputError):
-        message_send(userOne['token'], randChannel['channel_id'], message_long)
 
-# check an accesserror is raised when the token is not valid
+def test_message_send_1001_characters():
+    '''
+    check an inputerror is raised if the message is greater than 1000 characters
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one= channels_create(user_one['token'], 'channel_one', True)
+    message_long = 'a'*1001
+    with pytest.raises(InputError):
+        message_send(user_one['token'], channel_one['channel_id'], message_long)
+
+
 def test_message_send_invalid_token():
+    '''
+    check an accesserror is raised when the token is not valid
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', False)
-    auth_logout(userOne['token'])
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', False)
+    auth_logout(user_one['token'])
     with pytest.raises(AccessError):
-        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        message_send(user_one['token'], channel_one['channel_id'], 'Hello')
 
-# check an an accesserror is raised if the user is not in channel and tries to 
-# send a message
+
 def test_message_send_user_not_in_channel():
+    '''
+    check an an accesserror is raised if the user is not in channel and tries to 
+    send a message
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
     with pytest.raises(AccessError):
-        message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+        message_send(user_two['token'], channel_one['channel_id'], 'Hello')
 
-# check an inputerror is raised if the channel_id is invalid; in this test any 
-# channel_id is invalid since no channels exist
+
 def test_message_send_invalid_channel_id():
+    '''
+    check an inputerror is raised if the channel_id is invalid; in this test any 
+    channel_id is invalid since no channels exist
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(InputError):
-        message_send(userOne['token'], 0, 'Hello')
+        message_send(user_one['token'], 0, 'Hello')
 
 
 # tests for message_remove
 
-# check message_remove removes the message if the user calling it is the user 
-# who sent the message originally
-def test_message_remove_valid_channel_member():
-    clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id'])
-    randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
-    assert message_remove(userTwo['token'], randMessage['message_id']) == {}
-    chanMessages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
-    assert chanMessages == {'messages': [], 'start': 0, 'end': -1}
 
-# check message_remove removes the message if the user calling it is the 
-# owner of the channel 
+def test_message_remove_valid_channel_member():
+    '''
+    check message_remove removes the message if the user calling it is the user 
+    who sent the message originally
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
+    rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
+    assert message_remove(user_two['token'], rand_message['message_id']) == {}
+    channel_one_messages = channel_messages(user_two['token'], channel_one['channel_id'],0)
+    assert channel_one_messages == {'messages': [], 'start': 0, 'end': -1}
+
+
 def test_message_remove_valid_channel_owner():
+    '''
+    check message_remove removes the message if the user calling it is the 
+    owner of the channel 
+    '''
+    
     clear()
     auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    userThree = auth_register('thirduser@gmail.com', '456abc!@#', 'Third', 'User')
-    randChannel = channels_create(userTwo['token'], 'randChannel', True)
-    channel_join(userThree['token'], randChannel['channel_id'])
-    randMessage = message_send(userThree['token'], randChannel['channel_id'], 'Hello')
-    assert message_remove(userTwo['token'], randMessage['message_id']) == {}
-    chanMessages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
-    assert chanMessages == {'messages': [], 'start': 0, 'end': -1}
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    user_three = auth_register('thirduser@gmail.com', '456abc!@#', 'Third', 'User')
+    channel_one = channels_create(user_two['token'], 'channel_one', True)
+    channel_join(user_three['token'], channel_one['channel_id'])
+    rand_message = message_send(user_three['token'], channel_one['channel_id'], 'Hello')
+    assert message_remove(user_two['token'], rand_message['message_id']) == {}
+    channel_one_messages = channel_messages(user_two['token'], channel_one['channel_id'],0)
+    assert channel_one_messages == {'messages': [], 'start': 0, 'end': -1}
 
-# check message_remove removes the message if the user calling it is an owner of
-# flockr
+
 def test_message_remove_valid_flockr_owner():
+    '''
+    check message_remove removes the message if the user calling it is an owner of
+    flockr
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userTwo['token'], 'randChannel', True)
-    channel_join(userOne['token'], randChannel['channel_id'])
-    randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
-    assert message_remove(userOne['token'], randMessage['message_id']) == {}
-    chanMessages = channel_messages(userTwo['token'], randChannel['channel_id'],0)
-    assert chanMessages == {'messages': [], 'start': 0, 'end': -1}
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_two['token'], 'channel_one', True)
+    channel_join(user_one['token'], channel_one['channel_id'])
+    rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
+    assert message_remove(user_one['token'], rand_message['message_id']) == {}
+    channel_one_messages = channel_messages(user_two['token'], channel_one['channel_id'],0)
+    assert channel_one_messages == {'messages': [], 'start': 0, 'end': -1}
 
-# check message_remove removes the correct message if there are multiple 
-# messages in the channel
+
 def test_message_remove_valid_input_multiple_messages_remove_middle():
+    '''
+    check message_remove removes the correct message if there are multiple 
+    messages in the channel
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
     for i in range(3):
-        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        message_send(user_one['token'], channel_one['channel_id'], 'Hello')
         i += 1
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
     for j in range(3):
-        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+        message_send(user_one['token'], channel_one['channel_id'], 'Hello')
         j += 1
-    chanMessages_init = channel_messages(userOne['token'], randChannel['channel_id'],0)    
-    assert message_remove(userOne['token'], randMessage['message_id']) == {}
-    chanMessages_after = channel_messages(userOne['token'], randChannel['channel_id'],0)
-    assert len(chanMessages_after['messages']) == len(chanMessages_init['messages']) - 1
-    for k in range(len(chanMessages_after['messages'])):
-        assert chanMessages_after['messages'][k]['message_id'] != randMessage['message_id']
+    channel_one_messages_init = channel_messages(user_one['token'], channel_one['channel_id'],0)    
+    assert message_remove(user_one['token'], rand_message['message_id']) == {}
+    channel_one_messages_after = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert len(channel_one_messages_after['messages']) == len(channel_one_messages_init['messages']) - 1
+    for k in range(len(channel_one_messages_after['messages'])):
+        assert channel_one_messages_after['messages'][k]['message_id'] != rand_message['message_id']
         k += 1
 
-# check an accesserror is raised if an owner of flockr tries to remove a message 
-# from a channel they are not a member of
+
 def test_message_remove_invalid_flockr_owner():
+    '''
+    check an accesserror is raised if an owner of flockr tries to remove a message 
+    from a channel they are not a member of
+    '''
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userTwo['token'], 'randChannel', True)
-    randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_two['token'], 'channel_one', True)
+    rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
     with pytest.raises(AccessError):
-        message_remove(userOne['token'], randMessage['message_id'])
+        message_remove(user_one['token'], rand_message['message_id'])
         
-# check an accesserror is raised when the user that sent the message has left 
-# the channel and is trying to delete the channel
+
 def test_message_remove_user_not_part_of_channel():
+    '''
+    check an accesserror is raised when the user that sent the message has left 
+    the channel and is trying to delete the channel
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id'])
-    randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
-    channel_leave(userTwo['token'], randChannel['channel_id'])
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
+    rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
+    channel_leave(user_two['token'], channel_one['channel_id'])
     with pytest.raises(AccessError):
-        message_remove(userTwo['token'], randMessage['message_id'])
+        message_remove(user_two['token'], rand_message['message_id'])
    
-# check an accesserror is raised when token is not valid
+
 def test_message_remove_invalid_token():
+    '''
+    check an accesserror is raised when token is not valid
+    '''
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', False)
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-    auth_logout(userOne['token'])
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', False)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    auth_logout(user_one['token'])
     with pytest.raises(AccessError):
-        message_remove(userOne['token'], randMessage['message_id'])
+        message_remove(user_one['token'], rand_message['message_id'])
 
-# check an accesserror is raised when the user trying to delete is neither the 
-# user who sent the message, nor the owner of flockr nor a channel owner
+
 def test_message_remove_not_authorised_to_remove():
+    '''
+    check an accesserror is raised when the user trying to delete is neither the 
+    user who sent the message, nor the owner of flockr nor a channel owner
+    '''
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id'])
-    message = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
+    message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
     with pytest.raises(AccessError):
-        message_remove(userTwo['token'], message['message_id'])
+        message_remove(user_two['token'], message['message_id'])
 
-# check an inputerror is raised when the message being removed has already been
-# deleted i.e message_d is invalid
+
 def test_message_remove_already_deleted():
+    '''
+    check an inputerror is raised when the message being removed has already been
+    deleted i.e message_id is invalid 
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', False)
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', False)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
     # first delete of the message should be successful
-    assert message_remove(userOne['token'], randMessage['message_id']) == {}
+    assert message_remove(user_one['token'], rand_message['message_id']) == {}
     with pytest.raises(InputError):
-        message_remove(userOne['token'], randMessage['message_id'])
+        message_remove(user_one['token'], rand_message['message_id'])
 
 
 # tests for message_edit
 
-# check message_edits edits the message if the user calling it is the user who
-# sent the message originally
+
 def test_message_edit_valid_input_channel_member():
+    '''
+    check message_edits edits the message if the user calling it is the user who
+    sent the message originally
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id'])
-    randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
-    chanMessages_init = channel_messages(userTwo['token'], randChannel['channel_id'], 0)
-    message_edit(userTwo['token'], randMessage['message_id'], 'Hello World') == {}
-    chanMessages_after = channel_messages(userTwo['token'], randChannel['channel_id'], 0)
-    assert chanMessages_after == { 
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
+    rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
+    channel_one_messages_init = channel_messages(user_two['token'], channel_one['channel_id'], 0)
+    message_edit(user_two['token'], rand_message['message_id'], 'Hello World') == {}
+    channel_one_messages_after = channel_messages(user_two['token'], channel_one['channel_id'], 0)
+    assert channel_one_messages_after == { 
         'messages': [{
-            'message_id': chanMessages_init['messages'][0]['message_id'],
-            'u_id': chanMessages_init['messages'][0]['u_id'],
+            'message_id': channel_one_messages_init['messages'][0]['message_id'],
+            'u_id': channel_one_messages_init['messages'][0]['u_id'],
             'message' : 'Hello World',
-            'time_created' : chanMessages_init['messages'][0]['time_created']
+            'time_created' : channel_one_messages_init['messages'][0]['time_created']
         }],
         'start' : 0,
         'end': -1
     }
-# check message_edit edits the message if the user calling it is the owner of 
-# the channel 
+
 def test_message_edit_valid_input_channel_owner():
+    '''
+    check message_edit edits the message if the user calling it is the owner of 
+    the channel 
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userTwo['token'], 'randChannel', True)
-    channel_join(userOne['token'], randChannel['channel_id'])
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-    chanMessages_init = channel_messages(userTwo['token'], randChannel['channel_id'], 0)
-    assert message_edit(userTwo['token'],randMessage['message_id'], 'Hello World') == {}
-    chanMessages_after = channel_messages(userTwo['token'], randChannel['channel_id'],0)
-    assert chanMessages_after == { 
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_two['token'], 'channel_one', True)
+    channel_join(user_one['token'], channel_one['channel_id'])
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    channel_one_messages_init = channel_messages(user_two['token'], channel_one['channel_id'], 0)
+    assert message_edit(user_two['token'],rand_message['message_id'], 'Hello World') == {}
+    channel_one_messages_after = channel_messages(user_two['token'], channel_one['channel_id'],0)
+    assert channel_one_messages_after == { 
         'messages': [{
-            'message_id': chanMessages_init['messages'][0]['message_id'],
-            'u_id': chanMessages_init['messages'][0]['u_id'],
+            'message_id': channel_one_messages_init['messages'][0]['message_id'],
+            'u_id': channel_one_messages_init['messages'][0]['u_id'],
             'message' : 'Hello World',
-            'time_created' : chanMessages_init['messages'][0]['time_created']
+            'time_created' : channel_one_messages_init['messages'][0]['time_created']
         }],
         'start' : 0,
         'end': -1
     }
 
-# check message_edit edits the message if the user calling it is an owner of 
-# flockr 
+
 def test_message_edit_valid_input_flockr_owner():
+    '''
+    check message_edit edits the message if the user calling it is an owner of 
+    flockr 
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userTwo['token'], 'randChannel', True)
-    channel_join(userOne['token'], randChannel['channel_id'])
-    randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
-    chanMessages_init = channel_messages(userOne['token'], randChannel['channel_id'], 0)
-    assert message_edit(userOne['token'],randMessage['message_id'], 'Hello World') == {}
-    chanMessages_after = channel_messages(userOne['token'], randChannel['channel_id'],0)
-    assert chanMessages_after == { 
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_two['token'], 'channel_one', True)
+    channel_join(user_one['token'], channel_one['channel_id'])
+    rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
+    channel_one_messages_init = channel_messages(user_one['token'], channel_one['channel_id'], 0)
+    assert message_edit(user_one['token'],rand_message['message_id'], 'Hello World') == {}
+    channel_one_messages_after = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages_after == { 
         'messages': [{
-            'message_id': chanMessages_init['messages'][0]['message_id'],
-            'u_id': chanMessages_init['messages'][0]['u_id'],
+            'message_id': channel_one_messages_init['messages'][0]['message_id'],
+            'u_id': channel_one_messages_init['messages'][0]['u_id'],
             'message' : 'Hello World',
-            'time_created' : chanMessages_init['messages'][0]['time_created']
+            'time_created' : channel_one_messages_init['messages'][0]['time_created']
         }],
         'start' : 0,
         'end': -1
     }
 
-# check message_edit edits the correct message if there are multiple 
-# messages in the channel    
+#   
 def test_message_edit_valid_input_multiple_messages_edit_middle():
+    '''
+    check message_edit edits the correct message if there are multiple 
+    messages in the channel   
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    message_send(userOne['token'], randChannel['channel_id'], 'Hi')
-    message_send(userOne['token'], randChannel['channel_id'], 'Hi2')
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hi3')
-    message_send(userOne['token'], randChannel['channel_id'], 'Hi4')
-    assert message_edit(userOne['token'],randMessage['message_id'], 'Hello World') == {}
-    chanMessages = channel_messages(userOne['token'], randChannel['channel_id'],0)
-    assert chanMessages['messages'][1]['message'] == 'Hello World'
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi2')
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi3')
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi4')
+    assert message_edit(user_one['token'],rand_message['message_id'], 'Hello World') == {}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages['messages'][1]['message'] == 'Hello World'
 
-# check message_edit removes a messsage if the input 'message' is an empty
-# string
+
 def test_message_edit_valid_input_empty_string():
+    '''
+    check message_edit removes a messsage if the input 'message' is an empty
+    string
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-    assert message_edit(userOne['token'],randMessage['message_id'], '') == {}
-    chanMessages = channel_messages(userOne['token'], randChannel['channel_id'],0)
-    assert chanMessages == {'messages': [], 'start': 0, 'end': -1}
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    assert message_edit(user_one['token'],rand_message['message_id'], '') == {}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages == {'messages': [], 'start': 0, 'end': -1}
 
-# check message_edit successfully edits the message if the message is 1000
-# characters long
+
 def test_message_edit_valid_input_1000_characters():
+    '''
+    check message_edit successfully edits the message if the message is 1000
+    characters long
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-    chanMessages_init = channel_messages(userOne['token'], randChannel['channel_id'], 0)
-    # create a message that is 1000 characters long
-    message_long = 'a'
-    for i in range(999):
-        message_long  += 'a'
-        i += 1
-    assert message_edit(userOne['token'], randMessage['message_id'], message_long) == {}
-    chanMessages_after = channel_messages(userOne['token'], randChannel['channel_id'],0)
-    assert chanMessages_after == { 
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    channel_one_messages_init = channel_messages(user_one['token'], channel_one['channel_id'], 0)
+    message_long = 'a'*1000
+    assert message_edit(user_one['token'], rand_message['message_id'], message_long) == {}
+    channel_one_messages_after = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages_after == { 
         'messages': [{
-            'message_id': chanMessages_init['messages'][0]['message_id'],
-            'u_id': chanMessages_init['messages'][0]['u_id'],
+            'message_id': channel_one_messages_init['messages'][0]['message_id'],
+            'u_id': channel_one_messages_init['messages'][0]['u_id'],
             'message' : message_long,
-            'time_created' : chanMessages_init['messages'][0]['time_created']
+            'time_created' : channel_one_messages_init['messages'][0]['time_created']
         }],
         'start': 0,
         'end': -1
     }
 
-# check an inputerror is raised if the message is greater than 1000 characters
-def test_message_edit_over_1000_characters():
-    clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-    # create a message that is 1001 characters long
-    message_long = 'a'
-    for i in range(1001):
-        message_long  += 'a'
-        i += 1
-    with pytest.raises(InputError):
-        message_edit(userOne['token'], randMessage['message_id'], message_long)
 
-# check an inputerror is raised if the message_id is invalid (eg. it has been
-# deleted)
+def test_message_edit_1001_characters():
+    '''
+    check an inputerror is raised if the message is greater than 1000 characters
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_long = 'a'*1001
+    with pytest.raises(InputError):
+        message_edit(user_one['token'], rand_message['message_id'], message_long)
+
+ 
 def test_message_edit_invalid_message_id_no_messages():
+    '''
+    check an inputerror is raised if the message_id is invalid (eg. it has been
+    deleted)
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-    message_remove(userOne['token'], randMessage['message_id'])
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_remove(user_one['token'], rand_message['message_id'])
     with pytest.raises(InputError):
-        message_edit(userOne['token'], randMessage['message_id'], 'Hello World')
+        message_edit(user_one['token'], rand_message['message_id'], 'Hello World')
 
-# check an accesserror is raised when the token is not valid 
+
 def test_message_edit_invalid_token():
+    '''
+    check an accesserror is raised when the token is not valid 
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', False)
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-    auth_logout(userOne['token'])
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', False)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    auth_logout(user_one['token'])
     with pytest.raises(AccessError):
-        message_edit(userOne['token'], randMessage['message_id'], 'Hello World')
+        message_edit(user_one['token'], rand_message['message_id'], 'Hello World')
 
-# check an accesserror is raised when the user trying to delete is neither the 
-# user who sent the message, nor the owner of flockr nor a channel owner
+ 
 def test_message_edit_not_authorised_to_remove():
+    '''
+    check an accesserror is raised when the user trying to delete is neither the 
+    user who sent the message, nor the owner of flockr nor a channel owner
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id'])
-    randMessage = message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
     with pytest.raises(AccessError):
-        message_edit(userTwo['token'], randMessage['message_id'], 'Hello World')   
+        message_edit(user_two['token'], rand_message['message_id'], 'Hello World')   
 
-# check an accesserror is raised if a user tries to edit a message but they 
-# have left the channel and are thus not a member of it anymore
+
 def test_message_edit_user_not_part_of_channel():
+    '''
+    check an accesserror is raised if a user tries to edit a message but they 
+    have left the channel and are thus not a member of it anymore
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userOne['token'], 'randChannel', True)
-    channel_join(userTwo['token'], randChannel['channel_id'])
-    randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
-    channel_leave(userTwo['token'], randChannel['channel_id'])
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
+    rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
+    channel_leave(user_two['token'], channel_one['channel_id'])
     with pytest.raises(AccessError):
-        message_edit(userTwo['token'], randMessage['message_id'], 'Hello World')   
+        message_edit(user_two['token'], rand_message['message_id'], 'Hello World')   
 
-# check an accesserror is raised if an owner of flockr tries to edit a message 
-# of a channel they are not a member of
 def test_message_edit_invalid_flockr_owner():
+    '''
+    check an accesserror is raised if an owner of flockr tries to edit a message 
+    of a channel they are not a member of
+    '''
+    
     clear()
-    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
-    randChannel = channels_create(userTwo['token'], 'randChannel', True)
-    randMessage = message_send(userTwo['token'], randChannel['channel_id'], 'Hello')
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_two['token'], 'channel_one', True)
+    rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
     with pytest.raises(AccessError):
-        message_edit(userOne['token'],randMessage['message_id'], 'Hello World')
+        message_edit(user_one['token'],rand_message['message_id'], 'Hello World')
 
 
