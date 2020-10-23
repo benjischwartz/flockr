@@ -9,7 +9,6 @@ def search(token, query_string):
     Given a query string, return a collection of messages in all of the channels that the user has joined that match the query
     Return {messages}
     """
-    # TODO: once token func written, change access error condition
     if user_id_given_token(token) == None:
         raise(AccessError) 
     # init results
@@ -30,8 +29,6 @@ def search(token, query_string):
             # if there is match, append to result
             if query_string in message.get('message', None) != None:
                 result.append(message) 
-            else:
-                pass
     # return result
     return result
 
