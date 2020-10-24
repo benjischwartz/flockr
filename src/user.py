@@ -67,7 +67,7 @@ def user_profile_setemail(token, email):
 
     #Error Checking: Raise an InputError if email is already used
     if email in users:
-        raise InputError(description="Email is already used.")
+        raise InputError(description="Email has already been used.")
     
     old_email = email_given_jwt(token)
     users[email] = users.pop(old_email)
@@ -82,13 +82,13 @@ def user_profile_sethandle(token, handle_str):
         raise AccessError(description="Token passed is not valid.")
 
     if ((len(handle_str) < 3) or (len(handle_str) > 20)):
-        raise InputError(description="handle has to be in between 3 and 20 letters inclusive.")
+        raise InputError(description="Handle has to be in between 3 and 20 letters inclusive.")
     
     #for tokens, data in users.items():
 
     for email in users:
         if users[email]['handle'] == handle_str:
-            raise InputError(description="handle is already being used by another user.")
+            raise InputError(description="Handle is already being used by another user.")
     
     email = email_given_jwt(token)
     users[email]['handle'] = handle_str
