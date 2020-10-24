@@ -15,7 +15,7 @@ def check(email):
 
 def user_profile(token, u_id):
     '''
-    Finds the components of a specified user profile.
+    Returns a list of all users and their associated details.
 
     Parameters:
         token (str): refers to a valid user on flockr who is calling this function
@@ -32,7 +32,7 @@ def user_profile(token, u_id):
     selected_email = ' '
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError("Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid.")
 
     for tokens, data in users.items():
         if data['u_id'] == u_id:
@@ -41,7 +41,7 @@ def user_profile(token, u_id):
             selected_email = tokens
 
     if validid == 0:
-        raise InputError("Invalid ID.")
+        raise InputError(description="Invalid ID.")
     else:
         selected_data.pop('password')
         selected_data.pop('permission_id')
@@ -51,7 +51,7 @@ def user_profile(token, u_id):
 
 def user_profile_setname(token, name_first, name_last):
     '''
-    Sets the first and last name of the current user.  
+    Update the authorised user's first and last name.  
 
     Parameters:
         token (str): refers to a valid user on flockr who is calling this function
@@ -63,16 +63,17 @@ def user_profile_setname(token, name_first, name_last):
 
         }
     '''
+
     #Error Checking: Raise an Input Error if Names not Between 1 & 50 Characters
     if (len(name_first) < 1) or (len(name_first) > 50):
-        raise InputError("First Name is not Between 1 and 50 Characters")
+        raise InputError(description="First Name is not Between 1 and 50 Characters")
     if (len(name_last) < 1) or (len(name_last) > 50):
-        raise InputError("Last Name is not Between 1 and 50 Characters")
+        raise InputError(description="Last Name is not Between 1 and 50 Characters")
 
     #Error Checking: Raise an AccessError if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError("Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid.")
 
     email = email_given_jwt(token)
     users[email]['name_first'] = name_first
@@ -83,7 +84,7 @@ def user_profile_setname(token, name_first, name_last):
 
 def user_profile_setemail(token, email):
     '''
-    Sets the email of the current user.  
+    Update the authorised user's email address.  
 
     Parameters:
         token (str): refers to a valid user on flockr who is calling this function
@@ -96,16 +97,16 @@ def user_profile_setemail(token, email):
     '''
     #Error Checking: Raise an InputError if the email is invalid
     if (check(email) != "Valid Email"):
-        raise InputError ("Invalid email")
+        raise InputError (description="Invalid email")
 
     #Error Checking: Raise an AccessError if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError("Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid.")
 
     #Error Checking: Raise an InputError if email is already used
     if email in users:
-        raise InputError("Email is already used.")
+        raise InputError(description="Email has already been used.")
     
     old_email = email_given_jwt(token)
     users[email] = users.pop(old_email)
@@ -115,7 +116,7 @@ def user_profile_setemail(token, email):
 
 def user_profile_sethandle(token, handle_str):
     '''
-    Sets the handle of the current user.  
+    Update the authorised user's handle.  
 
     Parameters:
         token (str): refers to a valid user on flockr who is calling this function
@@ -128,16 +129,16 @@ def user_profile_sethandle(token, handle_str):
     '''
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError("Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid.")
 
     if ((len(handle_str) < 3) or (len(handle_str) > 20)):
-        raise InputError("handle has to be in between 3 and 20 letters inclusive.")
+        raise InputError(description="Handle has to be in between 3 and 20 letters inclusive.")
     
     #for tokens, data in users.items():
 
     for email in users:
         if users[email]['handle'] == handle_str:
-            raise InputError("handle is already being used by another user.")
+            raise InputError(description="Handle is already being used by another user.")
     
     email = email_given_jwt(token)
     users[email]['handle'] = handle_str

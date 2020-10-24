@@ -1,6 +1,7 @@
 import pytest
 from check_token import user_id_given_token, get_handle, email_given_user_id, permission_id_given_token
 from check_token import jwt_given_email, email_given_jwt
+from user import user_profile_setemail
 from auth import auth_register, auth_logout
 from other import clear
 
@@ -24,6 +25,14 @@ def test_user_id_given_token_after_logout():
     register_second_result = auth_register('secondemail@gmail.com', 'password1234', 'Second', 'User')
     auth_logout(register_second_result['token'])
     assert(user_id_given_token(register_second_result['token']) == None)
+
+def test_user_id_given_token_email_change():
+    clear()
+    # registering first user as the first user is the owner of the flockr
+    register_first_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    user_profile_setemail(register_first_result['token'], "newemail@gmail.com")
+    assert(user_id_given_token(register_first_result['token']) == None)
+
 
 def test_get_handle():
     clear()
