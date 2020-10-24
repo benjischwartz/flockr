@@ -257,7 +257,19 @@ def channel_join(token, channel_id):
     return {}
 
 def channel_addowner(token, channel_id, u_id):
-    """ Making a user an owner of the channel """
+    """ 
+    Adding a user as an owner of the specified channel. THe user is not required to 
+    be an ordinary member before being made an owner of the channel. Only an owner
+    of the channel or an owner of Flockr has the permissions to add owners.
+        
+    Parameters:
+        token (str): refers to a valid user on flockr who is calling this function
+        channel_id (int): identifies the channel that owners are being added to
+        u_id (int): identifies the user that is to be added as an owner of the channel
+    
+    Returns:
+        {}
+    """
     # raise an inputerror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
@@ -291,7 +303,19 @@ def channel_addowner(token, channel_id, u_id):
     return {}
 
 def channel_removeowner(token, channel_id, u_id):
-    """ Removing an owner from the channel and making them an ordinary member instead """
+    """ 
+    Removes an owner of the specified channel. When the owner is removed they become an 
+    ordinary member isntead. Only an owner of the channel or an owner of Flockr has the 
+    permissions to remove owners.
+        
+    Parameters:
+        token (str): refers to a valid user on flockr who is calling this function
+        channel_id (int): identifies the channel that owners are being removed from
+        u_id (int): identifies the user that is to be removed as an owner of the channel
+    
+    Returns:
+        {}
+    """
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
