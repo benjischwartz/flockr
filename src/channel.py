@@ -7,8 +7,8 @@ from other import clear
 
 def channel_invite(token, channel_id, u_id):
     '''
-    enables a user in a channel to invite someone outside the channel token
-    to the channel
+    Invites a user (with user id u_id) to join a channel with ID channel_id. 
+    Once invited the user is added to the channel immediately
  
     Parameters:
         token (str): refers to a valid user on flockr; this user is the inviter
@@ -52,7 +52,8 @@ def channel_invite(token, channel_id, u_id):
 
 def channel_details(token, channel_id):
     '''
-    returns a dictionary with details about the name and users of a specified channel
+    Given a Channel with ID channel_id that the authorised user is part of, 
+    provide basic details about the channel
  
     Parameters:
         token (str): refers to a valid user on flockr; this user is the inviter
@@ -125,17 +126,19 @@ def channel_details(token, channel_id):
 
 
 def channel_messages(token, channel_id, start):
-
     '''
-    returns a dictionary with details about a maximum of 50 messages that are 
-    within a specified channel
+    Given a Channel with ID channel_id that the authorised user is part of, 
+    returns up to 50 messages between index "start" and "start + 50". 
+    Message with index 0 is the most recent message in the channel. This function 
+    returns a new index "end" which is the value of "start + 50", or, 
+    if this function has returned the least recent messages in the channel, returns -1 
+    in "end" to indicate there are no more messages to load after this return.
  
     Parameters:
         token (str): refers to a valid user on flockr who is calling this function
         channel_id (int): identifies the channel that's messages are being returned
-        start: identifies the message index that this function will return from;
-            0 being the most recent message
- 
+        start (int): identifies the message index that this function will return from;
+
     Returns:
         (dict): {
             'messages': [

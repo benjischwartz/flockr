@@ -167,7 +167,7 @@ def test_channel_invite_already_in():
     channel_one_details_initial = channel_details(user_one['token'], channel_one['channel_id'])
     assert channel_invite(user_two['token'], channel_one['channel_id'], user_one['u_id']) == {}
     channel_one_details_after = channel_details(user_one['token'], channel_one['channel_id'])
-    assert channel_one_details_after == channel_one_details_after
+    assert channel_one_details_initial == channel_one_details_after
 
 
 # tests for channel_details
@@ -323,25 +323,22 @@ def test_channel_messages_valid_input_3_messages():
     check that channel_messages returns the correct return dictionary when there
     are 3 messages 
     '''
+    
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     prior_send = time()
-    for i in range(3):
+    for _ in range(3):
         message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-        i += 1
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
     for j in range(3):
         assert channel_one_messages['messages'][j]['u_id'] == user_one['u_id']
         assert channel_one_messages['messages'][j]['message'] == 'Hello'
-        j += 1
     after_send = time()
-    assert channel_one_messages['messages'][2]['time_created'] > prior_send
-    assert (channel_one_messages['messages'][1]['time_created'] 
-                > channel_one_messages['messages'][2]['time_created'])
-    assert (channel_one_messages['messages'][0]['time_created'] 
-                > channel_one_messages['messages'][1]['time_created'])
-    assert after_send > channel_one_messages['messages'][0]['time_created'] 
+    oldest = channel_one_messages['messages'][2]['time_created'] 
+    middle = channel_one_messages['messages'][1]['time_created'] 
+    most_recent = channel_one_messages['messages'][0]['time_created'] 
+    assert after_send > most_recent > middle > oldest > prior_send
     assert channel_one_messages['start'] == 0
     assert channel_one_messages['end'] == -1
 
@@ -355,9 +352,8 @@ def test_channel_messages_valid_input_49_messages():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    for i in range(49):
+    for _ in range(49):
         message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-        i += 1
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
     assert len(channel_one_messages['messages']) == 49
     assert channel_one_messages['start'] == 0
@@ -373,9 +369,8 @@ def test_channel_message_valid_input_50_messages():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    for i in range(50):
+    for _ in range(50):
         message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-        i += 1
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
     assert len(channel_one_messages['messages']) == 50
     assert channel_one_messages['start'] == 0
@@ -391,9 +386,8 @@ def test_channel_message_valid_input_50_messages_start_1():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    for i in range(50):
+    for _ in range(50):
         message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-        i += 1
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 1)
     assert len(channel_one_messages['messages']) == 49
     assert channel_one_messages['start'] == 1
@@ -409,9 +403,8 @@ def test_channel_messages_valid_input_100_messages_start_25():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    for i in range(100):
+    for _ in range(100):
         message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-        i += 1
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 25)
     assert len(channel_one_messages['messages']) == 50
     assert channel_one_messages['start'] == 25
