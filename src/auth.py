@@ -7,9 +7,9 @@ import jwt
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
     if(re.search(regex,email)):
-        return("Valid Email")
+        return True
     else:
-        return("Invalid Email")
+        return False
 
     
 def auth_login(email, password):
@@ -54,7 +54,7 @@ def auth_logout(token):
 def auth_register(email, password, name_first, name_last):
     
     # raise an inputerror if email is invalid
-    if (check(email) != "Valid Email"):
+    if not check(email):
         raise InputError (description="Invalid email")
 
     # raise an inputerror if email already registered to a user
@@ -78,7 +78,6 @@ def auth_register(email, password, name_first, name_last):
 
     # give first user owner permission_id, member for all else
     permission_id = 2 if newU_id != 1 else 1
-    # CHANGES MADE 13/10/2020
 
     #create a unique handle -> a concatenation of lower-case only
     #first and last name. Cut off at 20 characters. 
