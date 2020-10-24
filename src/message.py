@@ -4,13 +4,24 @@ from check_token import user_id_given_token, permission_id_given_token
 from time import time
 
 def message_send(token, channel_id, message):
-    
+    '''
+    Send a message from authorised_user to the channel specified by channel_id
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr who is sending the message
+        channel_id (int): identifies the channel the user is sending a message to
+        message (str): contains the content of the message being sent
+ 
+    Returns:
+        (dict): {}
+    '''
+
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
         raise AccessError("Token passed is not valid.")
     
-    # raise inputerror if the channel is invalid
+    # raise inputerror if the channel_id is invalid
     if channel_id not in channel:
         raise InputError("Channel ID is invalid.")
         
@@ -46,6 +57,16 @@ def message_send(token, channel_id, message):
     }
 
 def message_remove(token, message_id):
+    '''
+    Given a message_id for a message, this message is removed from the channel
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr who is sending the message
+        message_id (int): identifies the message the user is removing
+ 
+    Returns:
+        (dict): {}
+    '''
     
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
@@ -85,6 +106,18 @@ def message_remove(token, message_id):
     
     
 def message_edit(token, message_id, message):
+    '''
+    Given a message, update it's text with new text. If the new message is an 
+    empty string, the message is deleted.
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr who is editing the message
+        message_id (int): identifies the message the user is removing
+        message (str): contains the edited version of the message
+ 
+    Returns:
+        (dict): {}
+    '''
     
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)

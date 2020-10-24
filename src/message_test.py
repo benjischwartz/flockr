@@ -54,14 +54,14 @@ def test_channel_send_valid_input_time_created():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     prior_send = time()
-    i = 0
-    while i < 3:
+    for _ in range(3):
         message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-        i += 1
+    after_send = time()
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
-    assert channel_one_messages['messages'][2]['time_created'] > prior_send
-    assert channel_one_messages['messages'][1]['time_created'] > channel_one_messages['messages'][2]['time_created']
-    assert channel_one_messages['messages'][0]['time_created'] > channel_one_messages['messages'][1]['time_created']
+    oldest = channel_one_messages['messages'][2]['time_created']
+    middle = channel_one_messages['messages'][1]['time_created'] 
+    most_recent = channel_one_messages['messages'][0]['time_created'] 
+    assert after_send > most_recent > middle > oldest > prior_send
     assert channel_one_messages['start'] == 0
     assert channel_one_messages['end'] == -1
 
@@ -229,20 +229,17 @@ def test_message_remove_valid_input_multiple_messages_remove_middle():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    for i in range(3):
+    for _ in range(3):
         message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-        i += 1
     rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-    for j in range(3):
+    for _ in range(3):
         message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-        j += 1
     channel_one_messages_init = channel_messages(user_one['token'], channel_one['channel_id'],0)    
     assert message_remove(user_one['token'], rand_message['message_id']) == {}
     channel_one_messages_after = channel_messages(user_one['token'], channel_one['channel_id'],0)
     assert len(channel_one_messages_after['messages']) == len(channel_one_messages_init['messages']) - 1
     for k in range(len(channel_one_messages_after['messages'])):
         assert channel_one_messages_after['messages'][k]['message_id'] != rand_message['message_id']
-        k += 1
 
 
 def test_message_remove_invalid_flockr_owner():
@@ -250,6 +247,7 @@ def test_message_remove_invalid_flockr_owner():
     check an accesserror is raised if an owner of flockr tries to remove a message 
     from a channel they are not a member of
     '''
+    
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
@@ -280,6 +278,7 @@ def test_message_remove_invalid_token():
     '''
     check an accesserror is raised when token is not valid
     '''
+    
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', False)
@@ -294,6 +293,7 @@ def test_message_remove_not_authorised_to_remove():
     check an accesserror is raised when the user trying to delete is neither the 
     user who sent the message, nor the owner of flockr nor a channel owner
     '''
+    
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
@@ -402,7 +402,7 @@ def test_message_edit_valid_input_flockr_owner():
         'end': -1
     }
 
-#   
+ 
 def test_message_edit_valid_input_multiple_messages_edit_middle():
     '''
     check message_edit edits the correct message if there are multiple 
@@ -434,7 +434,7 @@ def test_message_edit_valid_input_empty_string():
     assert message_edit(user_one['token'],rand_message['message_id'], '') == {}
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
     assert channel_one_messages == {'messages': [], 'start': 0, 'end': -1}
-
+  
 
 def test_message_edit_valid_input_1000_characters():
     '''
