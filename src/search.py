@@ -14,12 +14,6 @@ def search(token, query_string):
     # init results
     result = []
 
-    # for email in users:
-    #     if 'handle' in users[email].keys():
-    #         if handle_str == users[email]['handle']:
-    #             raise InputError("handle is already being used by another user.")
-
-    # users[token]['handle'] = handle_str
     # for each channel user is a member of
     for each in channels_list(token)['channels']:
         # use Python's in operator: if True, there is pattern match
