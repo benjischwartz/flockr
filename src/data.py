@@ -42,5 +42,9 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #       }
     #     ]
     # }
-}      
+}
+
+highest_ids = { # for iteration 2, records the highest message_id outputted
+    #'highest_message_id' : 2
+    }      
 

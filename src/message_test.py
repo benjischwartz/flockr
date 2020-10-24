@@ -43,7 +43,20 @@ def test_message_send_valid_input_multiple_channels():
     assert len(channel_one_messages['messages']) == 2
     assert len(channel_two_messages['messages']) == 1
 
-
+def test_message_send_unique_id_after_remove():
+    '''
+    check that message_send returns the correct dictionary with unique message_ids 
+    even if messages get removed
+    '''
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_two = channels_create(user_one['token'], 'channel_two', True)
+    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
+    assert message_send(user_one['token'], channel_two['channel_id'], 'Hello') == {'message_id': 2}
+    message_remove(user_one['token'], 1)
+    assert message_send(user_one['token'], channel_two['channel_id'], 'Hello') == {'message_id': 3}
+    
 def test_channel_send_valid_input_time_created():
     '''
     check that message_send creates a time_created property for the message based
