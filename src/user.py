@@ -34,6 +34,17 @@ def user_profile(token, u_id):
     return selected_data
 
 def user_profile_setname(token, name_first, name_last):
+    '''
+    Sets the first and last name of the current user.  
+
+    Parameters:
+        token (str): refers to a valid user on flockr who is calling this function
+        name_first (str): the new first name that should be set on the user profile
+        name_last (str): the new last name that should be set on the user profile
+    
+    Returns:
+        {}
+    '''
     #Error Checking: Raise an Input Error if Names not Between 1 & 50 Characters
     if (len(name_first) < 1) or (len(name_first) > 50):
         raise InputError("First Name is not Between 1 and 50 Characters")
@@ -53,6 +64,16 @@ def user_profile_setname(token, name_first, name_last):
     }
 
 def user_profile_setemail(token, email):
+    '''
+    Sets the email of the current user.  
+
+    Parameters:
+        token (str): refers to a valid user on flockr who is calling this function
+        email (str): the new email that should be set on the user profile
+    
+    Returns:
+        {}
+    '''
     #Error Checking: Raise an InputError if the email is invalid
     if (check(email) != "Valid Email"):
         raise InputError ("Invalid email")
