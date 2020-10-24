@@ -207,7 +207,6 @@ def channel_messages(token, channel_id, start):
     return all_messages
 
 def channel_leave(token, channel_id):
-<<<<<<< HEAD
     '''
     Given a Channel with ID channel_id that the authorised user is part of, 
     the function removes the current user as a member of the channel.
@@ -222,9 +221,6 @@ def channel_leave(token, channel_id):
         }
     '''
 
-=======
-    """ Remove a user from the channel """
->>>>>>> master
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -247,7 +243,6 @@ def channel_leave(token, channel_id):
     return {}
 
 def channel_join(token, channel_id):
-<<<<<<< HEAD
     '''
     Given a Channel with ID channel_id the function adds the current authorised
     user as a member of the channel.
@@ -262,9 +257,6 @@ def channel_join(token, channel_id):
         }
     '''
 
-=======
-    """ Adding a user to the channel """
->>>>>>> master
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
