@@ -1,4 +1,8 @@
-﻿## Data assumptions
+﻿Good assumptions! They make reasonable assumptions about how the system should behave where the specs are less clear, just make sure to add tests for the assumed behaviour.
+
+## Data assumptions
+
+Implementation choice, not an assumption
 *  tokens will be using the email, as emails assumed to be unique
 
 ## Channels.py assumptions
@@ -7,10 +11,14 @@
 * when a channel is created, the user whose token it is matched with, will auto-matically be the first owner and member of that channel
 
 ## Channel.py assumptions
+
+Printing to the terminal is fine for debugging purposes, but when communicating with the frontend later on, you will need to raise an error for the message to be displayed in the UI
 * channel_invite – if the user with token 'token' invites themselves or someone else
     who is already in the channel, a message will be printed out notifying the
     the user that the user they are inviting is already in the channel and the function 
     will return an empty dictionary; no exception is raised
+
+This is not really ambiguous in the specs
 * any member of the channel can call these functions (whether they are owner or not is irrelevant)
     - channel_invite
     - channel_details
@@ -23,12 +31,18 @@
     - channel_leave
     - channel_addowner
     - channel_removeowner
+
+Missing a test for this case?
 * channel_addowner - if you make a user an owner of an channel where they are not a member, they become a
 member and an owner.
 * channel_messages – raise an InputError if start is less than zero
+
+Missing a test for these cases?
+- - -
 * channel_removeowner - if you remove an owner they become an ordinary member
 * channel_removeowner – you can remove an owner even if they are the last owner of the channel
 * channel_leave – empty channels should still exist even if last member leaves and shouldn't be deleted whether the channel is private or public
+- - -
 * channel_join – raise an AccessError if the user trying to join is already in the channel 
 
 ## Auth.py assumptions
@@ -36,6 +50,8 @@ member and an owner.
 * auth_register - registering will automatically log the user in with an 
 authenticated token
 * auth_register - email entered must be all lowercase, otherwise not a valid email
+
+Be careful with this assumption - it will no longer hold if the ability to remove users is introduced
 * auth_register - first user registered will have u_id `1`, and subsequent u_id's will be determined from the number of people registered, thus always unique
 * auth_logout - logging out twice will return {'is_success': False}
 * owner of flockr is the first user registered, and will thus have u_id of `1`

@@ -30,7 +30,9 @@ def channels_list(token):
     returnDict['channels'] = returnList
     
     # return in format specified
-    return returnDict
+    return {
+        'channels': returnList
+    }
     #### format for return ####
     # return {
     #     'channels': [

@@ -25,11 +25,28 @@ def test_channel_invite_valid_input():
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
     assert channel_invite(userOne['token'], randChannel_id['channel_id'], userTwo['u_id']) == {}
     randChannel_details = channel_details(userOne['token'], randChannel_id['channel_id'])
-    assert randChannel_details == {'name': 'randChannel', 'owner_members' : [{
-        'u_id' : userOne['u_id'], 'name_first': 'First', 'name_last' : 'User'}],
-         'all_members' :  [{'u_id': userOne['u_id'], 
-        'name_first' : 'First', 'name_last': 'User'}, {'u_id': userTwo['u_id'], 
-        'name_first' : 'Second', 'name_last': 'User'}]}
+    # For better formatting :)
+    assert randChannel_details == {
+        'name': 'randChannel',
+        'owner_members': [
+            {
+                'u_id': userOne['u_id'],
+                'name_first': 'First',
+                'name_last': 'User'
+            }
+        ],
+        'all_members': [
+            {
+                'u_id': userOne['u_id'],
+                'name_first': 'First',
+                'name_last': 'User'
+            },
+            {
+                'u_id': userTwo['u_id'],
+                'name_first': 'Second', 'name_last': 'User'
+            }
+        ]
+    }
 
 # check that when given valid input, channel_invite behaves the same whether
 # the channel is public or private
@@ -62,6 +79,7 @@ def test_channel_invite_invalid_channel_id():
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     randChannel_id = channels_create(userOne['token'], 'randChannel', True)
+    # As discussed, not necessary - stay consistent with your assumptions
     invalidChannel_id = 0
     if invalidChannel_id == randChannel_id['channel_id']:
         invalidChannel_id = 1
@@ -383,6 +401,8 @@ def test_channel_join_normal_case():
     ])
     
 def test_channel_join_private_owner():
+    # A clearer description
+    '''A global owner can join a private channel'''
     clear()
     #if the channel is private, but no invite is given to the user
     #joiner is the owner in this case
@@ -425,6 +445,7 @@ def test_channel_addowner_standard_input():
     registerThird_result = auth_register('randemail3@gmail.com', 'password1234', 'Jane', 'Citizen')
     # adding user as owner
     channel_addowner(registerSecond_result['token'], randChannel_id['channel_id'], registerThird_result['u_id'])
+    # Not making any assertions or actually testing the user was added as an owner?
 
 # checking whether adding an owner after the user has logged out raises an accesserror as expected
 def test_channel_addowner_invalid_token_after_logout():
@@ -497,6 +518,7 @@ def test_channel_addowner_owner_flockr():
 # checking if able to remove an owner who is an owner with authorised token is sucessful 
 def test_channel_removeowner_standard_input():
     clear()
+    # Careful with over-commenting, especially if it is obvious what the code is doing
     # registering first user
     registerFirst_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
     # registering second User
