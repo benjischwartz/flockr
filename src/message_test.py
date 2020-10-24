@@ -45,17 +45,17 @@ def test_message_send_valid_input_multiple_channels():
 
 def test_message_send_unique_id_after_remove():
     '''
-    check that message_send returns the correct dictionary with unique message_ids 
-    even if messages get removed
+    check that message_send returns unique message_ids even if a message is 
+    removed
     '''
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    channel_two = channels_create(user_one['token'], 'channel_two', True)
-    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
-    assert message_send(user_one['token'], channel_two['channel_id'], 'Hello') == {'message_id': 2}
-    message_remove(user_one['token'], 1)
-    assert message_send(user_one['token'], channel_two['channel_id'], 'Hello') == {'message_id': 3}
+    message_one = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_two = message_send(user_one['token'], channel_one['channel_id'], 'Hello') 
+    message_remove(user_one['token'], message_one['message_id'])
+    message_three = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    assert message_three['message_id'] != message_two['message_id']
     
 def test_channel_send_valid_input_time_created():
     '''
