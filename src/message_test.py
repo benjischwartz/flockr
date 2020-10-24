@@ -101,6 +101,7 @@ def test_message_send_over_1000_characters():
     message_long = 'a'
     for i in range(1000):
         message_long  += 'a'
+        i += 1
     with pytest.raises(InputError):
         message_send(userOne['token'], randChannel['channel_id'], message_long)
 

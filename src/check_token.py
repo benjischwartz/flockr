@@ -9,9 +9,8 @@ def user_id_given_token(token):
     '''
     e = email_given_jwt(token)
     if token in tokens:
-        if e in users:
-            user_id = users[e]['u_id']
-            return user_id
+        user_id = users[e]['u_id']
+        return user_id
     return None
 
 
@@ -44,7 +43,8 @@ def jwt_given_email(email):
     returns a jwt hashed token given the user's 
     email as the `payload`
     """
-    return jwt.encode({'email': email}, 'secret')
+    
+    return jwt.encode({'email': email}, 'secret').decode('utf-8')
 
 def email_given_jwt(token):
     """
@@ -52,7 +52,7 @@ def email_given_jwt(token):
     token if valid jwt is given, otherwise returns None
     """
     try:
-        decoded_jwt = jwt.decode(token, 'secret')
+        decoded_jwt = jwt.decode(token, 'secret', algorithms='HS256')
         return decoded_jwt['email']
     except Exception:
         return None

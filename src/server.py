@@ -10,7 +10,6 @@ import admin_permissions_change
 import message
 import search
 import user
-import users
 import other
 
 def defaultHandler(err):
@@ -127,31 +126,6 @@ def channel_messages():
     start = int(request.args.get("start"))
     return dumps(channel.channel_messages(token, channel_id, start))
 
-@APP.route("/channels/create/", methods=['POST'])
-def channels_create():
-    """
-    Creates a new channel and returns {"channel_id": ____ }
-    if successful
-    """
-    payload = request.get_json()
-    return dumps(channels.channels_create(payload["token"], payload["name"], payload["is_public"]))
-
-@APP.route("/channels/list", methods=['GET'])
-def channels_list():
-    """
-    Lists all channels the user, whose token is passed, is a member of
-    """
-    token = request.args.get("token")
-    return dumps(channels.channels_list(token))
-
-@APP.route("/channels/listall", methods=['GET'])
-def channels_listall():
-    """
-    Lists all channels, regardless of membership or private/public
-    """
-    token = request.args.get("token")
-    return dumps(channels.channels_listall(token))
-
 @APP.route("/channel/join/", methods=['POST'])
 def channel_join():
     """
@@ -187,15 +161,30 @@ def channel_removeowner():
     """
     payload = request.get_json()
     return dumps(channel.channel_removeowner(payload["token"], payload["channel_id"], payload["u_id"]))
-
-@APP.route("/admin/userpermission/change/", methods=['POST'])
-def change_permissions():
+@APP.route("/channels/create/", methods=['POST'])
+def channels_create():
     """
-    Allows the changing of permissions levels for users/owners
-    return {} if successful, otherwise throws error
+    Creates a new channel and returns {"channel_id": ____ }
+    if successful
     """
     payload = request.get_json()
-    return dumps(admin_permissions_change.change_permissions(payload["token"], payload["u_id"], payload["permission_id"]))
+    return dumps(channels.channels_create(payload["token"], payload["name"], payload["is_public"]))
+
+@APP.route("/channels/list", methods=['GET'])
+def channels_list():
+    """
+    Lists all channels the user, whose token is passed, is a member of
+    """
+    token = request.args.get("token")
+    return dumps(channels.channels_list(token))
+
+@APP.route("/channels/listall", methods=['GET'])
+def channels_listall():
+    """
+    Lists all channels, regardless of membership or private/public
+    """
+    token = request.args.get("token")
+    return dumps(channels.channels_listall(token))
 
 @APP.route("/message/send/", methods=['POST'])
 def message_send():
@@ -223,17 +212,6 @@ def message_edit():
     """
     payload = request.get_json()
     return dumps(message.message_edit(payload['token'], payload['message_id'], payload['message']))
-
-@APP.route("/search", methods=["GET"])
-def search_messages():
-    token = request.args.get("token")
-    query = request.args.get("query_str")
-    token = token if token is not None else False
-    query = query if query is not None else False
-    if token and query:
-        return dumps(search.search(token, query))
-    else:
-        raise  InputError(description="token or qeury string is invalid")
 
 @APP.route("/user/profile", methods=["GET"])
 def user_profile():
@@ -282,10 +260,30 @@ def users_all():
     token = token if not None else False
 
     if token:
-        return dumps(users.users_all(token))
+        return dumps(other.users_all(token))
     else:
         raise InputError(description="token passed in is None")
 
+@APP.route("/admin/userpermission/change/", methods=['POST'])
+def change_permissions():
+    """
+    Allows the changing of permissions levels for users/owners
+    return {} if successful, otherwise throws error
+    """
+    payload = request.get_json()
+    return dumps(admin_permissions_change.admin_userpermission_change(payload["token"], payload["u_id"], payload["permission_id"]))
+
+@APP.route("/search", methods=["GET"])
+def search_messages():
+    token = request.args.get("token")
+    query = request.args.get("query_str")
+    token = token if token is not None else False
+    query = query if query is not None else False
+    if token and query:
+        return dumps(search.search(token, query))
+    else:
+        raise  InputError(description="token or qeury string is invalid")
+        
 @APP.route("/clear/", methods=['DELETE'])
 def clear():
     """
