@@ -34,6 +34,59 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
+def test_exception_accesserror(url):
+    '''
+    test that when an accesserror is raised by a function, the error code of
+    the response status is 400
+    this test uses an invalid token passed to channel_details to raise the 
+    accesserror
+    '''
+    
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "Joe",
+        "name_last" : "Bloggs"})
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/auth/logout", json= {
+        "token" : user_one['token']
+        })
+    channel_details_response = requests.get(f"{url}/channel/details", params={
+        "token" : user_one["token"],
+        "channel_id" : 1
+    })
+    channel_details_response = channel_details_response.json()
+    assert 'code' in channel_details_response
+    assert channel_details_response['code'] == 400
+
+def test_exception_inputerror(url):
+    '''
+    test that when an inputerror is raised by a function, the error code of
+    the response status is 400
+    this test uses an invalid channel_id passed to channel_details to raise an 
+    inputerror; since no channels have been created, any channel_id is invalid
+    '''
+    
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "Joe",
+        "name_last" : "Bloggs"})
+    user_one = user_one.json()
+    channel_details_response = requests.get(f"{url}/channel/details", params={
+        "token" : user_one["token"],
+        "channel_id" : 1
+    })
+    channel_details_response = channel_details_response.json()
+    assert 'code' in channel_details_response
+    assert channel_details_response['code'] == 400
+
+    
 def test_server_auth_register(url):
     '''
     test a positive case for auth_register
@@ -47,7 +100,7 @@ def test_server_auth_register(url):
     user_one = user_one.json()
     user_one_token = jwt_given_email("first@person.com")
     assert user_one == {'u_id' : 1 , 'token' : user_one_token}
-
+    
 def test_server_auth_logout_login(url):
     '''
     test a positive case for auth_login and auth_logout
@@ -68,7 +121,7 @@ def test_server_auth_logout_login(url):
     user_one_login = user_one_login.json()
     user_one_login_token = jwt_given_email("first@person.com")
     assert user_one_login == {'u_id' : 1 , 'token' : user_one_login_token}
-
+ 
 def test_server_channel_invite(url):    
     '''
     test a positive case for channel_invite
@@ -789,7 +842,6 @@ def test_admin_permissions_change(url):
         "name_first" : "Mary",
         "name_last" : "Brown"})
     user_two = user_two.json()
-    
     made_admin = requests.post(f"{url}/admin/userpermission/change", json={
         "token": user_one["token"],
         "u_id" : 2,
