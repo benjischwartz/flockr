@@ -36,13 +36,13 @@ def test_channels_create_valid():
     # check if channel id is in channels list
     Found = False
     new_channel_id = newChannel['channel_id']
-    allChannelsList = channels_listall(user_two['token'])['channels']
-    for eachChannel in allChannelsList:
-        if eachChannel['channel_id'] == new_channel_id:
+    all_channel_list = channels_listall(user_two['token'])['channels']
+    for each_channel in all_channel_list:
+        if each_channel['channel_id'] == new_channel_id:
             Found = True
             break
     # check number of channels has increased by one
-    assert len(allChannelsList) - before == 1, "error: in number of channels found"
+    assert len(all_channel_list) - before == 1, "error: in number of channels found"
     assert Found == True, "channel_create has not added the new channel id to database"
 
 # check raises ACCESS ERROR if token is invalid for channel_create
