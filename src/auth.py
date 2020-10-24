@@ -91,10 +91,11 @@ def auth_register(email, password, name_first, name_last):
         if concatenate == users[key]['handle']:
             concatenate = concatenate[0:18]    # trim two digits off the end
             totalUsers = len(users) - 1
-            if totalUsers < 10:
-                concatenate = concatenate + str(0) + str(totalUsers)
-            else:
-                concatenate = concatenate + str(totalUsers)
+            # if totalUsers < 10:
+            #     concatenate = concatenate + str(0) + str(totalUsers)
+            # else:
+                
+            concatenate = concatenate + str(totalUsers)
 
 
     users[email] = {
