@@ -760,14 +760,15 @@ def test_users_all(url):
     token = user_one["token"]
     users_list = requests.get(f"{url}/users/all?token={token}")
     users_list = users_list.json()
-    assert users_list == {
-        "first@person.com" : {
-            'handle': 'firstbloggs',
+    assert users_list == [
+        {
+            "handle": "firstbloggs",
             "u_id" : 1,
             "name_first" : "First",
-            "name_last" : "Bloggs"
+            "name_last" : "Bloggs",
+            "email" : "first@person.com"
         }
-    }
+    ]
 
 def test_admin_permissions_change(url):
     """
@@ -871,14 +872,15 @@ def test_clear(url):
     r = requests.get(f"{url}/users/all?token={token}")
 
     r = r.json()
-    assert r == {
-        "second@person.com" : {
+    assert r == [
+        {
             "handle" : "marybrown",
             "u_id" : 1,
             "name_first" : "Mary",
-            "name_last" : "Brown"
+            "name_last" : "Brown",
+            "email" : "second@person.com"
         }
-    }
+    ]
 
     list_all_first =  requests.get(f"{url}/channels/listall", params={
         "token":user_two["token"]

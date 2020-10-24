@@ -11,6 +11,7 @@ def check(email):
         return("Invalid Email")
 
 def user_profile(token, u_id):
+    """ Returns a list of all users and their associated details """
     validid = 0
     selected_data = {}
     selected_email = ' '
@@ -34,6 +35,7 @@ def user_profile(token, u_id):
     return selected_data
 
 def user_profile_setname(token, name_first, name_last):
+    """ Update the authorised user's first and last name """
     #Error Checking: Raise an Input Error if Names not Between 1 & 50 Characters
     if (len(name_first) < 1) or (len(name_first) > 50):
         raise InputError(description="First Name is not Between 1 and 50 Characters")
@@ -53,6 +55,7 @@ def user_profile_setname(token, name_first, name_last):
     }
 
 def user_profile_setemail(token, email):
+    """ Update the authorised user's email address """
     #Error Checking: Raise an InputError if the email is invalid
     if (check(email) != "Valid Email"):
         raise InputError (description="Invalid email")
@@ -73,6 +76,7 @@ def user_profile_setemail(token, email):
     }
 
 def user_profile_sethandle(token, handle_str):
+    """ Update the authorised user's handle """
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
         raise AccessError(description="Token passed is not valid.")

@@ -215,6 +215,9 @@ def message_edit():
 
 @APP.route("/user/profile", methods=["GET"])
 def user_profile():
+    """
+    Returns a specific user's profile information
+    """
     token = request.args.get("token")
     u_id = int(request.args.get("u_id"))
     token = token if token is not None else False

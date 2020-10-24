@@ -166,7 +166,7 @@ def channel_messages(token, channel_id, start):
     # }
 
 def channel_leave(token, channel_id):
-    
+    """ Remove a user from the channel """
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -189,7 +189,7 @@ def channel_leave(token, channel_id):
     return {}
 
 def channel_join(token, channel_id):
-   
+    """ Adding a user to the channel """
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:

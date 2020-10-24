@@ -4,20 +4,26 @@ from user import user_profile
 from error import InputError, AccessError
 
 def clear():
+    """ Resets the internal data of the application to it's initial state """
     users.clear()
     tokens.clear()
     channel.clear()
     return {}
 
 def users_all(token):
-    temp = users
+    """ returns a list with details of every user """
+    finallist = []
+    selected_email = ' '
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
         raise AccessError(description="Token passed is not valid.")
     
-    for token in temp:
-        temp[token].pop('password')
-        temp[token].pop('permission_id')
+    for tokens, data in users.items():
+        selected_email = tokens
+        data.pop('password')
+        data.pop('permission_id')
+        data['email'] = selected_email
+        finallist.append(data)
 
-    return temp
+    return finallist
 
