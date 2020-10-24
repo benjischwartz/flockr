@@ -126,21 +126,31 @@ def test_get_handle():
     assert get_handle(result['u_id']) == 'bobbybrown'
 
 def test_get_handle_unique():
-    clear()
     result1 = auth_register('bobby1@gmail.com', '123abc!@#', 'Bobby', 'Brown')
     result2 = auth_register('bobby2@gmail.com', '123abc!@#', 'Bobby', 'Brown')
     result3 = auth_register('bobby3@gmail.com', '123abc!@#', 'Bobby', 'Brown')
 
     # test that all three handles are unique
-    assert get_handle(result1['u_id']) == 'bobbybrown'
-    assert get_handle(result2['u_id']) != 'bobbybrown'
-    assert get_handle(result3['u_id']) != 'bobbybrown'
-    assert get_handle(result3['u_id']) != get_handle(result2['u_id'])
+    assert get_handle(result1['u_id']) == 'bobbybrown00'
+    assert get_handle(result2['u_id']) == 'bobbybrown01'
+    assert get_handle(result3['u_id']) == 'bobbybrown02'
     
 def test_get_handle_long_name():
-    clear()
     result = auth_register('reallylongname@gmail.com', '123abc!@#', 'Longfirstname', 'Longlastname')
     assert get_handle(result['u_id']) == 'longfirstnamelonglas'
+
+def test_multiple_same_name_handle():
+    auth_register('bobby4@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby5@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby6@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby7@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby8@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    auth_register('bobby9@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    tenth_user = auth_register('bobby10@gmail.com', '123abc!@#', 'Bobby', 'Brown')
+    assert(get_handle(tenth_user['u_id']) == 'bobbybrown10')
+    clear()
+
+
 
     
 
