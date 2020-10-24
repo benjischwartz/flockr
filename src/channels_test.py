@@ -13,13 +13,13 @@ from other import clear
 def test_return_type():
     # clear database and register new dummy users for testing
     clear()
-    auth_register("first@example.com", "password1234", "Jim", "Jones")
-    auth_register("second@example.com", "password1234", "Adele", "Sponsor")
-    auth_register("third@example.com", "password1234", "Samson", "Browne")
+    user_one = auth_register("first@example.com", "password1234", "Jim", "Jones")
+    user_two = auth_register("second@example.com", "password1234", "Adele", "Sponsor")
+    user_three = auth_register("third@example.com", "password1234", "Samson", "Browne")
     # check types
-    assert(type(channels_list("first@example.com")) is dict) 
-    assert(type(channels_listall("second@example.com")) is dict)
-    assert(type(channels_create("third@example.com", "somename", True)) is dict)
+    assert(type(channels_list(user_one["token"])) is dict) 
+    assert(type(channels_listall(user_two["token"])) is dict)
+    assert(type(channels_create(user_three["token"], "somename", True)) is dict)
 
 # check channels create() adds a new channel
 # calls channels_listall to check

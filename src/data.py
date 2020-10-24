@@ -22,10 +22,10 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #     'channel_name' : " ",
     #     'is_public' : False,
     #     'owner_members': { #numbers in owner members are the user ids
-    #         78978 : True, #'True' value is redundant; used because finding keys in dict has faster looktup times than list
+    #         78978 : True, #'True' value is redundant; used because finding keys in dict has faster lookup times than list
     #     },
     #     'all_members' : { #numbers in all members are the user ids
-    #         78978 : True, #'True' value is redundant; used because finding keys in dict has faster looktup times than list
+    #         78978 : True, #'True' value is redundant; used because finding keys in dict has faster lookup times than list
     #     },
     #     'messages' : [
     #       {
