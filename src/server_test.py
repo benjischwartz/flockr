@@ -690,29 +690,29 @@ def test_server_user_profile_setemail(url):
         "name_last" : "Bloggs"
     })
     user_one = user_one.json()
-    new_handle = requests.put(f"{url}/user/profile/sethandle", json={
-        "token" : user_one["token"],
-        "handle": "newfirst"
-    })
-    assert(new_handle.json() == {})
     
     email_change = requests.put(f"{url}/user/profile/setemail", json={
         "token" : user_one["token"],
         "email": "newemail@person.com"
     })
     assert(email_change.json() == {})
+
+    user_one = requests.post(f"{url}/auth/login", json={
+        "email" : "newemail@person.com",
+        "password" : "catdog"
+    })
+    user_one = user_one.json()
     
     user_one_profile = requests.get(f"{url}/user/profile", params={
         "token": user_one["token"],
         "u_id": 1
     })
-    print(user_one_profile.json())
     assert(user_one_profile.json() == {
         "u_id": 1,
+        "email": "newemail@person.com",
         "name_first": "First",
         "name_last": "Bloggs",
-        "handle": "newfirst",
-        "email": "newemail@person.com"
+        "handle": "firstbloggs"
     })
 
 def test_user_profile_sethandle(url):
