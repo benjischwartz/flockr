@@ -3,7 +3,7 @@ from auth import auth_login, auth_logout, auth_register
 import pytest
 from error import InputError
 from other import clear
-from check_token import get_handle
+from check_token import get_handle, jwt_given_email, email_given_jwt
 
 # checking the successful registration of a user
 # checking the successful login of a user
@@ -181,3 +181,16 @@ def test_multiple_same_name():
     assert get_handle(result12['u_id']) == 'bobbybrown10'
     clear()
 
+def test_token_encryption():
+    clear()
+    result = auth_register('validemail@gmail.com', '123abc!@#', 'hello', 'goodbye')
+    assert result['token'] == jwt_given_email('validemail@gmail.com')
+    assert email_given_jwt(result['token']) == 'validemail@gmail.com'
+
+def test_token_uniqueness():
+    clear()
+    result1 = auth_register('validemail1@gmail.com', '123abc!@#', 'hello', 'goodbye')
+    result2 = auth_register('validemail2@gmail.com', '123abc!@#', 'hello', 'goodbye')
+    assert result1['token'] != result2['token']
+    assert email_given_jwt(result1['token']) == 'validemail1@gmail.com'
+    assert email_given_jwt(result2['token']) == 'validemail2@gmail.com'
