@@ -6,7 +6,6 @@ from channels import channels_create, channels_list
 from auth import auth_register
 from message import message_send
 
-#TODO: add specific return checks, addditional to len
 # test for Access Error and Invalid Token
 def test_access_error():
     clear()
@@ -24,6 +23,8 @@ def test_single_channel_single_message():
     # check one message is matched
     assert len(search(user_one['token'], "this is")) == 1, "does not return expected number of messages"
     assert len(search(user_one['token'], "this is a message")) == 1, "does not return expected number of messages"
+    assert search(user_one['token'], "is")[0]['message_id'] == 1 
+    assert search(user_one['token'], "is")[0]['message'] == "this is a message"     
 
 # test where search query matches in channel user NOT part of
 # expect this message is not in the return of search()
@@ -44,6 +45,10 @@ def test_single_channel_multiple_matches():
     message_send(user_one['token'], new_channel_one['channel_id'], "this is a message")
     message_send(user_one['token'], new_channel_one['channel_id'], "this is another message")
     assert len(search(user_one['token'], "is")) == 2 
+    assert search(user_one['token'], "is")[0]['message_id'] == 1 
+    assert search(user_one['token'], "is")[1]['message_id'] == 2
+    assert search(user_one['token'], "is")[0]['message'] == "this is a message"     
+    assert search(user_one['token'], "is")[1]['message'] == "this is another message"
 
 # test expecting multiple string matches in different channels: both public
 def test_multiple_channel_multiple_matches():
@@ -53,7 +58,11 @@ def test_multiple_channel_multiple_matches():
     new_channel_two = channels_create(user_one['token'],"channel_two", True)
     message_send(user_one['token'], new_channel_one['channel_id'], "this is a message")
     message_send(user_one['token'], new_channel_two['channel_id'], "this is another message")
-    assert len(search(user_one['token'], "is")) == 2 
+    assert len(search(user_one['token'], "is")) == 2
+    assert search(user_one['token'], "is")[0]['message_id'] == 1 
+    assert search(user_one['token'], "is")[1]['message_id'] == 2
+    assert search(user_one['token'], "is")[0]['message'] == "this is a message"     
+    assert search(user_one['token'], "is")[1]['message'] == "this is another message"
 
 # test no matches with query string not found
 def test_no_matches():
