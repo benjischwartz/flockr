@@ -418,10 +418,8 @@ def test_channel_messages_unlimited_pagination():
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')   
     randChannel = channels_create(userOne['token'], 'randChannel', True)
-    i = 0
-    while i < 149:
+    for _ in range(149):
         message_send(userOne['token'], randChannel['channel_id'], 'Hello')
-        i += 1
     messages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
     assert(messages['start'] == 0)
     assert(messages['end'] == 50)       
@@ -432,7 +430,7 @@ def test_channel_messages_unlimited_pagination():
     assert(messages3['start'] == 100)
     assert(messages3['end'] == -1)      
     assert(len(messages3['messages']) == 49)
-    # an error should be raised when loading beyond 149 messages
+    # an error should be raised when start is beyond 149 messages
     with pytest.raises(InputError):     
         channel_messages(userOne['token'], randChannel['channel_id'], 150)  
 
