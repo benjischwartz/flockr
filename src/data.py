@@ -12,9 +12,9 @@ users = {
     #     }
     }
 
-# tokens are currently the emails of users
+# tokens are currently the hashed emails of the users
 tokens = [
-    # 'dummy@example.com'
+    # 'kdjfakljdflka.skajflkjlkkk.lkjalkfjd'
     ]
 
 channel = { # 'channel_id' are the int values themselves, per channel
