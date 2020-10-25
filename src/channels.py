@@ -8,7 +8,7 @@ def channels_list(token):
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError("Token passed is not valid.")  
+        raise AccessError(description="Token passed is not valid.")  
 
     # create empty data structs for return
     returnList = []
@@ -45,7 +45,7 @@ def channels_listall(token):
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError("Token passed in is not valid.")  
+        raise AccessError(description="Token passed in is not valid.")  
         
     returnList = []
     returnDict = dict()
@@ -54,7 +54,7 @@ def channels_listall(token):
     for key, value in channel.items():
         eachDict = dict()
         eachDict['channel_id'] = key
-        eachDict['name'] = value
+        eachDict['name'] = value['channel_name']
         returnList.append(eachDict)
     # For testing: print(returnList)
 
@@ -76,10 +76,10 @@ def channels_create(token, name, is_public):
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError("Token passed in is not valid.")   
+        raise AccessError(description="Token passed in is not valid.")   
     # raise an inputerror if channel name is too long
     if len(name) > 20:
-        raise InputError("Channel name cannot be greater than 20 characters.")
+        raise InputError(description="Channel name cannot be greater than 20 characters.")
 
     # get the current number of channels in total
     totalChannels = len(channel)

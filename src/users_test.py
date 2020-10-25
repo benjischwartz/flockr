@@ -1,8 +1,7 @@
 import pytest
 from auth import auth_register, auth_logout
 from user import user_profile_sethandle
-from users import users_all
-from other import clear
+from other import clear, users_all
 from error import InputError, AccessError
 
 def test_users_all_positive_test():
@@ -13,22 +12,22 @@ def test_users_all_positive_test():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     user_profile_sethandle(userTwo['token'], '123456')
     details = users_all(userOne['token'])
-    assert(details == {
-    'firstuser@gmail.com' : {
+    assert(details == [
+    {
         'u_id' : userOne['u_id'],
         'name_first' : 'First',
         'name_last' : 'User',
         'handle' : '12345',
-        'permission_id': 1,
+        'email' : 'firstuser@gmail.com' 
     },
-    'seconduser@gmail.com' : {
+    {
         'u_id' : userTwo['u_id'],
         'name_first' : 'Second',
         'name_last' : 'User',
         'handle' : '123456',
-        'permission_id' : 2,
+        'email' : 'seconduser@gmail.com'
     }
-    })
+    ])
 
 def test_users_all_invalid_token():
     ''' Test if Error Returned as Expected if the Token is Invalid '''

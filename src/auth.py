@@ -1,6 +1,8 @@
 from data import users, tokens
 import re
 from error import InputError
+from passlib.hash import sha256_crypt
+import jwt
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -14,23 +16,24 @@ def auth_login(email, password):
 
     # raise an inputerror if the user is already logged in (token already valid)
     for token in tokens:
-        if email == token:
+        if {'email': email} == jwt.decode(token, 'secret', algorithms='HS256'):
             return { # logging in twice returns same token
                     'u_id': users[email]['u_id'],
-                    'token': email,
+                    'token': token,
                 }
 
     # check if email is registered
     for emails in users.keys():
         if email == emails:            
-            if users[email]['password'] == password:
+            if sha256_crypt.verify(password, users[email]['password']): # compare hashed passwords
                 #validate token
-                tokens.append(email)
+                encoded_jwt = jwt.encode({'email': email}, 'secret').decode('utf-8')
+                tokens.append(encoded_jwt)
                 return {
                     'u_id': users[email]['u_id'],
-                    'token': email, ## for iteration 1, tokens can just be email or id
+                    'token': encoded_jwt, ## token is a JWT where payload is user's email, secret is 'secret'
                 }
-    raise InputError ("Email not found or password not valid")
+    raise InputError (description="Email not found or password not valid")
     
 
 def auth_logout(token):
@@ -52,21 +55,21 @@ def auth_register(email, password, name_first, name_last):
     
     # raise an inputerror if email is invalid
     if (check(email) != "Valid Email"):
-        raise InputError ("Invalid email")
+        raise InputError (description="Invalid email")
 
     # raise an inputerror if email already registered to a user
     for emails in users.keys():
         if email == emails:
-            raise InputError("Email already belongs to a user")
+            raise InputError(description="Email already belongs to a user")
 
     # raise an inputerror if first and last name are not between 1 and 50 
     # inclusive
     if len(name_first) not in range(1, 51) or len(name_last) not in range(1,51):
-        raise InputError ("First and last name must be between 1 and 50 inclusive")
+        raise InputError (description="First and last name must be between 1 and 50 inclusive")
     
     # raise an inputerror if password is not at least 6 letters
     if len(password) < 6:
-        raise InputError("Password too short")
+        raise InputError(description="Password too short")
 
     # register a user
     # create a unique user_id
@@ -88,31 +91,28 @@ def auth_register(email, password, name_first, name_last):
         if concatenate == users[key]['handle']:
             concatenate = concatenate[0:18]    # trim two digits off the end
             totalUsers = len(users) - 1
-            if totalUsers < 10:
-                concatenate = concatenate + str(0) + str(totalUsers)
-            else:
-                concatenate = concatenate + str(totalUsers)
+            # if totalUsers < 10:
+            #     concatenate = concatenate + str(0) + str(totalUsers)
+            # else:
+                
+            concatenate = concatenate + str(totalUsers)
 
 
     users[email] = {
             'u_id' : newU_id,
             'name_first' : name_first,
             'name_last' : name_last,
-            'password' : password,
+            'password' : sha256_crypt.hash(password),   # hashed password
             'permission_id' : permission_id, 
             'handle' : concatenate
         }
     
     # validate token
-    tokens.append(email)
+    encoded_jwt = jwt.encode({'email': email}, 'secret').decode('utf-8')
+    tokens.append(encoded_jwt)
+    
 
     return {
         'u_id' : newU_id,
-        'token' : email,
+        'token' : encoded_jwt,
     }
-
-def get_handle(u_id):
-    for email in users.keys():
-        if u_id == users[email]['u_id']:
-            return users[email]['handle']
-    return
