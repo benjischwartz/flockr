@@ -72,7 +72,16 @@ def test_user_setemail_positive_case():
     user_profile_setemail(userOne['token'], 'newemail@gmail.com')
     #Logging Out & Logging Back In With New Email
     auth_logout(userOne['token'])
-    auth_login('newemail@gmail.com', '123abc!@#')
+    userOne = auth_login('newemail@gmail.com', '123abc!@#')
+    #Checking Profile of User
+    userProfile = user_profile(userOne['token'], 1)
+    assert(userProfile == {
+        "u_id": 1,
+        "email": "newemail@gmail.com",
+        "name_first": "First",
+        "name_last": "User",
+        "handle": "firstuser"
+    })
 
 def test_user_setemail_already_used():
     ''' Test if Error is Returned if Email is Already Used '''
