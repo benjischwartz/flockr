@@ -19,21 +19,21 @@ def message_send(token, channel_id, message):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError("Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid.")
     
     # raise inputerror if the channel_id is invalid
     if channel_id not in channel:
-        raise InputError("Channel ID is invalid.")
+        raise InputError(description="Channel ID is invalid.")
         
     # raise accesserror if user with token 'token' is not part of the channel
     if token_u_id not in channel[channel_id]['all_members']:
-        raise AccessError ("User is not authorised to invite to this channel.")
+        raise AccessError (description="User is not authorised to invite to this channel.")
     
     # raise an inputerror if message is 0 characters or over 1000 characters in length
     if len(message) == 0: 
-        raise InputError ("This message is too short")
+        raise InputError (description="This message is too short")
     elif len(message) > 1000:
-        raise InputError ("This message is too long.")
+        raise InputError (description="This message is too long.")
     
     # generate a unique message_id
     if 'highest_message_id' not in highest_ids:
@@ -73,7 +73,7 @@ def message_remove(token, message_id):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError("Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid.")
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
@@ -90,12 +90,12 @@ def message_remove(token, message_id):
         if message_valid == True:
             break
     if message_valid == False:
-        raise InputError("The message id is not valid.")
+        raise InputError(description="The message id is not valid.")
              
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
     if token_u_id not in channel[message_channel]['all_members']:
-        raise AccessError ("User is not part of the channel with this message.")
+        raise AccessError (description="User is not part of the channel with this message.")
     
     token_permission_id = permission_id_given_token(token)
     # check permissions to remove and if permitted then remove message; if not 
@@ -103,7 +103,7 @@ def message_remove(token, message_id):
     if token_u_id == message_u_id or token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
         channel[message_channel]['messages'].pop(message_index)
     else:
-        raise AccessError("This user is not authorised to remove this message.")
+        raise AccessError(description="This user is not authorised to remove this message.")
     return {}
     
     
@@ -124,7 +124,7 @@ def message_edit(token, message_id, message):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError("Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid.")
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
@@ -141,12 +141,12 @@ def message_edit(token, message_id, message):
         if message_valid == True:
             break
     if message_valid == False:
-        raise InputError("The message id is not valid.")
+        raise InputError(description="The message id is not valid.")
        
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
     if token_u_id not in channel[message_channel]['all_members']:
-        raise AccessError ("User is not part of the channel with this message.")
+        raise AccessError (description="User is not part of the channel with this message.")
     
     # remove message if the message is an empty string or raise an inputerror 
     # if the message is over 1000 characters
@@ -154,7 +154,7 @@ def message_edit(token, message_id, message):
         message_remove(token, message_id)
         return {}
     elif len(message) > 1000:
-        raise InputError ("This message is too long.")
+        raise InputError (description="This message is too long.")
     
     token_permission_id = permission_id_given_token(token)
     # check permissions to edit and if permitted then change message; if not 
@@ -162,7 +162,7 @@ def message_edit(token, message_id, message):
     if token_u_id == message_u_id or token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
         channel[message_channel]['messages'][message_index]['message'] = message
     else:
-        raise AccessError("This user is not authorised to remove this message.")
+        raise AccessError(description="This user is not authorised to remove this message.")
     
     return {}
 
