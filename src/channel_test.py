@@ -3,7 +3,7 @@ import pytest
 from auth import auth_register, auth_logout
 from channel import channel_invite, channel_details, channel_messages
 from channel import channel_leave, channel_join, channel_addowner, channel_removeowner
-from channels import channels_create
+from channels import channels_create, channels_listall
 from message import message_send
 from error import InputError, AccessError
 from other import clear
@@ -555,6 +555,20 @@ def test_channel_leave_normal_case_owner():
         'name_last' : 'last'
     }
     ]) 
+
+# if everyone in the channel leaves check whether channel still exists
+def test_channel_leave_check_empty_dictionary():
+    clear()
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    channel_leave(user['token'], userchannel_id['channel_id'])
+    channel_list = channels_listall(user['token'])
+    assert(channel_list == {
+        'channels' : [{
+            'channel_id': 1, 
+            'name': 'userchannel'
+        }]
+    })
 
 # tests for channel_join
 # note: the owner of flockr (the first user registered) has special permissions
