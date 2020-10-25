@@ -5,10 +5,17 @@ from channel import channel_messages
 from data import channel
 
 def search(token, query_string):
-    """
-    Given a query string, return a collection of messages in all of the channels that the user has joined that match the query
-    Return {messages}
-    """
+    '''
+    Returns the messages in the channel the user is a part of, which 
+    contain the query string
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr; this user is the inviter
+        query_string (str): the pattern string which is being searched for
+ 
+    Returns:
+        (list): {messages}
+    '''
     if user_id_given_token(token) == None:
         raise(AccessError) 
     # init results
