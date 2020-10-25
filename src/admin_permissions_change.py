@@ -10,7 +10,9 @@ def admin_userpermission_change(token,u_id,permission_id):
     """
     # token itself is invalid, i.e. not a member or owner
     if user_id_given_token(token) == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
+    
     # token does not belong to an existing owner
     if users[email_given_jwt(token)]['permission_id'] != 1:
         raise AccessError(description="Token passed does not belong to an existing owner.")

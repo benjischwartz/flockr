@@ -10,7 +10,8 @@ def search(token, query_string):
     Return {messages}
     """
     if user_id_given_token(token) == None:
-        raise(AccessError) 
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     # init results
     result = []
 

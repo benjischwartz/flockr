@@ -19,7 +19,8 @@ def message_send(token, channel_id, message):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     # raise inputerror if the channel_id is invalid
     if channel_id not in channel:
@@ -71,7 +72,8 @@ def message_remove(token, message_id):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
@@ -88,7 +90,8 @@ def message_remove(token, message_id):
         if message_valid == True:
             break
     if message_valid == False:
-        raise InputError(description="The message id is not valid.")
+        raise InputError(description="The message id is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
              
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
@@ -122,7 +125,8 @@ def message_edit(token, message_id, message):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'

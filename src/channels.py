@@ -8,7 +8,8 @@ def channels_list(token):
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError(description="Token passed is not valid.")  
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")  
 
     # create empty data structs for return
     returnList = []
@@ -45,7 +46,8 @@ def channels_listall(token):
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError(description="Token passed in is not valid.")  
+        raise AccessError(description="Token passed in is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")  
         
     returnList = []
     returnDict = dict()
@@ -76,7 +78,9 @@ def channels_create(token, name, is_public):
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError(description="Token passed in is not valid.")   
+        raise AccessError(description="Token passed in is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")   
+    
     # raise an inputerror if channel name is too long
     if len(name) > 20:
         raise InputError(description="Channel name cannot be greater than 20 characters.")
