@@ -16,7 +16,8 @@ def users_all(token):
     selected_email = ' '
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     for tokens, data in users.items():
         selected_email = tokens

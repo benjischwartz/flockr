@@ -21,7 +21,8 @@ def channel_invite(token, channel_id, u_id):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
  
     # raise inputerror if the user with u_id 'u_id' is not a valid user
     valid_user = False
@@ -82,7 +83,8 @@ def channel_details(token, channel_id):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
 
     # raise inputerror if the channel is invalid
     if channel_id not in channel:
@@ -156,7 +158,8 @@ def channel_messages(token, channel_id, start):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
 
     # raise inputerror if the channel is invalid
     if channel_id not in channel:
@@ -211,7 +214,8 @@ def channel_leave(token, channel_id):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
 
     # raise inputerror if the channel_id is invalid
     if channel_id not in channel:
@@ -234,7 +238,8 @@ def channel_join(token, channel_id):
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
 
     # raise an inputerror if the channel_id is invalid
     if channel_id not in channel:
@@ -272,7 +277,8 @@ def channel_addowner(token, channel_id, u_id):
     # raise an inputerror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
         
     # raise an inputerror if the channel_id is invalid
     if channel_id not in channel:
@@ -318,7 +324,8 @@ def channel_removeowner(token, channel_id, u_id):
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     # raise an inputerror if channel_id is invalid
     if channel_id not in channel:

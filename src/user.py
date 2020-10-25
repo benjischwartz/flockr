@@ -17,7 +17,8 @@ def user_profile(token, u_id):
     selected_email = ' '
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
 
     for tokens, data in users.items():
         if data['u_id'] == u_id:
@@ -45,7 +46,8 @@ def user_profile_setname(token, name_first, name_last):
     #Error Checking: Raise an AccessError if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
 
     email = email_given_jwt(token)
     users[email]['name_first'] = name_first
@@ -63,7 +65,8 @@ def user_profile_setemail(token, email):
     #Error Checking: Raise an AccessError if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
 
     #Error Checking: Raise an InputError if email is already used
     if email in users:
@@ -79,7 +82,8 @@ def user_profile_sethandle(token, handle_str):
     """ Update the authorised user's handle """
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
 
     if ((len(handle_str) < 3) or (len(handle_str) > 20)):
         raise InputError(description="Handle has to be in between 3 and 20 letters inclusive.")
