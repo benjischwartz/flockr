@@ -20,7 +20,7 @@ def check(email):
 
     
 def auth_login(email, password):
-    """"
+    """
     Check if a user logging in has a valid email and password 
 
     Parameters:
@@ -32,7 +32,7 @@ def auth_login(email, password):
         {is success: True} if successful
         {is success: False} if token not valid
         InputError if email entered is not valid or registered, or password not valid
-    """"
+    """
 
     # raise an inputerror if the user is already logged in (token already valid)
     for token in tokens:
