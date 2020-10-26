@@ -12,9 +12,9 @@ users = {
     #     }
     }
 
-# tokens are currently the emails of users
+# tokens are currently the hashed emails of the users
 tokens = [
-    # 'dummy@example.com'
+    # 'kdjfakljdflka.skajflkjlkkk.lkjalkfjd'
     ]
 
 channel = { # 'channel_id' are the int values themselves, per channel
@@ -42,5 +42,9 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #       }
     #     ]
     # }
-}      
+}
+
+highest_ids = { # for iteration 2, records the highest message_id outputted
+    #'highest_message_id' : 2
+    }      
 

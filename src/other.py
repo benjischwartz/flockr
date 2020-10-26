@@ -1,4 +1,4 @@
-from data import users, tokens, channel
+from data import users, tokens, channel, highest_ids
 from check_token import user_id_given_token
 from user import user_profile
 from error import InputError, AccessError
@@ -8,6 +8,7 @@ def clear():
     users.clear()
     tokens.clear()
     channel.clear()
+    highest_ids.clear()
     return {}
 
 def users_all(token):

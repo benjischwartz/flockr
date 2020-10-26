@@ -1,4 +1,4 @@
-from data import users, channel
+from data import users, channel, highest_ids
 from error import InputError, AccessError
 from check_token import user_id_given_token, permission_id_given_token
 from time import time
@@ -37,11 +37,13 @@ def message_send(token, channel_id, message):
         raise InputError (description="This message is too long.")
     
     # generate a unique message_id
-    total_messages = 0
-    for each_channel in channel:
-         total_messages += len(channel[each_channel]['messages']) 
-    message_id = total_messages + 1
-    
+    if 'highest_message_id' not in highest_ids:
+        highest_ids['highest_message_id'] = 1
+        message_id = 1
+    else: 
+        highest_ids['highest_message_id'] += 1
+        message_id = highest_ids['highest_message_id']
+
     # create dictionary to store in data with the information for a message
     message_info = {
         'message_id' : message_id,
