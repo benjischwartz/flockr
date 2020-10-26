@@ -13,7 +13,7 @@ def message_send(token, channel_id, message):
         message (str): contains the content of the message being sent
  
     Returns:
-        (dict): {}
+        (dict): {'message_id' : _}
     '''
 
     # raise accesserror if the token is invalid

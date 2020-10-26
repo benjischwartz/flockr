@@ -410,6 +410,29 @@ def test_channel_messages_valid_input_100_messages_start_25():
     assert channel_one_messages['start'] == 25
     assert channel_one_messages['end'] == 75
 
+def test_channel_messages_unlimited_pagination():
+    """
+    checking return values for `start` and `end` when calling 
+    channel_messages for numbers not multiples of 50.
+    """
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')   
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for _ in range(149):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    messages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    assert(messages['start'] == 0)
+    assert(messages['end'] == 50)       
+    messages2 = channel_messages(userOne['token'], randChannel['channel_id'], 50)
+    assert(messages2['start'] == 50)
+    assert(messages2['end'] == 100)     
+    messages3 = channel_messages(userOne['token'], randChannel['channel_id'], 100)
+    assert(messages3['start'] == 100)
+    assert(messages3['end'] == -1)      
+    assert(len(messages3['messages']) == 49)
+    # an error should be raised when start is beyond 149 messages
+    with pytest.raises(InputError):     
+        channel_messages(userOne['token'], randChannel['channel_id'], 150)  
 
 def test_channel_messages_same_public_or_private():
     '''

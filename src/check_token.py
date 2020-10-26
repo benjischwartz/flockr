@@ -43,9 +43,9 @@ def jwt_given_email(email):
     """
     returns a jwt hashed token given the user's 
     email as the `payload`
-    """
-    
+    """   
     return jwt.encode({'email': email}, 'secret').decode('utf-8')
+
 
 def email_given_jwt(token):
     """
