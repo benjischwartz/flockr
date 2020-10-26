@@ -210,7 +210,20 @@ def channel_messages(token, channel_id, start):
     return all_messages
 
 def channel_leave(token, channel_id):
-    """ Remove a user from the channel """
+    '''
+    Given a Channel with ID channel_id that the authorised user is part of, 
+    the function removes the current user as a member of the channel.
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr who is calling this function
+        channel_id (int): identifies the channel that the current user is leaving
+
+    Returns:
+        (dict): {
+
+        }
+    '''
+
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -234,7 +247,20 @@ def channel_leave(token, channel_id):
     return {}
 
 def channel_join(token, channel_id):
-    """ Adding a user to the channel """
+    '''
+    Given a Channel with ID channel_id the function adds the current authorised
+    user as a member of the channel.
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr who is calling this function
+        channel_id (int): identifies the channel that the current user is joining
+
+    Returns:
+        (dict): {
+
+        }
+    '''
+
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:

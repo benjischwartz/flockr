@@ -123,7 +123,6 @@ def test_user_setemail_invalid_token_after_logout():
     with pytest.raises(AccessError):
         user_profile_setemail(userOne['token'], 'newemail@gmail.com')
 
-#TODO: BRIAN
 # User Profile Tests
 def test_user_profile_positive_case():
     ''' Positive case to determine whether the pratial detail of the user has returned'''
