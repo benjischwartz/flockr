@@ -39,7 +39,8 @@ def echo():
         'data': payload
     })
 
-@APP.route("/auth/register/", methods=['POST'])
+# No trailing `/`, this will cause issues with the frontend
+@APP.route("/auth/register", methods=['POST'])
 def auth_register():
     """
     creating a user in data.py's users dictionary
@@ -48,7 +49,7 @@ def auth_register():
     payload = request.get_json()
     return dumps(auth.auth_register(payload["email"], payload["password"], payload["name_first"], payload["name_last"]))
 
-@APP.route("/auth/logout/", methods=['POST'])
+@APP.route("/auth/logout", methods=['POST'])
 def auth_logout():
     """
     logging out a user given a valid token
@@ -57,7 +58,7 @@ def auth_logout():
     payload = request.get_json()
     return dumps(auth.auth_logout(payload["token"]))
 
-@APP.route("/auth/login/", methods=['POST'])
+@APP.route("/auth/login", methods=['POST'])
 def auth_login():
     """
     logging in a user given a valid email and username
@@ -66,7 +67,7 @@ def auth_login():
     payload = request.get_json()
     return dumps(auth.auth_login(payload["email"], payload["password"]))
 
-@APP.route("/channel/invite/", methods=['POST'])
+@APP.route("/channel/invite", methods=['POST'])
 def channel_invite():
     """
     enables a valid user of a channel to add a user to a channel
@@ -128,7 +129,7 @@ def channel_messages():
     start = int(request.args.get("start"))
     return dumps(channel.channel_messages(token, channel_id, start))
 
-@APP.route("/channel/join/", methods=['POST'])
+@APP.route("/channel/join", methods=['POST'])
 def channel_join():
     """
     user joins channel
@@ -137,7 +138,7 @@ def channel_join():
     payload = request.get_json()
     return dumps(channel.channel_join(payload["token"], payload["channel_id"]))
 
-@APP.route("/channel/leave/", methods=['POST'])
+@APP.route("/channel/leave", methods=['POST'])
 def channel_leave():
     """
     user leaves channel
@@ -146,7 +147,7 @@ def channel_leave():
     payload = request.get_json()
     return dumps(channel.channel_leave(payload["token"], payload["channel_id"]))
 
-@APP.route("/channel/addowner/", methods=['POST'])
+@APP.route("/channel/addowner", methods=['POST'])
 def channel_addowner():
     """
     user adding owner
@@ -155,7 +156,7 @@ def channel_addowner():
     payload = request.get_json()
     return dumps(channel.channel_addowner(payload["token"], payload["channel_id"], payload["u_id"]))
 
-@APP.route("/channel/removeowner/", methods=['POST'])
+@APP.route("/channel/removeowner", methods=['POST'])
 def channel_removeowner():
     """
     user removing owner
@@ -163,7 +164,8 @@ def channel_removeowner():
     """
     payload = request.get_json()
     return dumps(channel.channel_removeowner(payload["token"], payload["channel_id"], payload["u_id"]))
-@APP.route("/channels/create/", methods=['POST'])
+
+@APP.route("/channels/create", methods=['POST'])
 def channels_create():
     """
     creates a new channel and returns {"channel_id": ____ }
@@ -203,7 +205,7 @@ def channels_listall():
     token = request.args.get("token")
     return dumps(channels.channels_listall(token))
 
-@APP.route("/message/send/", methods=['POST'])
+@APP.route("/message/send", methods=['POST'])
 def message_send():
     """
     sends a message to a specified channel
@@ -212,7 +214,7 @@ def message_send():
     payload = request.get_json()
     return dumps(message.message_send(payload['token'], payload['channel_id'], payload['message']))
 
-@APP.route("/message/remove/", methods=['DELETE'])
+@APP.route("/message/remove", methods=['DELETE'])
 def message_remove():
     """
     remove a message with a specified message_id
@@ -221,7 +223,7 @@ def message_remove():
     payload = request.get_json()
     return dumps(message.message_remove(payload['token'], payload['message_id']))
 
-@APP.route("/message/edit/", methods=['PUT'])
+@APP.route("/message/edit", methods=['PUT'])
 def message_edit():
     """
     edits a message with a specified message_id
@@ -251,7 +253,7 @@ def user_profile():
     else:
         raise InputError(description="token or u_id is invalid")
 
-@APP.route("/user/profile/setname/", methods=['PUT'])
+@APP.route("/user/profile/setname", methods=['PUT'])
 def user_profile_setname():
     """
     enables the user to set their first and last name
@@ -260,7 +262,7 @@ def user_profile_setname():
     payload = request.get_json()
     return dumps(user.user_profile_setname(payload["token"], payload["name_first"], payload["name_last"]))
 
-@APP.route("/user/profile/setemail/", methods=['PUT'])
+@APP.route("/user/profile/setemail", methods=['PUT'])
 def user_profile_setemail():
     """
     enables the user to set their email
@@ -269,7 +271,7 @@ def user_profile_setemail():
     payload = request.get_json()
     return dumps(user.user_profile_setemail(payload["token"], payload["email"]))
 
-@APP.route("/user/profile/sethandle/", methods=['PUT'])
+@APP.route("/user/profile/sethandle", methods=['PUT'])
 def user_profile_sethandle():
     '''
     enables the user to set their handle
@@ -307,7 +309,7 @@ def users_all():
     else:
         raise InputError(description="token passed in is None")
 
-@APP.route("/admin/userpermission/change/", methods=['POST'])
+@APP.route("/admin/userpermission/change", methods=['POST'])
 def change_permissions():
     """
     allows the changing of permissions levels for users/owners
@@ -340,7 +342,7 @@ def search_messages():
     else:
         raise  InputError(description="token or qeury string is invalid")
         
-@APP.route("/clear/", methods=['DELETE'])
+@APP.route("/clear", methods=['DELETE'])
 def clear():
     """
     check if all the data is cleared
