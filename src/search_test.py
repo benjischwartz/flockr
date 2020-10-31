@@ -44,11 +44,14 @@ def test_single_channel_multiple_matches():
     new_channel_one = channels_create(user_one['token'],"channel_one", True)
     message_send(user_one['token'], new_channel_one['channel_id'], "this is a message")
     message_send(user_one['token'], new_channel_one['channel_id'], "this is another message")
-    assert len(search(user_one['token'], "is")) == 2 
-    assert search(user_one['token'], "is")[0]['message_id'] == 1 
-    assert search(user_one['token'], "is")[1]['message_id'] == 2
-    assert search(user_one['token'], "is")[0]['message'] == "this is a message"     
-    assert search(user_one['token'], "is")[1]['message'] == "this is another message"
+    # Here's one way to rewrite this test without needing to repeatedly call `search()`, and without
+    # needing to specify message_id
+    actual = search(user_one['token'], "is")['messages']
+    assert len(actual) == 2
+    [first, second] = actual
+    assert first['message'] == 'this is a message'
+    assert second['message'] == 'this is another message'
+    assert first['message_id'] != second['message_id']
 
 # test expecting multiple string matches in different channels: both public
 def test_multiple_channel_multiple_matches():

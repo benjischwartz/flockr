@@ -36,6 +36,7 @@ def auth_login(email, password):
 
     # raise an inputerror if the user is already logged in (token already valid)
     for token in tokens:
+        # Why not use the helper functions in all these functions?
         if {'email': email} == jwt.decode(token, 'secret', algorithms='HS256'):
             return { # logging in twice returns same token
                     'u_id': users[email]['u_id'],
