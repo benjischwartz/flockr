@@ -35,7 +35,6 @@ def user_profile(token, u_id):
 
     for tokens, data in users.items():
         if data['u_id'] == u_id:
-            validid = 1
             user = {
                 'u_id': data['u_id'],
                 'email': tokens,
