@@ -40,8 +40,8 @@ def user_profile(token, u_id):
                 'email': tokens,
                 'name_first': data['name_first'],
                 'name_last': data['name_last'],
-                'handle_str': data['handle'],
-                'profile_img_url': ''
+                'handle_str': data['handle']
+                #'profile_img_url': ''
             }
 
     if user is None:
