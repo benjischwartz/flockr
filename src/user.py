@@ -2,6 +2,7 @@ from data import users, channel
 from error import InputError, AccessError
 from check_token import user_id_given_token, email_given_jwt
 import re
+import requests
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -149,4 +150,7 @@ def user_profile_sethandle(token, handle_str):
     
     return {
     }
-    
+
+def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
+    pass
+
