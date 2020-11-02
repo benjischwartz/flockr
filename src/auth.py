@@ -3,6 +3,7 @@ import re
 from error import InputError
 from passlib.hash import sha256_crypt
 import jwt
+from check_token import email_given_jwt
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -36,8 +37,7 @@ def auth_login(email, password):
 
     # raise an inputerror if the user is already logged in (token already valid)
     for token in tokens:
-        # Why not use the helper functions in all these functions?
-        if {'email': email} == jwt.decode(token, 'secret', algorithms='HS256'):
+        if email == email_given_jwt(token):
             return { # logging in twice returns same token
                     'u_id': users[email]['u_id'],
                     'token': token,
