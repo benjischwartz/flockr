@@ -10,6 +10,7 @@ from check_token import get_handle
 def test_register_return_values():
     clear()
     result = auth_register('validemail@gmail.com', '123abc!@#', 'hello', 'goodbye')
+    # Same feedback as iteration 1, how do you know the user has actually been registered from this test?
     assert type(result) is dict
     assert type(result['u_id']) is int, "registration unsuccessful"
 

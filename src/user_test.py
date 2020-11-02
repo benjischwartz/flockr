@@ -15,8 +15,8 @@ def test_user_setname_positive_case():
     #Create a Channel and Find Its Details to See if the Name has Changed
     #randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
     details = user_profile(userOne['token'], userOne['u_id'])
-    assert(details['name_first'] == 'New First')
-    assert(details['name_last'] == 'New Last')
+    assert(details['user']['name_first'] == 'New First')
+    assert(details['user']['name_last'] == 'New Last')
     pass
 
 def test_user_setname_name_first_short():
@@ -75,13 +75,13 @@ def test_user_setemail_positive_case():
     userOne = auth_login('newemail@gmail.com', '123abc!@#')
     #Checking Profile of User
     userProfile = user_profile(userOne['token'], 1)
-    assert(userProfile == {
+    assert(userProfile == { 'user' : {
         "u_id": 1,
         "email": "newemail@gmail.com",
         "name_first": "First",
         "name_last": "User",
-        "handle": "firstuser"
-    })
+        "handle_str": "firstuser"
+    }})
 
 def test_user_setemail_already_used():
     ''' Test if Error is Returned if Email is Already Used '''
@@ -131,13 +131,13 @@ def test_user_profile_positive_case():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     user_profile_sethandle(userTwo['token'], '12345')
     userprofile = user_profile(userOne['token'], userTwo['u_id'])
-    assert(userprofile == {
+    assert(userprofile == { 'user' : {
         'u_id' : userTwo['u_id'],
         'name_first' : 'Second',
         'name_last' : 'User',
-        'handle' : '12345',
+        'handle_str' : '12345',
         'email' : 'seconduser@gmail.com',
-    })
+    }})
 
 def test_user_profile_uid_not_valid():
     ''' Test if error raise when the input u_id is invalid '''
@@ -172,7 +172,7 @@ def test_user_sethandle_positive_case():
     user_profile_sethandle(userOne['token'], '12345')
 
     details = user_profile(userOne['token'], userOne['u_id'])
-    assert(details['handle'] == '12345')
+    assert(details['user']['handle_str'] == '12345')
 
 def test_user_sethandle_length_short():
     ''' Test if error returned as expected if handle length is too short '''

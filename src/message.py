@@ -92,8 +92,7 @@ def message_remove(token, message_id):
         if message_valid == True:
             break
     if message_valid == False:
-        raise InputError(description="The message id is not valid. If you recently reset your "
-            "email you will need to logout and login again using your updated email.")
+        raise InputError(description="The message id is not valid.")
              
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
