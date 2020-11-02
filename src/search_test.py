@@ -21,10 +21,10 @@ def test_single_channel_single_message():
     # create a single message in the channel
     message_send(user_one['token'], new_channel['channel_id'], "this is a message")
     # check one message is matched
-    assert len(search(user_one['token'], "this is")) == 1, "does not return expected number of messages"
-    assert len(search(user_one['token'], "this is a message")) == 1, "does not return expected number of messages"
-    assert search(user_one['token'], "is")[0]['message_id'] == 1 
-    assert search(user_one['token'], "is")[0]['message'] == "this is a message"     
+    assert len(search(user_one['token'], "this is")['messages']) == 1, "does not return expected number of messages"
+    assert len(search(user_one['token'], "this is a message")['messages']) == 1, "does not return expected number of messages"
+    assert search(user_one['token'], "is")['messages'][0]['message_id'] == 1 
+    assert search(user_one['token'], "is")['messages'][0]['message'] == "this is a message"     
 
 # test where search query matches in channel user NOT part of
 # expect this message is not in the return of search()
@@ -35,7 +35,7 @@ def test_pattern_match_unavailable_channel():
     new_channel = channels_create(user_two['token'],"channel_one", True)
     message_send(user_two['token'], new_channel['channel_id'], "this is a message")
     # return empty dictionary as there is no match
-    assert search(user_one['token'], "this is") == {'messages' : []}
+    assert search(user_one['token'], "this is")['messages'] == []
 
 # test expecting multiple string matches in same channel
 def test_single_channel_multiple_matches():
@@ -44,14 +44,11 @@ def test_single_channel_multiple_matches():
     new_channel_one = channels_create(user_one['token'],"channel_one", True)
     message_send(user_one['token'], new_channel_one['channel_id'], "this is a message")
     message_send(user_one['token'], new_channel_one['channel_id'], "this is another message")
-    # Here's one way to rewrite this test without needing to repeatedly call `search()`, and without
-    # needing to specify message_id
-    actual = search(user_one['token'], "is")['messages']
-    assert len(actual) == 2
-    [first, second] = actual
-    assert first['message'] == 'this is a message'
-    assert second['message'] == 'this is another message'
-    assert first['message_id'] != second['message_id']
+    assert len(search(user_one['token'], "is")['messages']) == 2 
+    assert search(user_one['token'], "is")['messages'][0]['message_id'] == 1 
+    assert search(user_one['token'], "is")['messages'][1]['message_id'] == 2
+    assert search(user_one['token'], "is")['messages'][0]['message'] == "this is a message"     
+    assert search(user_one['token'], "is")['messages'][1]['message'] == "this is another message"
 
 # test expecting multiple string matches in different channels: both public
 def test_multiple_channel_multiple_matches():
@@ -73,7 +70,7 @@ def test_no_matches():
     user_one = auth_register("first@user.com", "password", "Jane", "Applebaum")
     new_channel = channels_create(user_one['token'],"channel_one", True)
     message_send(user_one['token'], new_channel['channel_id'], "this is a message")
-    assert search(user_one['token'], "robin") == {'messages' : []}
+    assert search(user_one['token'], "robin")['messages'] == []
     
 
 # test query > 1000 characters returns {}
@@ -88,4 +85,4 @@ def test_long_query():
     Vivamus leo libero, placerat et tellus sed, vehicula aliquam arcu. Suspendisse quis euismod urna, non euismod sem. Aliquam lobortis urna nisi, vel molestie risus placerat quis. Proin vestibulum nisi sed interdum cursus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Cras porta pulvinar mauris. Pellentesque et ex eget tortor facilisis convallis rutrum sed purus. Praesent vel varius urna. Proin hendrerit luctus nisl, ut auctor lacus viverra quis. Integer velit magna, lacinia eu luctus sit amet, porta volutpat ipsum. Sed feugiat arcu quis lacinia rhoncus. Nunc auctor nulla eu nunc vulputate, sed eleifend nibh condimentum. Nam mollis tellus a tellus egestas venenatis. Integer vulputate, massa eget sagittis cursus, tellus ipsum consectetur lacus, lobortis aliquam ex enim in tellus. Aliquam bibendum rutrum purus ut imperdiet. Nam ut placerat felis.
     Nullam id lectus leo. Proin quis finibus purus. Nunc fermentum dignissim vulputate. Cras condimentum nisi a eros sodales convallis. Vestibulum at nisi nisi. Quisque tempus dolor dapibus fringilla scelerisque. In vel risus aliquet, vestibulum lorem non, lobortis justo. Praesent congue velit risus, sed iaculis leo imperdiet non. Suspendisse consectetur at dolor mattis lacinia. Donec eu elit eu turpis aliquam molestie. Sed sagittis enim vitae est iaculis, ut porta arcu venenatis.
     Aliquam sed vehicula dolor. Donec fringilla ultricies suscipit. Integer scelerisque lacinia dui fermentum tempus. Vestibulum bibendum mauris a suscipit vehicula. Donec eget ultrices odio. Cras vitae diam a diam porttitor tristique in laoreet magna. In et lectus eros. Pellentesque sed dolor eu eros porttitor fringilla nec pellentesque nulla. Quisque laoreet sit amet dui vel convallis. Quisque tristique laoreet metus, vel vulputate magna commodo et. Nam tempor arcu vel dolor tempus, vitae fermentum purus rutrum. Mauris tempor venenatis sollicitudin. Ut nulla elit, tincidunt lobortis pharetra finibus, ultricies eu lectus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Ut faucibus elit venenatis scelerisque egestas. Nulla facilisi.
-    """) == {'messages' : []}
+    """)['messages'] == []

@@ -888,7 +888,6 @@ def test_search_single_message(url):
 
     search_result = requests.get(f"{url}/search?token={token}&query_str={query_str}")
     search_result = search_result.json()
-    assert len(search_result) == 1
     assert search_result['messages'][0]['message_id'] == 1
     assert search_result['messages'][0]['u_id'] == 1
     assert search_result['messages'][0]['message'] == "Hello World"
