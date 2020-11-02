@@ -6,7 +6,7 @@ from data import channel
 
 def search(token, query_string):
     '''
-    Returns the messages in the channel the user is a part of, which 
+    Returns the messages each channel the user is a part of, which 
     contain the query string
  
     Parameters:
@@ -17,7 +17,8 @@ def search(token, query_string):
         (list): {messages}
     '''
     if user_id_given_token(token) == None:
-        raise(AccessError) 
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     # init results
     result = []
 

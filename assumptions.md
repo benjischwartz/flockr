@@ -8,9 +8,7 @@
 
 ## Channel.py assumptions
 * channel_invite – if the user with token 'token' invites themselves or someone else
-    who is already in the channel, a message will be printed out notifying the
-    the user that the user they are inviting is already in the channel and the function 
-    will return an empty dictionary; no exception is raised
+    who is already in the channel, return an empty dictionary; no exception is raised
 * Functions which behave the same whether the channel is private or public are:
     - channel_invite
     - channel_details
@@ -34,6 +32,9 @@ authenticated token
 * auth_register - first user registered will have u_id `1`, and subsequent u_id's will be determined from the number of people registered, thus always unique
 * auth_logout - logging out twice will return {'is_success': False}
 * owner of flockr is the first user registered, and will thus have u_id of `1`
+* handle generation - No more than 99 people with the same name will register (otherwise handle will be > 20 characters)
+* Passwords will be encoded with sha256_crypt from the passlib library
+
 
 
 ## message.py assumptiosn

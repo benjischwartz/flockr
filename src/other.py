@@ -1,23 +1,42 @@
-from data import users, tokens, channel
+from data import users, tokens, channel, highest_ids
 from check_token import user_id_given_token
 from user import user_profile
 from error import InputError, AccessError
 
 def clear():
+    '''
+    Resets the internal data
+    of the application to
+    it's initial state
+
+    returns {}
+    '''
     users.clear()
     tokens.clear()
     channel.clear()
+    highest_ids.clear()
     return {}
 
 def users_all(token):
-    temp = users
+    '''
+    Returns a list of all
+    users and their associated details
+
+    returns [{users}]
+    '''
+    final_list = []
+    selected_email = ' '
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError("Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
-    for token in temp:
-        temp[token].pop('password')
-        temp[token].pop('permission_id')
+    for tokens, data in users.items():
+        selected_email = tokens
+        data.pop('password')
+        data.pop('permission_id')
+        data['email'] = selected_email
+        final_list.append(data)
 
-    return temp
+    return final_list
 

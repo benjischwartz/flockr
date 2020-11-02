@@ -112,11 +112,13 @@ def channel_messages():
     gets all the messages that have been sent in the channel
     returns {
         'messages' : [
-            'message_id' : ____
-            'u_id' : _____
-            'message' : '_____'
-            'time_created' : ______
-            ]
+            {
+                'message_id' : ____
+                'u_id' : _____
+                'message' : '_____'
+                'time_created' : ______
+            }
+        ]
         'start' : _____
         'end' : ______
     }
@@ -126,35 +128,10 @@ def channel_messages():
     start = int(request.args.get("start"))
     return dumps(channel.channel_messages(token, channel_id, start))
 
-@APP.route("/channels/create/", methods=['POST'])
-def channels_create():
-    """
-    Creates a new channel and returns {"channel_id": ____ }
-    if successful
-    """
-    payload = request.get_json()
-    return dumps(channels.channels_create(payload["token"], payload["name"], payload["is_public"]))
-
-@APP.route("/channels/list", methods=['GET'])
-def channels_list():
-    """
-    Lists all channels the user, whose token is passed, is a member of
-    """
-    token = request.args.get("token")
-    return dumps(channels.channels_list(token))
-
-@APP.route("/channels/listall", methods=['GET'])
-def channels_listall():
-    """
-    Lists all channels, regardless of membership or private/public
-    """
-    token = request.args.get("token")
-    return dumps(channels.channels_listall(token))
-
 @APP.route("/channel/join/", methods=['POST'])
 def channel_join():
     """
-    User joins channel
+    user joins channel
     return {}
     """
     payload = request.get_json()
@@ -163,8 +140,8 @@ def channel_join():
 @APP.route("/channel/leave/", methods=['POST'])
 def channel_leave():
     """
-    User leaves channel
-    return {}
+    user leaves channel
+    returns {}
     """
     payload = request.get_json()
     return dumps(channel.channel_leave(payload["token"], payload["channel_id"]))
@@ -172,8 +149,8 @@ def channel_leave():
 @APP.route("/channel/addowner/", methods=['POST'])
 def channel_addowner():
     """
-    User adding owner
-    return {}
+    user adding owner
+    returns {}
     """
     payload = request.get_json()
     return dumps(channel.channel_addowner(payload["token"], payload["channel_id"], payload["u_id"]))
@@ -181,20 +158,50 @@ def channel_addowner():
 @APP.route("/channel/removeowner/", methods=['POST'])
 def channel_removeowner():
     """
-    User removing owner
-    return {}
+    user removing owner
+    returns {}
     """
     payload = request.get_json()
     return dumps(channel.channel_removeowner(payload["token"], payload["channel_id"], payload["u_id"]))
-
-@APP.route("/admin/userpermission/change/", methods=['POST'])
-def change_permissions():
+@APP.route("/channels/create/", methods=['POST'])
+def channels_create():
     """
-    Allows the changing of permissions levels for users/owners
-    return {} if successful, otherwise throws error
+    creates a new channel and returns {"channel_id": ____ }
     """
     payload = request.get_json()
-    return dumps(admin_permissions_change.admin_userpermission_change(payload["token"], payload["u_id"], payload["permission_id"]))
+    return dumps(channels.channels_create(payload["token"], payload["name"], payload["is_public"]))
+
+@APP.route("/channels/list", methods=['GET'])
+def channels_list():
+    """
+    lists all channels the user whose token has been passed is a member of
+    returns {
+        'channels': [
+            {
+          		'channel_id': _,
+          		'name': '______',
+          	}
+          ],
+      }
+    """
+    token = request.args.get("token")
+    return dumps(channels.channels_list(token))
+
+@APP.route("/channels/listall", methods=['GET'])
+def channels_listall():
+    """
+    lists all channels, regardless of membership or private/public
+    returns {
+        'channels': [
+            {
+          		'channel_id': _,
+          		'name': '______',
+          	}
+          ],
+      }
+    """
+    token = request.args.get("token")
+    return dumps(channels.channels_listall(token))
 
 @APP.route("/message/send/", methods=['POST'])
 def message_send():
@@ -223,19 +230,18 @@ def message_edit():
     payload = request.get_json()
     return dumps(message.message_edit(payload['token'], payload['message_id'], payload['message']))
 
-@APP.route("/search", methods=["GET"])
-def search_messages():
-    token = request.args.get("token")
-    query = request.args.get("query_str")
-    token = token if token is not None else False
-    query = query if query is not None else False
-    if token and query:
-        return dumps(search.search(token, query))
-    else:
-        raise  InputError(description="token or qeury string is invalid")
-
 @APP.route("/user/profile", methods=["GET"])
 def user_profile():
+    """
+    gets a specific user's profile information
+    returns {
+        'u_id' : ___,
+        'name_first' : '____',
+        'name_last' : '____',
+        'handle' : '____',
+        'email' : '_____',
+    }
+    """
     token = request.args.get("token")
     u_id = int(request.args.get("u_id"))
     token = token if token is not None else False
@@ -248,8 +254,8 @@ def user_profile():
 @APP.route("/user/profile/setname/", methods=['PUT'])
 def user_profile_setname():
     """
-    User set name
-    return {}
+    enables the user to set their first and last name
+    returns {}
     """
     payload = request.get_json()
     return dumps(user.user_profile_setname(payload["token"], payload["name_first"], payload["name_last"]))
@@ -257,8 +263,8 @@ def user_profile_setname():
 @APP.route("/user/profile/setemail/", methods=['PUT'])
 def user_profile_setemail():
     """
-    User set email
-    return {}
+    enables the user to set their email
+    returns {}
     """
     payload = request.get_json()
     return dumps(user.user_profile_setemail(payload["token"], payload["email"]))
@@ -266,7 +272,7 @@ def user_profile_setemail():
 @APP.route("/user/profile/sethandle/", methods=['PUT'])
 def user_profile_sethandle():
     '''
-    User set handle
+    enables the user to set their handle
     return {}
     '''
     payload = request.get_json()
@@ -275,7 +281,23 @@ def user_profile_sethandle():
 @APP.route("/users/all", methods=['GET'])
 def users_all():
     """
-    Returns all the user information
+    gets a list of all users and their associated details
+    returns [
+        {
+            'u_id' : ___,
+            'name_first' : '____',
+            'name_last' : '____',
+            'handle' : '____',
+            'email' : '_____',
+        },
+        {
+            'u_id' : ___,
+            'name_first' : '____',
+            'name_last' : '____',
+            'handle' : '____',
+            'email' : '_____',
+        }
+    ]
     """
     token = request.args.get("token")
     token = token if not None else False
@@ -285,10 +307,43 @@ def users_all():
     else:
         raise InputError(description="token passed in is None")
 
+@APP.route("/admin/userpermission/change/", methods=['POST'])
+def change_permissions():
+    """
+    allows the changing of permissions levels for users/owners
+    returns {} 
+    """
+    payload = request.get_json()
+    return dumps(admin_permissions_change.admin_userpermission_change(payload["token"], payload["u_id"], payload["permission_id"]))
+
+@APP.route("/search", methods=["GET"])
+def search_messages():
+    '''
+    Given a query string, return a collection of messages in all of the channels 
+    that the user has joined that match the query
+    
+    returns [
+            {
+                'message_id' : ____
+                'u_id' : _____
+                'message' : '_____'
+                'time_created' : ______
+            }
+         ]
+    '''
+    token = request.args.get("token")
+    query = request.args.get("query_str")
+    token = token if token is not None else False
+    query = query if query is not None else False
+    if token and query:
+        return dumps(search.search(token, query))
+    else:
+        raise  InputError(description="token or qeury string is invalid")
+        
 @APP.route("/clear/", methods=['DELETE'])
 def clear():
     """
-    Check if all the data is cleared
+    check if all the data is cleared
     should return a empty dictionary
     """
     return dumps(other.clear())
