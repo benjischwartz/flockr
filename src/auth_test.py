@@ -3,14 +3,14 @@ from auth import auth_login, auth_logout, auth_register
 import pytest
 from error import InputError
 from other import clear
-from check_token import get_handle
+from check_token import get_handle, jwt_given_email
 
 # checking the successful registration of a user
 # checking the successful login of a user
 def test_register_return_values():
     clear()
     result = auth_register('validemail@gmail.com', '123abc!@#', 'hello', 'goodbye')
-    assert type(result) is dict
+    result['token'] == jwt_given_email('validemail@gmail.com') #user is registered
     assert type(result['u_id']) is int, "registration unsuccessful"
 
 def test_register_multiple():
