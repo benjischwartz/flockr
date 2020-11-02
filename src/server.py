@@ -350,4 +350,4 @@ def clear():
 
 ### Keep code above this ###
 if __name__ == "__main__":
-    APP.run(port=6789) # Do not edit this port
+    APP.run(port=6789,debug= True) # Do not edit this port
