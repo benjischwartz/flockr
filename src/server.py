@@ -163,6 +163,10 @@ def channel_removeowner():
     """
     payload = request.get_json()
     return dumps(channel.channel_removeowner(payload["token"], payload["channel_id"], payload["u_id"]))
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 @APP.route("/channels/create", methods=['POST'])
 def channels_create():
     """

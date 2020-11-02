@@ -27,9 +27,7 @@ def user_profile(token, u_id):
         }
     '''
 
-    validid = 0
-    selected_data = {}
-    selected_email = ' '
+    user = None
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
         raise AccessError(description="Token passed is not valid. If you recently reset your "
@@ -37,18 +35,21 @@ def user_profile(token, u_id):
 
     for tokens, data in users.items():
         if data['u_id'] == u_id:
-            validid = 1
-            selected_data = data
-            selected_email = tokens
+            user = {
+                'u_id': data['u_id'],
+                'email': tokens,
+                'name_first': data['name_first'],
+                'name_last': data['name_last'],
+                'handle_str': data['handle']
+                #'profile_img_url': ''
+            }
 
-    if validid == 0:
+    if user is None:
         raise InputError(description="Invalid ID.")
-    else:
-        selected_data.pop('password')
-        selected_data.pop('permission_id')
-        selected_data['email'] = selected_email
 
-    return selected_data
+    return {
+        'user': user
+    }
 
 def user_profile_setname(token, name_first, name_last):
     '''
