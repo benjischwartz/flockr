@@ -163,3 +163,23 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : newU_id,
         'token' : encoded_jwt,
     }
+
+# def auth_passwordreset_request(email):
+    """
+    Given an email address, if the user is a registered user, 
+    send's them an email containing a specific secret code, 
+    that when entered in auth_passwordreset_reset, shows that 
+    the user trying to reset the password is the one who got sent this email.
+    """
+    # for emails in users.keys():
+    #     if email == emails:
+    #         # create  a specific secret code (maybe a hash of their email/password)
+    #         # this code should reset 
+
+# def auth_passwordreset_reset(code, password):
+    """
+    Given a reset code for a user, set that user's new password 
+    to the password provided
+    """
+#     for emails in users.keys():
+#         if 
