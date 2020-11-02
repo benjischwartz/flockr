@@ -1,5 +1,6 @@
 import pytest
-from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
+from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle,
+                 user_profile_uploadphoto
 from auth import auth_register, auth_logout, auth_login
 from error import InputError, AccessError
 from other import clear
@@ -208,3 +209,67 @@ def test_user_sethandle_invalid_token():
     
     with pytest.raises(AccessError):
         user_profile_sethandle('INVALID_TOKEN', '12345')
+
+# User Uploadphoto Tests
+def user_profile_uploadphoto_positive_case():
+    ''' Uploading a photo and checking that it is successfully set.'''
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg"
+    x_start = 0
+    y_start = 0
+    x_end = 400
+    y_end = 300
+    response = user_profile_uploadphoto(userOne['token'], img_url, x_start, y_start, x_end, y_end)
+    assert(response == {})
+    userprofile = user_profile(userOne['token'], userOne['u_id'])
+    assert('profile_img_url' in userprofile)
+
+def user_profile_uploadphoto_invalid_url():
+    ''' Uploading a photo with an invalid URL and ensuring it returns an InputError'''
+    clear()
+    firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://www.invalidurl.com.au/image.jpg"
+    x_start = 0
+    y_start = 0
+    x_end = 200
+    y_end = 100
+    with pytest.raises(InputError):
+        response = user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+
+def user_profile_uploadphoto_not_jpg():
+    ''' Uploading a photo which is not of a .jpg format and ensuring it returns an InputError'''
+    clear()
+    firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://www.unsw.edu.au/content/dam/images/graphics/logos/unsw/unsw_0.png"
+    x_start = 0
+    y_start = 0
+    x_end = 200
+    y_end = 100
+    with pytest.raises(InputError):
+        response = user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+
+def user_profile_uploadphoto_not_dimensions():
+    '''Ensuring that cropping an image with larger dimensions returns an InputError. '''
+    clear()
+    firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg"
+    x_start = 0
+    y_start = 0
+    x_end = 1000
+    y_end = 3000
+    with pytest.raises(InputError):
+        response = user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+
+def user_profile_uploadphoto_negative_directions():
+    '''Ensuring that cropping an image with negative dimensions to start returns an InputError'''
+    clear()
+    firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg"
+    x_start = -10
+    y_start = -10
+    x_end = 200
+    y_end = 300
+    with pytest.raises(InputError):
+        response = user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+
