@@ -3,6 +3,11 @@ from error import InputError, AccessError
 from check_token import user_id_given_token, email_given_jwt
 import re
 import requests
+#from werkzeug import secure_filename
+import os
+import cv2
+import urllib.request
+import uuid
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -152,5 +157,42 @@ def user_profile_sethandle(token, handle_str):
     }
 
 def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
-    pass
+    try:
+        r = requests.head(img_url)
+        img_url_status_code = r.status_code
+        if (img_url_status_code != 200):
+            raise InputError(description="URL Invalid")
+        
+    except requests.ConnectionError:
+        raise InputError(description="URL Invalid")
+
+    file_extension = (os.path.splitext(img_url))[1]
+    if (file_extension != '.jpg'): 
+        raise InputError(description="Not a JPG image")
+    
+    if (x_start < 0 or y_start < 0):
+        raise InputError(description="Cropping bounds are not within the dimensions of the image")
+    
+    #tail = (os.path.split(img_url))[1]
+    randomised_filename = str(uuid.uuid4()) + ".jpg"
+    save_url = os.path.join("imgurl/", randomised_filename)
+    urllib.request.urlretrieve(img_url, save_url)
+    img = cv2.imread(save_url)
+
+    # Checking Width
+    if (x_start > img.shape[1]):
+        os.remove(save_url)
+        raise InputError(description="Cropping bounds are not within the dimensions of the image")
+    
+
+    # Checking Height
+    if (y_start > img.shape[0]):
+        os.remove(save_url)
+        raise InputError(description="Cropping bounds are not within the dimensions of the image")
+
+    return {}
+    
+    
+
+#user_profile_uploadphoto(1, "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg", 0, 0, 0, 0)
 
