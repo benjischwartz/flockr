@@ -808,13 +808,13 @@ def test_user_profile_uploadphoto(url):
         "name_last" : "Bloggs"
     })
     user_one = user_one.json()
-    uploading_photo = requests.post(f"{url}/user/profile/uploadphoto", params={
+    uploading_photo = requests.post(f"{url}/user/profile/uploadphoto", json={
         "token": user_one["token"],
         "img_url": "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg",
         "x_start": 0,
         "y_start": 0,
-        "x_end": 200,
-        "y_end": 100
+        "x_end": 30,
+        "y_end": 40
     })
     assert(uploading_photo.json() == {})
 

@@ -6,7 +6,7 @@ import requests
 #from werkzeug import secure_filename
 import os
 #import cv2
-import urllib.request
+import urllib
 import uuid
 from PIL import Image
 
@@ -181,8 +181,12 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     
     #tail = (os.path.split(img_url))[1]
     randomised_filename = str(uuid.uuid4()) + ".jpg"
-    save_url = os.path.join("imgurl/", randomised_filename)
-    urllib.request.urlretrieve(img_url, save_url)
+    try:
+        save_url = "src/imgurl/" + randomised_filename
+        urllib.request.urlretrieve(img_url, save_url)
+    except:
+        save_url = "imgurl/" + randomised_filename
+        urllib.request.urlretrieve(img_url, save_url)
     img = Image.open(save_url)
 
     email = email_given_jwt(token)
@@ -202,9 +206,8 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     cropped = img.crop((x_start,y_start, x_end, y_end))
     cropped.save(save_url)
 
-    return {}
+    return {
+    }
     
-#from auth import auth_register
-#firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-#user_profile_uploadphoto(firstUser['token'], "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg", 0, 0, 30, 40)
+
 
