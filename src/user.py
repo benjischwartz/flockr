@@ -5,7 +5,7 @@ import re
 import requests
 #from werkzeug import secure_filename
 import os
-import cv2
+#import cv2
 import urllib.request
 import uuid
 
@@ -161,7 +161,7 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     if token_u_id is None:
         raise AccessError(description="Token passed is not valid. If you recently reset your "
             "email you will need to logout and login again using your updated email.")
-            
+
     try:
         r = requests.head(img_url)
         img_url_status_code = r.status_code
