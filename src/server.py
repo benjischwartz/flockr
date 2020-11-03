@@ -287,6 +287,10 @@ def user_profile_uploadphoto():
     payload = request.get_json()
     return dumps(user.user_profile_uploadphoto(payload["token"], payload["img_url"], payload["x_start"], payload["y_start"], payload["x_end"], payload["y_end"]))
 
+@APP.route("/imgurl/<path:path>")
+def static_returning_images(path):
+    return APP.send_static_file("/imgurl/" + path)
+
 @APP.route("/users/all", methods=['GET'])
 def users_all():
     """
