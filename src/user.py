@@ -5,7 +5,7 @@ import re
 import requests
 #from werkzeug import secure_filename
 import os
-#import cv2
+import cv2
 import urllib.request
 import uuid
 
