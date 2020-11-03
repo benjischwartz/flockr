@@ -816,7 +816,7 @@ def test_user_profile_uploadphoto(url):
         "x_end": 200,
         "y_end": 100
     })
-    assert(uploading_photo == {})
+    assert(uploading_photo.json() == {})
 
    
 def test_users_all(url):
