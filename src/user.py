@@ -179,6 +179,9 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     urllib.request.urlretrieve(img_url, save_url)
     img = cv2.imread(save_url)
 
+    email = email_given_jwt(token)
+    users[email]['profile_img_url'] = save_url
+
     # Checking Width
     if (x_start > img.shape[1]):
         os.remove(save_url)
