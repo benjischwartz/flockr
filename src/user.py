@@ -157,6 +157,11 @@ def user_profile_sethandle(token, handle_str):
     }
 
 def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
+    token_u_id = user_id_given_token(token)
+    if token_u_id is None:
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
+            
     try:
         r = requests.head(img_url)
         img_url_status_code = r.status_code
@@ -192,10 +197,13 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     if (y_start > img.shape[0]):
         os.remove(save_url)
         raise InputError(description="Cropping bounds are not within the dimensions of the image")
+    
+    cropped = img[x_start:x_end, y_start:y_end]
+    cv2.imwrite(save_url, cropped)
 
     return {}
     
     
 
-#user_profile_uploadphoto(1, "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg", 0, 0, 0, 0)
+#user_profile_uploadphoto(1, "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg", 0, 0, 30, 40)
 
