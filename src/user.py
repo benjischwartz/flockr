@@ -5,9 +5,10 @@ import re
 import requests
 #from werkzeug import secure_filename
 import os
-import cv2
+#import cv2
 import urllib.request
 import uuid
+from PIL import Image
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -182,28 +183,28 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
     randomised_filename = str(uuid.uuid4()) + ".jpg"
     save_url = os.path.join("imgurl/", randomised_filename)
     urllib.request.urlretrieve(img_url, save_url)
-    img = cv2.imread(save_url)
+    img = Image.open(save_url)
 
     email = email_given_jwt(token)
     users[email]['profile_img_url'] = save_url
 
     # Checking Width
-    if (x_start > img.shape[1]):
+    if (x_start > img.size[0]):
         os.remove(save_url)
         raise InputError(description="Cropping bounds are not within the dimensions of the image")
     
 
     # Checking Height
-    if (y_start > img.shape[0]):
+    if (y_start > img.size[1]):
         os.remove(save_url)
         raise InputError(description="Cropping bounds are not within the dimensions of the image")
     
-    cropped = img[x_start:x_end, y_start:y_end]
-    cv2.imwrite(save_url, cropped)
+    cropped = img.crop((x_start,y_start, x_end, y_end))
+    cropped.save(save_url)
 
     return {}
     
-    
-
-#user_profile_uploadphoto(1, "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg", 0, 0, 30, 40)
+#from auth import auth_register
+#firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+#user_profile_uploadphoto(firstUser['token'], "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg", 0, 0, 30, 40)
 

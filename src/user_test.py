@@ -6,7 +6,8 @@ from error import InputError, AccessError
 from other import clear
 from channels import channels_create
 from channel import channel_details
-import cv2
+#import cv2
+from PIL import Image
 
 #User Setname Tests
 def test_user_setname_positive_case():
@@ -228,9 +229,9 @@ def user_profile_uploadphoto_positive_case():
     userprofile = user_profile(userOne['token'], userOne['u_id'])
     assert('profile_img_url' in userprofile)
 
-    img = cv2.imread(userprofile['profile_img_url'])
-    assert(img.shape[1] == 400)
-    assert(img.shape[0] == 300)
+    img = Image.open(userprofile['profile_img_url'])
+    assert(img.size[0] == 400)
+    assert(img.size[1] == 300)
 
 def user_profile_uploadphoto_invalid_url():
     ''' Uploading a photo with an invalid URL and ensuring it returns an InputError'''
