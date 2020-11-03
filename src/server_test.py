@@ -796,6 +796,25 @@ def test_user_profile_sethandle(url):
         "handle": "newfirst",
         "email": "first@person.com"
     })
+
+def test_user_profile_uploadphoto(url):
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    uploading_photo = requests.post(f"{url}/user/profile/uploadphoto", params={
+        "token": user_one["token"],
+        "img_url": "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg",
+        "x_start": 0,
+        "y_start": 0,
+        "x_end": 200,
+        "y_end": 100
+    })
+    assert(uploading_photo == {})
+
    
 def test_users_all(url):
     """
