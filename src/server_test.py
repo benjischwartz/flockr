@@ -798,6 +798,9 @@ def test_user_profile_sethandle(url):
     })
 
 def test_user_profile_uploadphoto(url):
+    '''
+    Uploading photo as user profile.
+    '''
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
