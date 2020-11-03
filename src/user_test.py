@@ -1,11 +1,12 @@
 import pytest
-from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle,
-                 user_profile_uploadphoto
+from user import (user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle,
+user_profile_uploadphoto)
 from auth import auth_register, auth_logout, auth_login
 from error import InputError, AccessError
 from other import clear
 from channels import channels_create
 from channel import channel_details
+import cv2
 
 #User Setname Tests
 def test_user_setname_positive_case():
@@ -212,7 +213,7 @@ def test_user_sethandle_invalid_token():
 
 # User Uploadphoto Tests
 def user_profile_uploadphoto_positive_case():
-    ''' Uploading a photo and checking that it is successfully set.'''
+    ''' Uploading a photo and checking that it is cropped to specified dimensions.'''
     clear()
     userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     img_url = "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg"
@@ -220,10 +221,16 @@ def user_profile_uploadphoto_positive_case():
     y_start = 0
     x_end = 400
     y_end = 300
+
     response = user_profile_uploadphoto(userOne['token'], img_url, x_start, y_start, x_end, y_end)
     assert(response == {})
+
     userprofile = user_profile(userOne['token'], userOne['u_id'])
     assert('profile_img_url' in userprofile)
+
+    img = cv2.imread(userprofile['profile_img_url'])
+    assert(img.shape[1] == 400)
+    assert(img.shape[0] == 300)
 
 def user_profile_uploadphoto_invalid_url():
     ''' Uploading a photo with an invalid URL and ensuring it returns an InputError'''
@@ -235,7 +242,7 @@ def user_profile_uploadphoto_invalid_url():
     x_end = 200
     y_end = 100
     with pytest.raises(InputError):
-        response = user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+        user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
 
 def user_profile_uploadphoto_not_jpg():
     ''' Uploading a photo which is not of a .jpg format and ensuring it returns an InputError'''
@@ -247,7 +254,7 @@ def user_profile_uploadphoto_not_jpg():
     x_end = 200
     y_end = 100
     with pytest.raises(InputError):
-        response = user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+        user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
 
 def user_profile_uploadphoto_not_dimensions():
     '''Ensuring that cropping an image with larger dimensions returns an InputError. '''
@@ -259,7 +266,7 @@ def user_profile_uploadphoto_not_dimensions():
     x_end = 1000
     y_end = 3000
     with pytest.raises(InputError):
-        response = user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+        user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
 
 def user_profile_uploadphoto_negative_directions():
     '''Ensuring that cropping an image with negative dimensions to start returns an InputError'''
@@ -271,5 +278,5 @@ def user_profile_uploadphoto_negative_directions():
     x_end = 200
     y_end = 300
     with pytest.raises(InputError):
-        response = user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+        user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
 
