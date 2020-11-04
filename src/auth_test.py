@@ -1,9 +1,10 @@
 # test suite for auth_* capabilities/functions
-from auth import auth_login, auth_logout, auth_register
+from auth import auth_login, auth_logout, auth_register, auth_passwordreset_request, auth_passwordreset_reset
 import pytest
 from error import InputError
 from other import clear
 from check_token import get_handle, jwt_given_email
+from check_reset_code import code_given_email, password_given_email
 
 # checking the successful registration of a user
 # checking the successful login of a user
@@ -141,7 +142,27 @@ def test_get_handle_long_name():
     result = auth_register('reallylongname@gmail.com', '123abc!@#', 'Longfirstname', 'Longlastname')
     assert get_handle(result['u_id']) == 'longfirstnamelonglas'
 
+def test_passwordreset_request():
+    clear()
+    result = auth_register('validemail@gmail.com', '123abc!@#', 'Firstname', 'Lastname')
+    auth_passwordreset_request('validemail@gmail.com')
+    assert code_given_email('validemail@gmail.com') is not None     # there exists a valid reset code in the code dictionary
 
-
+def test_passwordreset_reset():
+    # continuation from previous test
+    auth_passwordreset_reset(code_given_email('validemail@gmail.com'), 'newpassword123')
+    assert password_given_email('validemail@gmail.com') == 'newpassword123' # successfully reset password
     
-
+def test_passwordreset_reset_invalid_code():
+    # continuation from previous tests
+    with pytest.raises(InputError):
+        auth_passwordreset_reset('invalidcode', 'newpassword456')           # expect fail since invalid code given
+    assert password_given_email('validemail@gmail.com') == 'newpassword123' # password unchanged
+    
+def test_passwordreset_invalid_newpassword():
+    clear()
+    result = auth_register('johndoe@gmail.com', '123abc!@#', 'John', 'Doe')
+    auth_passwordreset_request('johndoe@gmail.com')
+    with pytest.raises(InputError):
+        auth_passwordreset_reset(code_given_email('johndoe@gmail.com'), 'short')   # expect fail since password too short
+    

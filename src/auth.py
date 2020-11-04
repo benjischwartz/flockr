@@ -1,9 +1,10 @@
-from data import users, tokens
+from data import users, tokens, codes
 import re
 from error import InputError
 from passlib.hash import sha256_crypt
 import jwt
 from check_token import email_given_jwt
+from check_reset_code import email_given_code
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -163,3 +164,35 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : newU_id,
         'token' : encoded_jwt,
     }
+
+def auth_passwordreset_request(email):
+    """
+    Given an email address, if the user is a registered user, send's them an email containing 
+    a specific secret code, that when entered in auth_passwordreset_reset, shows that the user 
+    trying to reset the password is the one who got sent this email.
+    """
+    # create a hashed code with jwt.encode(), using the user's email as the payload, 
+    # and 'reset' as the secret
+    code = jwt.encode({'email': email}, 'reset').decode('utf-8')
+    codes[email] = code
+    return
+
+def auth_passwordreset_reset(code, new_password):
+    """
+    Given a reset code for a user, set that user's new password to the password provided.
+    """
+    email = email_given_code(code)
+    if email is not None:
+        # raise an InputError if password is not at least 6 letters, 
+        # or if new password is the same as old password
+        if len(new_password) < 6 or new_password == users[email]['password']:
+            raise InputError(description="Password too short")
+
+        # reset password
+        users[email]['password'] = new_password
+
+        # remove code from codes dictionary
+        del codes[email]
+        return
+    
+    raise InputError (description="Reset code is not valid")
