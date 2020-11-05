@@ -175,7 +175,7 @@ def auth_passwordreset_request(email):
     # and 'reset' as the secret
     code = jwt.encode({'email': email}, 'reset').decode('utf-8')
     codes[email] = code
-    return
+    return {}
 
 def auth_passwordreset_reset(code, new_password):
     """
@@ -193,6 +193,6 @@ def auth_passwordreset_reset(code, new_password):
 
         # remove code from codes dictionary
         del codes[email]
-        return
+        return {}
     
     raise InputError (description="Reset code is not valid")

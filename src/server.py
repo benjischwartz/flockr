@@ -3,6 +3,7 @@ from json import dumps
 from flask import Flask, request
 from flask_cors import CORS
 from error import InputError
+from flask_mail import Mail, Message
 import auth
 import channels
 import channel
@@ -11,6 +12,8 @@ import message
 import search
 import user
 import other
+import smtplib
+import check_reset_code
 
 def defaultHandler(err):
     response = err.get_response()
@@ -24,6 +27,16 @@ def defaultHandler(err):
     return response
 
 APP = Flask(__name__)
+APP.config.update(
+	DEBUG=True,
+	#EMAIL SETTINGS
+	MAIL_SERVER='smtp.gmail.com',
+	MAIL_PORT=465,
+	MAIL_USE_SSL=True,
+	MAIL_USERNAME = 'flockrmail@gmail.com',
+	MAIL_PASSWORD = 'i2PXfayKUSKH7xW'
+	)
+mail = Mail(APP)
 CORS(APP)
 
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
@@ -66,6 +79,27 @@ def auth_login():
     """
     payload = request.get_json()
     return dumps(auth.auth_login(payload["email"], payload["password"]))
+
+@APP.route("/auth/passwordreset/request", methods=['POST'])
+def auth_passwordreset_request():
+    payload = request.get_json()
+    result = auth.auth_passwordreset_request(payload["email"])
+    code = check_reset_code.code_given_email(payload["email"])
+
+    try:
+        msg = Message("Password reset code",
+          sender="flockrmail@gmail.com",
+           recipients=[payload["email"]])
+        msg.body = "Hello,\nhere is your reset code: "+code           
+        mail.send(msg)
+        return dumps(result)
+
+    except Exception as e:
+        return str(e)
+
+@APP.route("/auth/passwordreset/reset", methods=['POST'])
+def auth_passwordreset_reset():
+    pass
 
 @APP.route("/channel/invite", methods=['POST'])
 def channel_invite():

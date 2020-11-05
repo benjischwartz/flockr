@@ -121,6 +121,23 @@ def test_server_auth_logout_login(url):
     user_one_login = user_one_login.json()
     user_one_login_token = jwt_given_email("first@person.com")
     assert user_one_login == {'u_id' : 1 , 'token' : user_one_login_token}
+
+def test_server_auth_passwordreset_request(url):
+    user_one_register = requests.post(f"{url}/auth/register", json={
+        "email" : "benji.schwartz2013@gmail.com",   # has to be a valid email
+        "password" : "catdog",
+        "name_first" : "Benji",
+        "name_last" : "Schwartz"})
+    user_one_register = user_one_register.json()
+    register_result = requests.post(f"{url}/auth/passwordreset/request", json={
+        "email" : "benji.schwartz2013@gmail.com"
+    })
+    # assert register_result == {}
+    # TODO: figure out a way to test this function without 
+    # using passwordreset_rest function. 
+    # ideas: 
+    #   - check the number of outgoing emails sent?
+    #   - check the `200` return value indicating success?
  
 def test_server_channel_invite(url):    
     '''
