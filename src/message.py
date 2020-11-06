@@ -13,13 +13,14 @@ def message_send(token, channel_id, message):
         message (str): contains the content of the message being sent
  
     Returns:
-        (dict): {}
+        (dict): {'message_id' : _}
     '''
 
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     # raise inputerror if the channel_id is invalid
     if channel_id not in channel:
@@ -75,7 +76,8 @@ def message_remove(token, message_id):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
@@ -126,7 +128,8 @@ def message_edit(token, message_id, message):
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'

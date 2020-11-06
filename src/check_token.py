@@ -16,6 +16,10 @@ def user_id_given_token(token):
 
 
 def get_handle(u_id):
+    '''
+    returns the handle if the u_id is valid
+    otherwise returns None
+    '''
     for email in users.keys():
         if u_id == users[email]['u_id']:
             return users[email]['handle']
@@ -43,9 +47,9 @@ def jwt_given_email(email):
     """
     returns a jwt hashed token given the user's 
     email as the `payload`
-    """
-    
+    """   
     return jwt.encode({'email': email}, 'secret').decode('utf-8')
+
 
 def email_given_jwt(token):
     """

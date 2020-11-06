@@ -4,7 +4,13 @@ from user import user_profile
 from error import InputError, AccessError
 
 def clear():
-    """ Resets the internal data of the application to it's initial state """
+    '''
+    Resets the internal data
+    of the application to
+    it's initial state
+
+    returns {}
+    '''
     users.clear()
     tokens.clear()
     channel.clear()
@@ -12,19 +18,34 @@ def clear():
     return {}
 
 def users_all(token):
-    """ returns a list with details of every user """
-    finallist = []
+    '''
+    Returns a list of all
+    users and their associated details
+
+    returns [{users}]
+    '''
+    final_list = []
     selected_email = ' '
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
-        raise AccessError(description="Token passed is not valid.")
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
     for tokens, data in users.items():
         selected_email = tokens
-        data.pop('password')
-        data.pop('permission_id')
-        data['email'] = selected_email
-        finallist.append(data)
+        # Using `.pop()` here was causing data to be deleted from the database
+        user = {
+            'u_id': data['u_id'],
+            'email': selected_email,
+            'name_first': data['name_first'],
+            'name_last': data['name_last'],
+            'handle_str': data['handle'],
+            #'profile_img_url': ''
+        }
+        final_list.append(user)
 
-    return finallist
+    # Should return a dictionary, not list
+    return {
+        'users': final_list
+    }
 

@@ -3,7 +3,7 @@ import pytest
 from auth import auth_register, auth_logout
 from channel import channel_invite, channel_details, channel_messages
 from channel import channel_leave, channel_join, channel_addowner, channel_removeowner
-from channels import channels_create
+from channels import channels_create, channels_listall
 from message import message_send
 from error import InputError, AccessError
 from other import clear
@@ -418,6 +418,29 @@ def test_channel_messages_valid_input_100_messages_start_25():
     assert channel_one_messages['start'] == 25
     assert channel_one_messages['end'] == 75
 
+def test_channel_messages_unlimited_pagination():
+    """
+    checking return values for `start` and `end` when calling 
+    channel_messages for numbers not multiples of 50.
+    """
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')   
+    randChannel = channels_create(userOne['token'], 'randChannel', True)
+    for _ in range(149):
+        message_send(userOne['token'], randChannel['channel_id'], 'Hello')
+    messages = channel_messages(userOne['token'], randChannel['channel_id'], 0)
+    assert(messages['start'] == 0)
+    assert(messages['end'] == 50)       
+    messages2 = channel_messages(userOne['token'], randChannel['channel_id'], 50)
+    assert(messages2['start'] == 50)
+    assert(messages2['end'] == 100)     
+    messages3 = channel_messages(userOne['token'], randChannel['channel_id'], 100)
+    assert(messages3['start'] == 100)
+    assert(messages3['end'] == -1)      
+    assert(len(messages3['messages']) == 49)
+    # an error should be raised when start is beyond 149 messages
+    with pytest.raises(InputError):     
+        channel_messages(userOne['token'], randChannel['channel_id'], 150)  
 
 def test_channel_messages_same_public_or_private():
     '''
@@ -583,6 +606,20 @@ def test_channel_leave_normal_case_owner():
     }
     ]) 
 
+# if everyone in the channel leaves check whether channel still exists
+def test_channel_leave_check_empty_dictionary():
+    clear()
+    user = auth_register('user@gmail.com', '123abc!@#', 'first', 'last')
+    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    channel_leave(user['token'], userchannel_id['channel_id'])
+    channel_list = channels_listall(user['token'])
+    assert(channel_list == {
+        'channels' : [{
+            'channel_id': 1, 
+            'name': 'userchannel'
+        }]
+    })
+
 # tests for channel_join
 # note: the owner of flockr (the first user registered) has special permissions
     # to join a private channel
@@ -701,6 +738,33 @@ def test_channel_addowner_standard_input():
     randChannel_id = channels_create(register_second_result['token'], 'Random Channel', True)
     register_third_result = auth_register('randemail3@gmail.com', 'password1234', 'Jane', 'Citizen')
     channel_addowner(register_second_result['token'], randChannel_id['channel_id'], register_third_result['u_id'])
+    assert(channel_details(register_second_result['token'], randChannel_id['channel_id']) == {
+        'name' : 'Random Channel',
+        'owner_members': [
+            {
+                'u_id': 2,
+                'name_first': 'Jane',
+                'name_last': 'Citizen'
+            }, 
+            {
+                'u_id': 3,
+                'name_first' : 'Jane',
+                'name_last': 'Citizen'
+            }
+        ],
+        'all_members': [
+            {
+                'u_id': 2,
+                'name_first': 'Jane',
+                'name_last': 'Citizen'
+            }, 
+            {
+                'u_id': 3,
+                'name_first' : 'Jane',
+                'name_last': 'Citizen'
+            }
+        ]
+    })
 
 
 def test_channel_addowner_invalid_token_after_logout():
@@ -797,7 +861,28 @@ def test_channel_removeowner_standard_input():
     register_third_result = auth_register('randemail3@gmail.com', 'password1234', 'Jane', 'Citizen')
     channel_addowner(register_second_result['token'], randChannel_id['channel_id'], register_third_result['u_id'])
     channel_removeowner(register_second_result['token'], randChannel_id['channel_id'], register_third_result['u_id'])
-
+    assert(channel_details(register_second_result['token'], randChannel_id['channel_id']) == {
+        'name' : 'Random Channel',
+        'owner_members': [
+            {
+                'u_id': 2,
+                'name_first': 'Jane',
+                'name_last': 'Citizen'
+            }
+        ],
+        'all_members': [
+            {
+                'u_id': 2,
+                'name_first': 'Jane',
+                'name_last': 'Citizen'
+            }, 
+            {
+                'u_id': 3,
+                'name_first' : 'Jane',
+                'name_last': 'Citizen'
+            }
+        ]
+    })
 
 def test_channel_removeowner_invalid_channel_id():
     """ 
@@ -851,7 +936,18 @@ def test_channel_removeowner_not_owner_permissions():
     randChannel_id = channels_create(register_second_result['token'], 'Random Channel', True)
     with pytest.raises(AccessError):
         assert channel_removeowner(register_third_result['token'], randChannel_id['channel_id'], register_second_result['u_id'])
-    
+
+def test_channel_removeowner_last_owner():
+    """ checking if able to remove an owner who is the last owner of the channel """
+    clear()
+    register_first_result = auth_register('randemail@gmail.com', 'password1234', 'Jane', 'Citizen')
+    register_second_result = auth_register('randemail2@gmail.com', 'password1234', 'Jane', 'Citizen')
+    randChannel_id = channels_create(register_second_result['token'], 'Random Channel', True)
+    channel_join(register_first_result['token'], randChannel_id['channel_id'])
+    #register_third_result = auth_register('randemail3@gmail.com', 'password1234', 'Jane', 'Citizen')
+    #channel_addowner(register_second_result['token'], randChannel_id['channel_id'], register_third_result['u_id'])
+    # removing third user
+    channel_removeowner(register_first_result['token'], randChannel_id['channel_id'], register_second_result['u_id'])
 
 def test_channel_removeowner_owner_flockr():
     """ 

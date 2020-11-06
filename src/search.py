@@ -40,5 +40,6 @@ def search(token, query_string):
             if query_string in message.get('message', None) != None:
                 result.append(message) 
 
-    return result
+    return {'messages' : result}
+
 

@@ -5,10 +5,20 @@ from check_token import user_id_given_token
 
 
 def channels_list(token):
+    '''
+    Returns the channel ids and names of channel the user is a part of.
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr; this user is the inviter
+ 
+    Returns:
+        (dict): {}
+    '''
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError(description="Token passed is not valid.")  
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")  
 
     # create empty data structs for return
     returnList = []
@@ -42,10 +52,20 @@ def channels_list(token):
     # }
 
 def channels_listall(token):
+    '''
+    Returns the channel ids and names of all channels, whether the user is a member or not.
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr; this user is the inviter
+ 
+    Returns:
+        (dict): {}
+    '''
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError(description="Token passed in is not valid.")  
+        raise AccessError(description="Token passed in is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")  
         
     returnList = []
     returnDict = dict()
@@ -73,10 +93,23 @@ def channels_listall(token):
     # }
 
 def channels_create(token, name, is_public):
+    '''
+    Creates a new channel, whether public or private according to input.
+ 
+    Parameters:
+        token (str): refers to a valid user on flockr; this user is the inviter
+        name (str): the name of the channel itself; does not need to be uniques
+        is_public (bool): True if the channel is public, otherwise False if private 
+ 
+    Returns:
+        (dict): {}
+    '''
 
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
-        raise AccessError(description="Token passed in is not valid.")   
+        raise AccessError(description="Token passed in is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")   
+    
     # raise an inputerror if channel name is too long
     if len(name) > 20:
         raise InputError(description="Channel name cannot be greater than 20 characters.")
