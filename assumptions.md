@@ -42,4 +42,5 @@ authenticated token
 * message_send - raise an InputError if the input 'message' is an empty string
 * message_edit - 'time_created' is NOT updated when a message is edited 
 * message_edit - raise an InputError if the input 'message' is over 1000 characters
+* pinning messages - when message_send creates a message, by default is_pinned is False (so default status of a message is unpinned).
 

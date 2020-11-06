@@ -146,6 +146,11 @@ def channel_messages(token, channel_id, start):
                    'u_id': 1,
                    'message': 'Hello world',
                    'time_created': 1582426789,
+                   'reacts' : [
+                        {
+                            'react_id' : 1
+                            'u_ids' : [2, 3]
+                            'is_this_user_reacted' : False
                }
            ],
            'start': 0,
@@ -189,10 +194,14 @@ def channel_messages(token, channel_id, start):
             msg_u_id = message['u_id']
             msg_content = message['message']
             msg_time = message['time_created']
+            msg_reacts = message['reacts']
+            msg_pin_status = message['is_pinned']
             message_dict = {'message_id': msg_id, 
                             'u_id' : msg_u_id, 
                             'message' : msg_content, 
-                            'time_created' : msg_time}
+                            'time_created' : msg_time,
+                            'reacts' : msg_reacts,
+                            'is_pinned' : msg_pin_status}
             all_messages['messages'].append(message_dict)
         num_message += 1
         if num_message == start + 50:

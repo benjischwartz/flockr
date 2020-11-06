@@ -48,7 +48,9 @@ def message_send(token, channel_id, message):
         'message_id' : message_id,
         'u_id': token_u_id,
         'message' : message,
-        'time_created' : time()
+        'time_created' : time(),
+        'reacts' : [],
+        'is_pinned' : False
     }
     
     # append dictionary to messages list of channel with id 'channel_id'

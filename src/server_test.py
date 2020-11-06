@@ -251,6 +251,8 @@ def test_server_channel_messages(url):
     assert channel_one_messages["messages"][0]["message_id"] == 1
     assert channel_one_messages["messages"][0]["u_id"] == user_one['u_id']
     assert channel_one_messages["messages"][0]["message"] == 'Hello'
+    assert channel_one_messages["messages"][0]["reacts"] == []
+    assert channel_one_messages["messages"][0]["is_pinned"] == False
     assert prior_send < channel_one_messages["messages"][0]["time_created"] < after_send
 
 

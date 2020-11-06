@@ -7,13 +7,29 @@ from data import channel
 def search(token, query_string):
     """
     Given a query string, return a collection of messages in all of the channels that the user has joined that match the query
-    Return {messages}
+    Returns:
+        (dict): {
+            'messages': [
+               {
+                   'message_id': 1,
+                   'u_id': 1,
+                   'message': 'Hello world',
+                   'time_created': 1582426789,
+                   'reacts' : [
+                        {
+                            'react_id' : 1
+                            'u_ids' : [2, 3]
+                            'is_this_user_reacted' : False
+                        }
+                    'is_pinned' : False
+           ],
+       }
     """
+    
     if user_id_given_token(token) == None:
         raise(AccessError) 
-    # init results
+    
     result = []
-
     # for each channel user is a member of
     for each in channels_list(token)['channels']:
         # use Python's in operator: if True, there is pattern match
@@ -23,24 +39,6 @@ def search(token, query_string):
             # if there is match, append to result
             if query_string in message.get('message', None) != None:
                 result.append(message) 
-    # return result
-    return result
 
-        #### format for return ####
-    # 
-    # [
-#       {
-#           'message_id': 1,
-#           'u_id': 1,
-#           'message': 'Hello world',
-#           'time_created': 1582426789,
-#       },
-#       {
-#           'message_id': 2,
-#           'u_id': 1,
-#           'message': 'Hello again',
-#           'time_created': 1582426799,
-#       }
-    # ]
-    # 
+    return result
 

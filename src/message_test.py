@@ -93,7 +93,8 @@ def test_message_send_valid_input_5_chars():
     assert channel_one_messages['messages'][0]['message_id'] == 1
     assert channel_one_messages['messages'][0]['u_id'] == user_one['u_id']
     assert channel_one_messages['messages'][0]['message'] == 'Hello'
-    assert channel_one_messages['messages'][0]['time_created'] > prior_send
+    assert channel_one_messages['messages'][0]['reacts'] == []
+    assert channel_one_messages['messages'][0]['is_pinned'] == False
 
 
 def test_message_send_valid_input_1000_chars():
@@ -111,7 +112,8 @@ def test_message_send_valid_input_1000_chars():
     assert channel_one_messages['messages'][0]['message_id'] == 1
     assert channel_one_messages['messages'][0]['u_id'] == user_one['u_id']
     assert channel_one_messages['messages'][0]['message'] == message_long
-    assert channel_one_messages['messages'][0]['time_created'] > prior_send
+    assert channel_one_messages['messages'][0]['reacts'] == []
+    assert channel_one_messages['messages'][0]['is_pinned'] == False
 
 
 def test_message_send_empty_message():
@@ -356,7 +358,9 @@ def test_message_edit_valid_input_channel_member():
             'message_id': channel_one_messages_init['messages'][0]['message_id'],
             'u_id': channel_one_messages_init['messages'][0]['u_id'],
             'message' : 'Hello World',
-            'time_created' : channel_one_messages_init['messages'][0]['time_created']
+            'time_created' : channel_one_messages_init['messages'][0]['time_created'],
+            'reacts' : [],
+            'is_pinned' : False
         }],
         'start' : 0,
         'end': -1
@@ -382,7 +386,9 @@ def test_message_edit_valid_input_channel_owner():
             'message_id': channel_one_messages_init['messages'][0]['message_id'],
             'u_id': channel_one_messages_init['messages'][0]['u_id'],
             'message' : 'Hello World',
-            'time_created' : channel_one_messages_init['messages'][0]['time_created']
+            'time_created' : channel_one_messages_init['messages'][0]['time_created'],
+            'reacts' : [],
+            'is_pinned' : False
         }],
         'start' : 0,
         'end': -1
@@ -409,7 +415,9 @@ def test_message_edit_valid_input_flockr_owner():
             'message_id': channel_one_messages_init['messages'][0]['message_id'],
             'u_id': channel_one_messages_init['messages'][0]['u_id'],
             'message' : 'Hello World',
-            'time_created' : channel_one_messages_init['messages'][0]['time_created']
+            'time_created' : channel_one_messages_init['messages'][0]['time_created'],
+            'reacts' : [],
+            'is_pinned' : False
         }],
         'start' : 0,
         'end': -1
@@ -468,7 +476,9 @@ def test_message_edit_valid_input_1000_characters():
             'message_id': channel_one_messages_init['messages'][0]['message_id'],
             'u_id': channel_one_messages_init['messages'][0]['u_id'],
             'message' : message_long,
-            'time_created' : channel_one_messages_init['messages'][0]['time_created']
+            'time_created' : channel_one_messages_init['messages'][0]['time_created'],
+            'reacts' : [],
+            'is_pinned' : False
         }],
         'start': 0,
         'end': -1
