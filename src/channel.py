@@ -193,19 +193,7 @@ def channel_messages(token, channel_id, start):
     # find the details of each message in the channel up to start + 50
     for message in reversed(channel[channel_id]['messages']):
         if num_message >= start and num_message < (start + 50):
-            msg_id = message['message_id']
-            msg_u_id = message['u_id']
-            msg_content = message['message']
-            msg_time = message['time_created']
-            msg_reacts = message['reacts']
-            msg_pin_status = message['is_pinned']
-            message_dict = {'message_id': msg_id, 
-                            'u_id' : msg_u_id, 
-                            'message' : msg_content, 
-                            'time_created' : msg_time,
-                            'reacts' : msg_reacts,
-                            'is_pinned' : msg_pin_status}
-            all_messages['messages'].append(message_dict)
+            all_messages['messages'].append(message)
         num_message += 1
         if num_message == start + 50:
             break
