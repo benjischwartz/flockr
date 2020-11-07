@@ -779,8 +779,8 @@ def test_message_react_valid_input_user_reacted_true():
 # TODO: Move this test to channel_messages
 def test_message_react_valid_input_user_reacted_false():
     '''
-    check that when a message has been reacted to but not by the user calling
-    channel_messages, is_this_user_reacted returns false 
+    check that when a channel message has multiple users, only the user who 
+    reacts is added to the list ['u_ids']
     '''
     
     clear()
@@ -791,7 +791,6 @@ def test_message_react_valid_input_user_reacted_false():
     message_send(user_one['token'], channel_one['channel_id'], 'Hi')
     assert message_react(user_one['token'], 1, 1) == {}
     channel_one_messages = channel_messages(user_two['token'], channel_one['channel_id'],0)
-    print(channel_one_messages)
     assert channel_one_messages['messages'][0]['reacts'][0] == {
         'react_id' : 1,
         'u_ids' : [1],
@@ -916,7 +915,161 @@ def test_message_react_invalid_token():
         message_react(user_one['token'], rand_message['message_id'], 1)
 
 
+# tests for message_unreact
 
+
+# reacts exist but reacts of the specified react_id (only if you implement more react_ids)
+
+def test_message_unreact_valid_input_one_react():
+    '''
+    check that message_unreact successfully unreacts a message with one react
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_react(user_one['token'], 1, 1)
+    assert message_unreact(user_one['token'], 1, 1) == {}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages['messages'][0]['reacts'] == []
+        
+
+def test_message_unreact_valid_input_multiple_reacts_same_react_id():
+    '''
+    check that when a message has multiple reacts of the same react_id, 
+    the correct user react gets removed
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '123abc!@#', 'Second', 'User')
+    user_three = auth_register('thirduser@gmail.com', '123abc!@#', 'Third', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
+    channel_join(user_three['token'], channel_one['channel_id'])
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_react(user_one['token'], 1, 1)
+    message_react(user_two['token'], 1, 1)
+    message_react(user_three['token'], 1, 1)
+    assert message_unreact(user_two['token'], 1, 1) == {}
+    channel_one_messages = channel_messages(user_two['token'], channel_one['channel_id'],0)
+    assert channel_one_messages['messages'][0]['reacts'][0] == {
+        'react_id' : 1,
+        'u_ids' : [1, 3],
+        'is_this_user_reacted' : False
+    }
+        
+
+
+def test_message_unreact_valid_input_multiple_messages_react_middle():
+    '''
+    check message_react is able to unreact the correct message if there are 
+    multiple messages in the channel   
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi2')
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi3')
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi4')
+    message_react(user_one['token'],rand_message['message_id'], 1)
+    assert message_unreact(user_one['token'],rand_message['message_id'], 1) == {}
+    assert channel_one_messages['messages'][1]['reacts'] == []
+                
+        
+def test_message_unreact_invalid_react_id():
+    '''
+    check an inputerror is raised when the react_id is invalid; valid react_ids
+    are 1. 
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_react(user_three['token'], 1, 1)
+    with pytest.raises(InputError): 
+        message_unreact(user_one['token'], rand_message['message_id'], 1000)
+
+
+def test_message_unreact_no_reacts():
+    '''
+    check an inputerror is raised if there are no reacts on the message 
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    with pytest.raises(InputError): 
+        message_react(user_one['token'], rand_message['message_id'], 1)
+        
+def test_message_unreact_user_not_reacted():
+    '''
+    check an inputerror is raised if there are reactions for the message of the 
+    appropriate react_id but the user who is trying to unreact, did not react
+    '''
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    user_two = auth_register('seconduser@gmail.com', '123abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_react(user_one['token'], 1, 1)
+    with pytest.raises(InputError):
+        message_unreact(user_two['token'], rand_message['message_id'], 1)
+       
+def test_message_unreact_invalid_message_id():
+    '''
+    check an inputerror is raised if the message_id is invalid (eg. it has been
+    deleted)
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_remove(user_one['token'], rand_message['message_id'])
+    with pytest.raises(InputError):
+        message_unreact(user_one['token'], rand_message['message_id'], 1)
+
+
+def test_message_unreact_user_not_part_of_channel():
+    '''
+    check an inputerror is raised if a user tries to unreact to a message but they 
+    have left the channel and are thus not a member of it anymore
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_react(user_one['token'], rand_message['message_id'], 1)   
+    channel_leave(user_one['token'], channel_one['channel_id'])
+    with pytest.raises(InputError):
+        message_unreact(user_one['token'], rand_message['message_id'], 1)   
+
+def test_message_unreact_invalid_token():
+    '''
+    check an accesserror is raised when the token is not valid 
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', False)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_react(user_one['token'], rand_message['message_id'], 1)   
+    auth_logout(user_one['token'])
+    with pytest.raises(AccessError):
+        message_unreact(user_one['token'], rand_message['message_id'], 1)
+
+
+# tests for message_pin
+
+# tests for message_unpin
 
 
 
