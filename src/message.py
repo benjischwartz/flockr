@@ -28,7 +28,7 @@ def message_send(token, channel_id, message):
         
     # raise accesserror if user with token 'token' is not part of the channel
     if token_u_id not in channel[channel_id]['all_members']:
-        raise AccessError (description="User is not authorised to invite to this channel.")
+        raise AccessError (description="User is not authorised to send a message to this channel.")
     
     # raise an inputerror if message is 0 characters or over 1000 characters in length
     if len(message) == 0: 
@@ -99,7 +99,7 @@ def message_remove(token, message_id):
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
     if token_u_id not in channel[message_channel]['all_members']:
-        raise AccessError (description="User is not part of the channel with this message.")
+        raise InputError (description="User is not part of the channel with this message.")
     
     token_permission_id = permission_id_given_token(token)
     # check permissions to remove and if permitted then remove message; if not 
@@ -151,7 +151,7 @@ def message_edit(token, message_id, message):
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
     if token_u_id not in channel[message_channel]['all_members']:
-        raise AccessError (description="User is not part of the channel with this message.")
+        raise InputError (description="User is not part of the channel with this message.")
     
     # remove message if the message is an empty string or raise an inputerror 
     # if the message is over 1000 characters
@@ -203,7 +203,7 @@ def message_sendlater(token, channel_id, message, time_sent):
         
     # raise accesserror if user with token 'token' is not part of the channel
     if token_u_id not in channel[channel_id]['all_members']:
-        raise AccessError (description="User is not authorised to invite to this channel.")
+        raise AccessError (description="User is not authorised to send a message to this channel.")
     
     # raise an inputerror if message is 0 characters or over 1000 characters in length
     if len(message) == 0: 
@@ -236,8 +236,8 @@ def message_sendlater(token, channel_id, message, time_sent):
         'message_id': message_id,
     }
 
-def message_react(token, channel_id, message, time_sent):
+def message_react(token, message_id, react_id):
     pass
 
-def message_unreact(token, channel_id, message, time_sent):
+def message_unreact(token, message_id, react_id):
     pass

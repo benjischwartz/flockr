@@ -32,6 +32,9 @@ authenticated token
 * auth_register - first user registered will have u_id `1`, and subsequent u_id's will be determined from the number of people registered, thus always unique
 * auth_logout - logging out twice will return {'is_success': False}
 * owner of flockr is the first user registered, and will thus have u_id of `1`
+* handle generation - No more than 99 people with the same name will register (otherwise handle will be > 20 characters)
+* Passwords will be encoded with sha256_crypt from the passlib library
+
 
 
 ## message.py assumptiosn
@@ -42,4 +45,5 @@ authenticated token
 * message_send - raise an InputError if the input 'message' is an empty string
 * message_edit - 'time_created' is NOT updated when a message is edited 
 * message_edit - raise an InputError if the input 'message' is over 1000 characters
+* pinning messages - when message_send creates a message, by default is_pinned is False (so default status of a message is unpinned).
 

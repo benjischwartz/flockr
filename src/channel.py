@@ -154,8 +154,9 @@ def channel_messages(token, channel_id, start):
                             'react_id' : 1
                             'u_ids' : [2, 3]
                             'is_this_user_reacted' : False
-               }
-           ],
+                        }
+                    ],
+                }
            'start': 0,
            'end': 50,
          }
@@ -191,10 +192,12 @@ def channel_messages(token, channel_id, start):
     all_messages['start'] = start
     num_message = 0
     
+
     # find the details of each message in the channel up to start + 50
     for message in reversed(channel[channel_id]['messages']):
         if num_message >= start and message['time_created'] <= time():
             all_messages['messages'].append(message)
+            
         num_message += 1
         if len(all_messages['messages']) == 50:
             break
