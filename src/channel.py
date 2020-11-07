@@ -6,6 +6,7 @@ from channels import channels_create
 from other import clear
 from time import time
 
+
 def channel_invite(token, channel_id, u_id):
     '''
     Invites a user (with user id u_id) to join a channel with ID channel_id. 
@@ -19,6 +20,7 @@ def channel_invite(token, channel_id, u_id):
     Returns:
         (dict): {}
     '''
+    
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -196,11 +198,33 @@ def channel_messages(token, channel_id, start):
     # find the details of each message in the channel up to start + 50
     for message in reversed(channel[channel_id]['messages']):
         if num_message >= start and message['time_created'] <= time():
-            all_messages['messages'].append(message)
-            
-        num_message += 1
+            react_list = []
+            for react in message['reacts']:
+                if token_u_id in react['u_ids']:
+                    react_dict = {
+                        'react_id' : react['react_id'],
+                        'u_ids' : react['u_ids'],
+                        'is_this_user_reacted' : True
+                    }
+                else:
+                    react_dict = {
+                        'react_id' : react['react_id'],
+                        'u_ids' : react['u_ids'],
+                        'is_this_user_reacted' : False
+                    }
+                react_list.append(react_dict)
+            message_dict = {
+                'message_id': message['message_id'],
+                'u_id': message['u_id'],
+                'message': message['message'],
+                'time_created': message['time_created'],
+                'reacts' : react_list,
+                'is_pinned' : message['is_pinned']
+                }
+            all_messages['messages'].append(message_dict)
         if len(all_messages['messages']) == 50:
             break
+        num_message += 1
     
     # determine and create the value for end in the return dictionary
     if len(all_messages['messages']) < 50:

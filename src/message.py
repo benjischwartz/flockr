@@ -237,7 +237,75 @@ def message_sendlater(token, channel_id, message, time_sent):
     }
 
 def message_react(token, message_id, react_id):
-    pass
+    '''
+    Given a message within a channel, mark it as "pinned" to be given special 
+    display treatment by the frontend
+    
+    Parameters:
+        token (str): refers to a valid user on flockr who is sending the message
+        channel_id (int): identifies the channel the user is sending a message to
+        react_id (int): identifies the type of react the user wants to make
+            react_id of 1 is the only valid react for now
+    
+    Returns:
+        (dict): {'message_id' : ___ }
+    '''
+    
+    
+    # raise accesserror if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
+    
+    # raise inputerror if the message_id is invalid and find the channel and
+    # indexation of the message with id 'message_id'
+    message_valid = False
+    for a_channel in channel:
+        message_index = 0
+        for a_message in channel[a_channel]['messages']:
+            if a_message['message_id'] == message_id:
+               message_channel = a_channel
+               message_valid = True
+               break
+            message_index += 1
+        if message_valid == True:
+            break
+    if message_valid == False:
+        raise InputError(description="The message id is not valid.")
+       
+    # raise accesserror if user with token 'token' is not part of the channel
+    # that the message is part of 
+    if token_u_id not in channel[message_channel]['all_members']:
+        raise InputError (description="User is not part of the channel with this message.")
+    
+    if react_id != 1:
+        raise InputError (description="React is invalid")
+    
+    if channel[message_channel]['messages'][message_index]['reacts'] == []:
+        new_react = {'react_id' : react_id, 'u_ids' : [token_u_id]}
+        channel[message_channel]['messages'][message_index]['reacts'].append(new_react)
+    else:
+        if any(token_u_id in d['u_ids'] for d in channel[message_channel]['messages'][message_index]['reacts']):
+            raise InputError (description='You have already reacted to this message. Unreact first')
+        if not any(react_id == d['react_id'] for d in channel[message_channel]['messages'][message_index]['reacts']):
+            new_react = {'react_id' : react_id, 'u_ids' : [token_u_id]}
+            channel[message_channel]['messages'][message_index]['reacts'].append(new_react)
+        else:
+            react_index = 0
+            for react_dict in channel[message_channel]['messages'][message_index]['reacts']:
+                if react_dict['react_id'] == react_id:
+                    break
+                react_index += 1
+            channel[message_channel]['messages'][message_index]['reacts'][react_index]['u_ids'].append(token_u_id)
+            
+    return {}
 
 def message_unreact(token, message_id, react_id):
+    pass
+
+def message_pin(token, message_id):
+    pass
+
+def message_unpin(token, message_id):
     pass

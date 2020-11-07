@@ -33,11 +33,10 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #           'u_id': 1,
     #           'message': 'Hello world',
     #           'time_created': 1582426789,
-    #           'reacts': [
-    #                   { "react_id" : 1 },
-    #                   { "u_ids : [1, 2, 3, 4, 5]},
-    #                   { "is_this_user_reacted" : True}
-    #               ]
+    #           'reacts': [{
+    #                   "react_id" : 1,
+    #                   "u_ids : [1, 2, 3, 4, 5]
+    #               }]
     #           'is_pinned' : False
     #       },
     #       {

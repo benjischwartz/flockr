@@ -10,7 +10,6 @@ from time import time
 
 # tests for message_send
 
-
 def test_message_send_valid_input_multiple_messages():
     '''
     check that message_send returns the correct dictionary and unique message_ids starting
@@ -86,7 +85,6 @@ def test_message_send_valid_input_5_chars():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    prior_send = time()
     assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
     assert len(channel_one_messages['messages']) == 1
@@ -106,7 +104,6 @@ def test_message_send_valid_input_1000_chars():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     message_long = 'a'*1000
-    prior_send = time()
     assert message_send(user_one['token'], channel_one['channel_id'], message_long) == {'message_id': 1}
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
     assert channel_one_messages['messages'][0]['message_id'] == 1
@@ -317,6 +314,7 @@ def test_message_remove_not_authorised_to_remove():
     message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
     with pytest.raises(AccessError):
         message_remove(user_two['token'], message['message_id'])
+
 
 
 def test_message_remove_already_deleted():
@@ -760,15 +758,6 @@ def test_message_sendlater_invalid_channel_id():
         
 # tests for message_react
 
-
-# positive test case
-
-# sending one message and it is user reacted
-
-# sending a message and it is not user_reacted
-
-# sending a message that has multiple likes
-
 def test_message_react_valid_input_user_reacted_true():
     '''
     check that a message has been reacted to successfully given a react_id of 1
@@ -798,9 +787,11 @@ def test_message_react_valid_input_user_reacted_false():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_two = auth_register('seconduser@gmail.com', '123abc!@#', 'Second', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
     message_send(user_one['token'], channel_one['channel_id'], 'Hi')
     assert message_react(user_one['token'], 1, 1) == {}
     channel_one_messages = channel_messages(user_two['token'], channel_one['channel_id'],0)
+    print(channel_one_messages)
     assert channel_one_messages['messages'][0]['reacts'][0] == {
         'react_id' : 1,
         'u_ids' : [1],
@@ -819,6 +810,7 @@ def test_message_react_valid_input_multiple_of_one_react():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_two = auth_register('seconduser@gmail.com', '123abc!@#', 'Second', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
+    channel_join(user_two['token'], channel_one['channel_id'])
     message_send(user_one['token'], channel_one['channel_id'], 'Hi')
     assert message_react(user_one['token'], 1, 1) == {}
     assert message_react(user_two['token'], 1, 1) == {}
@@ -826,7 +818,7 @@ def test_message_react_valid_input_multiple_of_one_react():
     assert channel_one_messages['messages'][0]['reacts'][0] == {
         'react_id' : 1,
         'u_ids' : [1, 2],
-        'is_this_user_reacted' : False
+        'is_this_user_reacted' : True
     }
         
 
@@ -847,10 +839,10 @@ def test_message_react_valid_input_multiple_messages_react_middle():
     channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
     assert channel_one_messages['messages'][0]['reacts'] == []
     assert channel_one_messages['messages'][2]['reacts'] == []
-    assert channel_one_messages['messages'][0]['reacts'][0] == {
+    assert channel_one_messages['messages'][1]['reacts'][0] == {
         'react_id' : 1,
         'u_ids' : [1],
-        'is_this_user_reacted' : False
+        'is_this_user_reacted' : True
     }
                 
         
@@ -893,7 +885,7 @@ def test_message_react_invalid_message_id():
     rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
     message_remove(user_one['token'], rand_message['message_id'])
     with pytest.raises(InputError):
-        message_reactit(user_one['token'], rand_message['message_id'], 1)
+        message_react(user_one['token'], rand_message['message_id'], 1)
 
 
 def test_message_react_user_not_part_of_channel():
