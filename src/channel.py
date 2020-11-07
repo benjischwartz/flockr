@@ -4,6 +4,7 @@ from check_token import user_id_given_token, permission_id_given_token
 from auth import auth_register
 from channels import channels_create
 from other import clear
+from time import time
 
 def channel_invite(token, channel_id, u_id):
     '''
@@ -192,17 +193,17 @@ def channel_messages(token, channel_id, start):
     
     # find the details of each message in the channel up to start + 50
     for message in reversed(channel[channel_id]['messages']):
-        if num_message >= start and num_message < (start + 50):
+        if num_message >= start and message['time_created'] <= time():
             all_messages['messages'].append(message)
         num_message += 1
-        if num_message == start + 50:
+        if len(all_messages['messages']) == 50:
             break
     
     # determine and create the value for end in the return dictionary
-    if num_message < start + 50:
+    if len(all_messages['messages']) < 50:
         all_messages['end'] = -1
     else:
-        all_messages['end'] = num_message
+        all_messages['end'] = start + 50
        
     return all_messages
 

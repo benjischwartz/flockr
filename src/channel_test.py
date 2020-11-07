@@ -368,7 +368,7 @@ def test_channel_messages_valid_input_49_messages():
     assert channel_one_messages['end'] == -1
 
 
-def test_channel_message_valid_input_50_messages():
+def test_channel_messages_valid_input_50_messages():
     '''
     check that channel_messages returns the correct return dictionary when there
     are 50 messages
@@ -385,7 +385,7 @@ def test_channel_message_valid_input_50_messages():
     assert channel_one_messages['end'] == 50
 
 
-def test_channel_message_valid_input_50_messages_start_1():
+def test_channel_messages_valid_input_50_messages_start_1():
     '''
     check that channel_messages returns the correct return dictionary when there
     are 50 messages but start is nonzero

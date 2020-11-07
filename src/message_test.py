@@ -2,7 +2,7 @@ import pytest
 from auth import auth_register, auth_logout
 from channel import channel_messages, channel_join, channel_leave
 from channels import channels_create
-from message import message_send, message_remove, message_edit
+from message import message_send, message_remove, message_edit, message_sendlater, message_react, message_unreact
 from error import InputError, AccessError
 from other import clear
 from time import time
@@ -616,7 +616,7 @@ def test_message_sendlater_unique_id_with_message_send():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    assert message_send(user_two['token'], channel_one['channel_id'], 'Hello') == {'message_id' : 1}
+    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id' : 1}
     message_long = 'a'*1000
     sending_time = time() + 3600
     assert message_sendlater(user_one['token'], channel_one['channel_id'], message_long, sending_time) == {'message_id': 2}
@@ -648,14 +648,6 @@ def test_channel_sendlater_valid_input_time_created():
     # OR could create a function that gives the details of any message regardless of time_created
     pass
     
-def test_channel_sendlater_valid_input_time_now():
-    '''
-    check that message_send creates a time_created property for the message based
-    on when message_send is called
-    ''' 
-    
-    channel_one = channels_create(user_one['token'], 'channel_one', True)
-    assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', time()) == {'message_id': 1}
 
 def test_message_sendlater_valid_input_5_chars():
     '''
