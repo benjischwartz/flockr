@@ -57,7 +57,7 @@ def test_message_send_unique_id_after_remove():
     message_three = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
     assert message_three['message_id'] != message_two['message_id']
     
-def test_channel_send_valid_input_time_created():
+def test_message_send_valid_input_time_created():
     '''
     check that message_send creates a time_created property for the message based
     on when message_send is called
@@ -578,7 +578,7 @@ def test_message_edit_invalid_flockr_owner():
 
 # tests for message_sendlater
 
-def test_message_send_valid_input_multiple_messages():
+def test_message_sendlater_valid_input_multiple_messages():
     '''
     check that message_send returns the correct dictionary and unique message_ids starting
     from 1 and incrementing by 1 for each subsequent message as per the assumption
@@ -587,12 +587,13 @@ def test_message_send_valid_input_multiple_messages():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
-    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 2}
-    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 3}
+    sending_time = time() + 3600
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 1}
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 2}
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 3}
 
 
-def test_message_send_valid_input_multiple_channels():
+def test_message_sendlater_valid_input_multiple_channels():
     '''
     check that message_send returns the correct dictionary with unique message_ids 
     even if there are multiple channels in flockr
@@ -602,50 +603,61 @@ def test_message_send_valid_input_multiple_channels():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     channel_two = channels_create(user_one['token'], 'channel_two', True)
-    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
-    assert message_send(user_one['token'], channel_two['channel_id'], 'Hello') == {'message_id': 2}
-    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 3}
-    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
-    channel_two_messages = channel_messages(user_one['token'], channel_two['channel_id'],0)
-    assert len(channel_one_messages['messages']) == 2
-    assert len(channel_two_messages['messages']) == 1
+    sending_time = time() + 3600
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 1}
+    assert message_sendlater(user_one['token'], channel_two['channel_id'], 'Hello', sending_time) == {'message_id': 2}
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 3}
 
-def test_message_send_unique_id_after_remove():
+def test_message_sendlater_unique_id_with_message_send():
+    '''
+    check a message of 1000 characters is successfully sent
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    assert message_send(user_two['token'], channel_one['channel_id'], 'Hello') == {'message_id' : 1}
+    message_long = 'a'*1000
+    sending_time = time() + 3600
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], message_long, sending_time) == {'message_id': 2}
+ 
+def test_message_sendlater_unique_id_after_remove():
     '''
     check that message_send returns unique message_ids even if a message is 
     removed
     '''
+    
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    message_one = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-    message_two = message_send(user_one['token'], channel_one['channel_id'], 'Hello') 
+    sending_time = time() + 3600
+    message_one = message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time)
+    message_two = message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) 
     message_remove(user_one['token'], message_one['message_id'])
-    message_three = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_three = message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time)
     assert message_three['message_id'] != message_two['message_id']
+
     
-def test_channel_send_valid_input_time_created():
+def test_channel_sendlater_valid_input_time_created():
     '''
     check that message_send creates a time_created property for the message based
     on when message_send is called
     ''' 
     
-    clear()
-    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    #TODO: maintenance testing
+    # OR could create a function that gives the details of any message regardless of time_created
+    pass
+    
+def test_channel_sendlater_valid_input_time_now():
+    '''
+    check that message_send creates a time_created property for the message based
+    on when message_send is called
+    ''' 
+    
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    prior_send = time()
-    for _ in range(3):
-        message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-    after_send = time()
-    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
-    oldest = channel_one_messages['messages'][2]['time_created']
-    middle = channel_one_messages['messages'][1]['time_created'] 
-    most_recent = channel_one_messages['messages'][0]['time_created'] 
-    assert after_send > most_recent > middle > oldest > prior_send
-    assert channel_one_messages['start'] == 0
-    assert channel_one_messages['end'] == -1
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', time()) == {'message_id': 1}
 
-def test_message_send_valid_input_5_chars():
+def test_message_sendlater_valid_input_5_chars():
     '''
     check a message of 5 characters is sent successfully
     '''
@@ -653,18 +665,12 @@ def test_message_send_valid_input_5_chars():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    prior_send = time()
-    assert message_send(user_one['token'], channel_one['channel_id'], 'Hello') == {'message_id': 1}
-    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
-    assert len(channel_one_messages['messages']) == 1
-    assert channel_one_messages['messages'][0]['message_id'] == 1
-    assert channel_one_messages['messages'][0]['u_id'] == user_one['u_id']
-    assert channel_one_messages['messages'][0]['message'] == 'Hello'
-    assert channel_one_messages['messages'][0]['reacts'] == []
-    assert channel_one_messages['messages'][0]['is_pinned'] == False
+    sending_time = time() + 3600
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 1}
+    #TODO: maintenance testing
+    # OR could create a function that gives the details of any message regardless of time_created
 
-
-def test_message_send_valid_input_1000_chars():
+def test_message_sendlater_valid_input_1000_chars():
     '''
     check a message of 1000 characters is successfully sent
     '''
@@ -673,17 +679,25 @@ def test_message_send_valid_input_1000_chars():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     message_long = 'a'*1000
-    prior_send = time()
-    assert message_send(user_one['token'], channel_one['channel_id'], message_long) == {'message_id': 1}
-    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'], 0)
-    assert channel_one_messages['messages'][0]['message_id'] == 1
-    assert channel_one_messages['messages'][0]['u_id'] == user_one['u_id']
-    assert channel_one_messages['messages'][0]['message'] == message_long
-    assert channel_one_messages['messages'][0]['reacts'] == []
-    assert channel_one_messages['messages'][0]['is_pinned'] == False
+    sending_time = time() + 3600
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], message_long, sending_time) == {'message_id': 1}
+    #TODO: maintenance testing
+    # OR could create a function that gives the details of any message regardless of time_created
 
 
-def test_message_send_empty_message():
+def test_message_sendlater_invalid_time():
+    '''
+    check an inputerror is raised if the time send is a time in the past
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    sending_time = time() - 3600
+    with pytest.raises(InputError):
+         message_sendlater(user_one['token'], channel_one['channel_id'], '', sending_time)
+         
+def test_message_sendlater_empty_message():
     '''
     check an inputerror is raised if the the input 'message' is an empty string
     '''
@@ -691,11 +705,12 @@ def test_message_send_empty_message():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
+    sending_time = time() + 3600
     with pytest.raises(InputError):
-         message_send(user_one['token'], channel_one['channel_id'], '')
+         message_sendlater(user_one['token'], channel_one['channel_id'], '', sending_time)
                  
 
-def test_message_send_1001_characters():
+def test_message_sendlater_1001_characters():
     '''
     check an inputerror is raised if the message is greater than 1000 characters
     '''
@@ -704,11 +719,12 @@ def test_message_send_1001_characters():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one= channels_create(user_one['token'], 'channel_one', True)
     message_long = 'a'*1001
+    sending_time = time() + 3600
     with pytest.raises(InputError):
-        message_send(user_one['token'], channel_one['channel_id'], message_long)
+        message_sendlater(user_one['token'], channel_one['channel_id'], message_long, sending_time)
 
 
-def test_message_send_invalid_token():
+def test_message_sendlater_invalid_token():
     '''
     check an accesserror is raised when the token is not valid
     '''
@@ -717,11 +733,12 @@ def test_message_send_invalid_token():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', False)
     auth_logout(user_one['token'])
+    sending_time = time() + 3600
     with pytest.raises(AccessError):
-        message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+        message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time)
 
 
-def test_message_send_user_not_in_channel():
+def test_message_sendlater_user_not_in_channel():
     '''
     check an an accesserror is raised if the user is not in channel and tries to 
     send a message
@@ -731,11 +748,12 @@ def test_message_send_user_not_in_channel():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
+    sending_time = time() + 3600
     with pytest.raises(AccessError):
-        message_send(user_two['token'], channel_one['channel_id'], 'Hello')
+        message_sendlater(user_two['token'], channel_one['channel_id'], 'Hello', sending_time)
 
 
-def test_message_send_invalid_channel_id():
+def test_message_sendlater_invalid_channel_id():
     '''
     check an inputerror is raised if the channel_id is invalid; in this test any 
     channel_id is invalid since no channels exist
@@ -743,6 +761,7 @@ def test_message_send_invalid_channel_id():
     
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    sending_time = time() + 3600
     with pytest.raises(InputError):
-        message_send(user_one['token'], 0, 'Hello')
+        message_sendlater(user_one['token'], 0, 'Hello', sending_time)
 
