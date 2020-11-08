@@ -7,6 +7,8 @@ import requests
 import urllib
 from other import clear
 from check_token import jwt_given_email
+from flask_mail import Mail, Message
+import check_reset_code
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():
@@ -122,22 +124,30 @@ def test_server_auth_logout_login(url):
     user_one_login_token = jwt_given_email("first@person.com")
     assert user_one_login == {'u_id' : 1 , 'token' : user_one_login_token}
 
-def test_server_auth_passwordreset_request(url):
+def test_server_auth_passwordreset_request_reset(url):
+    MAIL_SUPPRESS_SEND = False
     user_one_register = requests.post(f"{url}/auth/register", json={
         "email" : "benji.schwartz2013@gmail.com",   # has to be a valid email
         "password" : "catdog",
         "name_first" : "Benji",
         "name_last" : "Schwartz"})
-    user_one_register = user_one_register.json()
     register_result = requests.post(f"{url}/auth/passwordreset/request", json={
         "email" : "benji.schwartz2013@gmail.com"
     })
+    r = requests.post(f"{url}/auth/passwordreset/reset", json={
+        "code" : check_reset_code.code_given_email("benji.schwartz2013@gmail.com"),
+        "new_password" : "newpassword123"})
+    assert r.json == {}
+    new_password = check_reset_code.password_given_email("benji.schwartz2013@gmail.com")
+    assert new_password == "newpassword123"     # password successfully changed
+
     # assert register_result == {}
     # TODO: figure out a way to test this function without 
     # using passwordreset_rest function. 
     # ideas: 
     #   - check the number of outgoing emails sent?
     #   - check the `200` return value indicating success?
+
  
 def test_server_channel_invite(url):    
     '''

@@ -18,3 +18,4 @@ def password_given_email(email):
     for emails in users.keys():
         if email == emails:
             return users[email]['password']
+    return None
