@@ -41,7 +41,7 @@ def search(token, query_string):
             if query_string in message.get('message', None) != None and message['time_created'] <= time():
                 react_list = []
                 for react in message['reacts']:
-                    if token_u_id in react['u_ids']:
+                    if user_id_given_token(token) in react['u_ids']:
                         react_dict = {
                             'react_id' : react['react_id'],
                             'u_ids' : react['u_ids'],
