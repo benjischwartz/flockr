@@ -98,10 +98,9 @@ def channel_details():
         ],
       }
     """
-    token = request.args.get("token")
-    channel_id = request.args.get("channel_id")
-    token = token if not None else False
-    channel_id = int(channel_id) if not None else False
+
+    token = str(request.args.get("token")) if not None else False
+    channel_id = int(request.args.get("channel_id")) if not None else False
     if token and channel_id:
         return dumps(channel.channel_details(token, channel_id))
     else:
@@ -124,10 +123,14 @@ def channel_messages():
         'end' : ______
     }
     """
-    token = request.args.get("token")
-    channel_id = int(request.args.get("channel_id"))
-    start = int(request.args.get("start"))
-    return dumps(channel.channel_messages(token, channel_id, start))
+    token = str(request.args.get("token")) if not None else False
+    channel_id = int(request.args.get("channel_id")) if not None else False
+    start = int(request.args.get("start")) if not None else False
+    if token and channel_id and start:
+        return dumps(channel.channel_messages(token, channel_id, start))
+    else:
+        raise InputError(description="channel_id, token or start can't be read")
+
 
 @APP.route("/channel/join", methods=['POST'])
 def channel_join():
@@ -231,6 +234,33 @@ def message_edit():
     """
     payload = request.get_json()
     return dumps(message.message_edit(payload['token'], payload['message_id'], payload['message']))
+
+@APP.route("/message/sendlater", methods=['POST'])
+def message_send():
+    """
+    sends a message to a specified channel at a specified time
+    returns {"message_id" : ____}
+    """
+    payload = request.get_json()
+    return dumps(message.message_send(payload['token'], payload['channel_id'], payload['message'], payload['time_send']))
+
+@APP.route("/message/react", methods=['POST'])
+def message_send():
+    """
+    reacts to a specified message
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_send(payload['token'], payload['message_id'], payload['react_id']))
+
+@APP.route("/message/unreact", methods=['POST'])
+def message_send():
+    """
+    unreacts a specified message
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_send(payload['token'], payload['message_id'], payload['react_id']))
 
 @APP.route("/user/profile", methods=["GET"])
 def user_profile():
