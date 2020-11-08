@@ -977,6 +977,7 @@ def test_message_unreact_valid_input_multiple_messages_react_middle():
     message_send(user_one['token'], channel_one['channel_id'], 'Hi4')
     message_react(user_one['token'],rand_message['message_id'], 1)
     assert message_unreact(user_one['token'],rand_message['message_id'], 1) == {}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
     assert channel_one_messages['messages'][1]['reacts'] == []
                 
         
@@ -990,7 +991,7 @@ def test_message_unreact_invalid_react_id():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi')
-    message_react(user_three['token'], 1, 1)
+    message_react(user_one['token'], 1, 1)
     with pytest.raises(InputError): 
         message_unreact(user_one['token'], rand_message['message_id'], 1000)
 
@@ -1005,7 +1006,7 @@ def test_message_unreact_no_reacts():
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi')
     with pytest.raises(InputError): 
-        message_react(user_one['token'], rand_message['message_id'], 1)
+        message_unreact(user_one['token'], rand_message['message_id'], 1)
         
 def test_message_unreact_user_not_reacted():
     '''

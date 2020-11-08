@@ -51,7 +51,6 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #               ]
     #           'is_pinned' : False
     #       }
-    #     ]
     # }
 }
 

@@ -148,11 +148,9 @@ def test_channel_invite_self():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     channel_one = channels_create(user_one['token'], 'randChannel', True)
-    channel_one_details_initial = channel_details(user_one['token'], channel_one['channel_id'])
-    assert channel_invite(user_one['token'], channel_one['channel_id'], user_one['u_id']) == {}
-    channel_one_details_after = channel_details(user_one['token'], channel_one['channel_id'])
-    assert channel_one_details_initial == channel_one_details_after
-
+    with pytest.raises(InputError):
+        channel_invite(user_one['token'], channel_one['channel_id'], user_one['u_id'])
+        
 def test_channel_invite_already_in():
     '''
     check that an empty dictionary is returned and no changes are made to the 
@@ -164,10 +162,9 @@ def test_channel_invite_already_in():
     user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     channel_one = channels_create(user_one['token'], 'randChannel', True)
     channel_join(user_two['token'], channel_one['channel_id'])
-    channel_one_details_initial = channel_details(user_one['token'], channel_one['channel_id'])
-    assert channel_invite(user_two['token'], channel_one['channel_id'], user_one['u_id']) == {}
-    channel_one_details_after = channel_details(user_one['token'], channel_one['channel_id'])
-    assert channel_one_details_initial == channel_one_details_after
+    with pytest.raises(InputError):
+        channel_invite(user_two['token'], channel_one['channel_id'], user_one['u_id'])
+        
 
 
 # tests for channel_details

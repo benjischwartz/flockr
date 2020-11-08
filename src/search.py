@@ -3,6 +3,7 @@ from error import AccessError
 from channels import channels_list
 from channel import channel_messages
 from data import channel
+from time import time
 
 def search(token, query_string):
     """
@@ -37,8 +38,31 @@ def search(token, query_string):
         messages = channel[channel_id]['messages']
         for message in messages:
             # if there is match, append to result
-            if query_string in message.get('message', None) != None:
-                result.append(message) 
+            if query_string in message.get('message', None) != None and message['time_created'] <= time():
+                react_list = []
+                for react in message['reacts']:
+                    if token_u_id in react['u_ids']:
+                        react_dict = {
+                            'react_id' : react['react_id'],
+                            'u_ids' : react['u_ids'],
+                            'is_this_user_reacted' : True
+                        }
+                    else:
+                        react_dict = {
+                            'react_id' : react['react_id'],
+                            'u_ids' : react['u_ids'],
+                            'is_this_user_reacted' : False
+                        }
+                    react_list.append(react_dict)
+                message_dict = {
+                    'message_id': message['message_id'],
+                    'u_id': message['u_id'],
+                    'message': message['message'],
+                    'time_created': message['time_created'],
+                    'reacts' : react_list,
+                    'is_pinned' : message['is_pinned']
+                    }
+                result.append(message_dict) 
 
     return {'messages' : result}
 

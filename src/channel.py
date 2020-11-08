@@ -44,9 +44,9 @@ def channel_invite(token, channel_id, u_id):
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError (description="User is not authorised to invite to this channel.")
     
-    # print message when user with u_id 'u_id' is already part of the channel 
+    # raise inputerror when user with u_id 'u_id' is already part of the channel 
     if u_id in channel[channel_id]['all_members']:
-        return {}
+        raise InputError (description="User already a part of this channel")
     
     # add member with u_id as a member of the channel
     channel[channel_id]['all_members'][u_id] = True

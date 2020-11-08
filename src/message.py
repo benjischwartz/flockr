@@ -302,7 +302,58 @@ def message_react(token, message_id, react_id):
     return {}
 
 def message_unreact(token, message_id, react_id):
-    pass
+    
+    # raise accesserror if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
+    
+    # raise inputerror if the message_id is invalid and find the channel and
+    # indexation of the message with id 'message_id'
+    message_valid = False
+    for a_channel in channel:
+        message_index = 0
+        for a_message in channel[a_channel]['messages']:
+            if a_message['message_id'] == message_id:
+               message_channel = a_channel
+               message_valid = True
+               break
+            message_index += 1
+        if message_valid == True:
+            break
+    if message_valid == False:
+        raise InputError(description="The message id is not valid.")
+        
+    # raise accesserror if user with token 'token' is not part of the channel
+    # that the message is part of 
+    if token_u_id not in channel[message_channel]['all_members']:
+        raise InputError (description="User is not part of the channel with this message.")
+    
+    if react_id != 1:
+        raise InputError (description="React is invalid")
+        
+    if channel[message_channel]['messages'][message_index]['reacts'] == []:
+        raise InputError(description="There are no reacts to this message to unreact.")
+    if not any(token_u_id in d['u_ids'] and react_id == d['react_id'] for d in channel[message_channel]['messages'][message_index]['reacts']):
+        raise InputError(description="User has not reacted to with to this message with this react yet. You must react first to unreact.")
+    else:
+        react_index = 0
+        for react_dict in channel[message_channel]['messages'][message_index]['reacts']:
+            if react_dict['react_id'] == react_id:
+                u_id_index = 0
+                for a_u_id in react_dict['u_ids']:
+                    if token_u_id == a_u_id:
+                        break
+                    u_id_index += 1
+                break
+            react_index += 1
+        if len(channel[message_channel]['messages'][message_index]['reacts'][react_index]['u_ids']) == 1:
+            channel[message_channel]['messages'][message_index]['reacts'].pop(react_index)
+        else:
+            channel[message_channel]['messages'][message_index]['reacts'][react_index]['u_ids'].pop(u_id_index)
+    
+    return {}
 
 def message_pin(token, message_id):
     pass
