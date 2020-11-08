@@ -158,11 +158,32 @@ def user_profile_sethandle(token, handle_str):
     }
 
 def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
+    '''
+    The function allows a user to upload a photo given a URL on the Internet and then crops
+    the image to the specified dimensions. It then stores the image with a unique ID in the
+    imgurl folder.
+
+    Parameters:
+        token (str): refers to a valid user on flockr who is calling this function
+        img_url (str): URL on the Internet of the image to be uploaded
+        x_start (int): pixels from the left to start cropping
+        y_start (int): pixels from the top to start cropping
+        x_end (int): pixels from the left to end cropping
+        y_end (int): pixels from the top to end cropping
+
+    Returns:
+        (dict): {
+
+        }
+    '''
+
+    # Check if the token is valid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
         raise AccessError(description="Token passed is not valid. If you recently reset your "
             "email you will need to logout and login again using your updated email.")
 
+    # Check if the URL is valid
     try:
         r = requests.head(img_url)
         img_url_status_code = r.status_code
@@ -171,15 +192,13 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
         
     except requests.ConnectionError:
         raise InputError(description="URL Invalid")
-
+    
+    # Check if the image is in the JPG file format
     file_extension = (os.path.splitext(img_url))[1]
     if (file_extension != '.jpg'): 
         raise InputError(description="Not a JPG image")
     
-    if (x_start < 0 or y_start < 0):
-        raise InputError(description="Cropping bounds are not within the dimensions of the image")
-    
-    #tail = (os.path.split(img_url))[1]
+    # Save image in the "imgurl" folder
     randomised_filename = str(uuid.uuid4()) + ".jpg"
     try:
         save_url = "src/imgurl/" + randomised_filename
@@ -189,20 +208,26 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
         urllib.request.urlretrieve(img_url, save_url)
     img = Image.open(save_url)
 
-    email = email_given_jwt(token)
-    users[email]['profile_img_url'] = save_url
+    # Check if the image is within the bounds
+    if (x_start < 0 or y_start < 0):
+        os.remove(save_url)
+        raise InputError(description="Cropping bounds are not within the dimensions of the image")
 
     # Checking Width
     if (x_start > img.size[0]):
         os.remove(save_url)
         raise InputError(description="Cropping bounds are not within the dimensions of the image")
     
-
     # Checking Height
     if (y_start > img.size[1]):
         os.remove(save_url)
         raise InputError(description="Cropping bounds are not within the dimensions of the image")
+
+    # Save URL in the user profile details
+    email = email_given_jwt(token)
+    users[email]['profile_img_url'] = save_url
     
+    # Cropping Image to Given Dimensions
     cropped = img.crop((x_start,y_start, x_end, y_end))
     cropped.save(save_url)
 
