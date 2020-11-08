@@ -691,13 +691,15 @@ def test_server_user_profile(url):
     u_id = user_one["u_id"]
     user_one_profile = requests.get(f"{url}/user/profile?token={token}&u_id={u_id}")
     user_one_profile = user_one_profile.json()
-    assert user_one_profile == {
-        "u_id" : 1,
-        "name_first" : "First",
-        "name_last" : "Bloggs",
-        "handle" : "firstbloggs",
-        "email" : "first@person.com",
-        "profile_img_url" : ''
+    assert user_one_profile == { "user" : 
+        {
+            "u_id" : 1,
+            "name_first" : "First",
+            "name_last" : "Bloggs",
+            "handle_str" : "firstbloggs",
+            "email" : "first@person.com",
+            "profile_img_url" : ''
+        }
     }
 
 def test_server_user_profile_setname(url):
@@ -723,14 +725,16 @@ def test_server_user_profile_setname(url):
         "token": user_one["token"],
         "u_id": 1
     })
-    assert(user_one_profile.json() == {
-        "u_id": 1,
-        "email": "first@person.com",
-        "name_first": "New First",
-        "name_last": "New Last",
-        "handle": "firstbloggs",
-        "profile_img_url" : ''
-    })
+    assert user_one_profile.json() == { "user" : 
+        {
+            "u_id": 1,
+            "email": "first@person.com",
+            "name_first": "New First",
+            "name_last": "New Last",
+            "handle_str": "firstbloggs",
+            "profile_img_url" : ''
+        }
+    }
 
 
 def test_server_user_profile_setemail(url):
@@ -750,7 +754,7 @@ def test_server_user_profile_setemail(url):
         "token" : user_one["token"],
         "email": "newemail@person.com"
     })
-    assert(email_change.json() == {})
+    assert email_change.json() == {}
 
     user_one = requests.post(f"{url}/auth/login", json={
         "email" : "newemail@person.com",
@@ -762,14 +766,16 @@ def test_server_user_profile_setemail(url):
         "token": user_one["token"],
         "u_id": 1
     })
-    assert(user_one_profile.json() == {
-        "u_id": 1,
-        "email": "newemail@person.com",
-        "name_first": "First",
-        "name_last": "Bloggs",
-        "handle": "firstbloggs",
-        "profile_img_url" : ''
-    })
+    assert user_one_profile.json() == { 'user' : 
+        {
+            "u_id": 1,
+            "email": "newemail@person.com",
+            "name_first": "First",
+            "name_last": "Bloggs",
+            "handle_str": "firstbloggs",
+            "profile_img_url" : ''
+        }
+    }
 
 def test_user_profile_sethandle(url):
     """
@@ -787,49 +793,21 @@ def test_user_profile_sethandle(url):
         "token" : user_one["token"],
         "handle": "newfirst"
     })
-    assert(new_handle.json() == {})
+    assert new_handle.json() == {}
     user_one_profile = requests.get(f"{url}/user/profile", params={
         "token": user_one["token"],
         "u_id": 1
     })
-    assert(user_one_profile.json() == {
-        "u_id": 1,
-        "name_first": "First",
-        "name_last": "Bloggs",
-        "handle": "newfirst",
-        "email": "first@person.com",
-        "profile_img_url" : ''
-    })
-
-def test_user_profile_uploadphoto(url):
-    '''
-    Uploading photo as user profile.
-    '''
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    user_one = user_one.json()
-    uploading_photo = requests.post(f"{url}/user/profile/uploadphoto", json={
-        "token": user_one["token"],
-        "img_url": "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg",
-        "x_start": 0,
-        "y_start": 0,
-        "x_end": 30,
-        "y_end": 40
-    })
-    assert(uploading_photo.json() == {})
-
-    user_one_profile = requests.get(f"{url}/user/profile", params={
-        "token": user_one["token"],
-        "u_id": 1
-    })
-    user_one_profile = user_one_profile.json()
-    user_profile_img_url = user_one_profile['profile_img_url']
-    requests.get(f"{url}/imgurl/{user_profile_img_url}")
-
+    assert user_one_profile.json() == { "user" : 
+        {
+            "u_id": 1,
+            "name_first": "First",
+            "name_last": "Bloggs",
+            "handle_str": "newfirst",
+            "email": "first@person.com",
+            "profile_img_url" : ''
+        }
+    }
    
 def test_users_all(url):
     """
@@ -847,16 +825,16 @@ def test_users_all(url):
     token = user_one["token"]
     users_list = requests.get(f"{url}/users/all?token={token}")
     users_list = users_list.json()
-    assert users_list == [
-        {
-            "handle": "firstbloggs",
+    assert users_list == {"users" : 
+        [{
+            "handle_str": "firstbloggs",
             "u_id" : 1,
             "name_first" : "First",
             "name_last" : "Bloggs",
             "email" : "first@person.com",
             "profile_img_url" : ''
-        }
-    ]
+        }]
+    }
 
 def test_admin_permissions_change(url):
     """
@@ -915,10 +893,9 @@ def test_search_single_message(url):
 
     search_result = requests.get(f"{url}/search?token={token}&query_str={query_str}")
     search_result = search_result.json()
-    assert len(search_result) == 1
-    assert search_result[0]['message_id'] == 1
-    assert search_result[0]['u_id'] == 1
-    assert search_result[0]['message'] == "Hello World"
+    assert search_result['messages'][0]['message_id'] == 1
+    assert search_result['messages'][0]['u_id'] == 1
+    assert search_result['messages'][0]['message'] == "Hello World"
     
 def test_clear(url):
     user_one = requests.post(f"{url}/auth/register", json={
@@ -959,16 +936,16 @@ def test_clear(url):
     r = requests.get(f"{url}/users/all?token={token}")
 
     r = r.json()
-    assert r == [
-        {
-            "handle" : "marybrown",
+    assert r == { "users" : 
+        [{
+            "handle_str" : "marybrown",
             "u_id" : 1,
             "name_first" : "Mary",
             "name_last" : "Brown",
             "email" : "second@person.com",
             "profile_img_url" : ''
-        }
-    ]
+        }]
+    }
 
     list_all_first =  requests.get(f"{url}/channels/listall", params={
         "token":user_two["token"]
