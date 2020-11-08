@@ -40,7 +40,7 @@ def users_all(token):
             'name_first': data['name_first'],
             'name_last': data['name_last'],
             'handle_str': data['handle'],
-            #'profile_img_url': ''
+            'profile_img_url': data['profile_img_url']
         }
         final_list.append(user)
 
