@@ -696,7 +696,8 @@ def test_server_user_profile(url):
         "name_first" : "First",
         "name_last" : "Bloggs",
         "handle" : "firstbloggs",
-        "email" : "first@person.com"
+        "email" : "first@person.com",
+        "profile_img_url" : ''
     }
 
 def test_server_user_profile_setname(url):
@@ -727,7 +728,8 @@ def test_server_user_profile_setname(url):
         "email": "first@person.com",
         "name_first": "New First",
         "name_last": "New Last",
-        "handle": "firstbloggs"
+        "handle": "firstbloggs",
+        "profile_img_url" : ''
     })
 
 
@@ -765,7 +767,8 @@ def test_server_user_profile_setemail(url):
         "email": "newemail@person.com",
         "name_first": "First",
         "name_last": "Bloggs",
-        "handle": "firstbloggs"
+        "handle": "firstbloggs",
+        "profile_img_url" : ''
     })
 
 def test_user_profile_sethandle(url):
@@ -794,7 +797,8 @@ def test_user_profile_sethandle(url):
         "name_first": "First",
         "name_last": "Bloggs",
         "handle": "newfirst",
-        "email": "first@person.com"
+        "email": "first@person.com",
+        "profile_img_url" : ''
     })
 
 def test_user_profile_uploadphoto(url):
@@ -817,6 +821,14 @@ def test_user_profile_uploadphoto(url):
         "y_end": 40
     })
     assert(uploading_photo.json() == {})
+
+    user_one_profile = requests.get(f"{url}/user/profile", params={
+        "token": user_one["token"],
+        "u_id": 1
+    })
+    user_one_profile = user_one_profile.json()
+    user_profile_img_url = user_one_profile['profile_img_url']
+    requests.get(f"{url}/imgurl/{user_profile_img_url}")
 
    
 def test_users_all(url):
@@ -841,7 +853,8 @@ def test_users_all(url):
             "u_id" : 1,
             "name_first" : "First",
             "name_last" : "Bloggs",
-            "email" : "first@person.com"
+            "email" : "first@person.com",
+            "profile_img_url" : ''
         }
     ]
 
@@ -952,7 +965,8 @@ def test_clear(url):
             "u_id" : 1,
             "name_first" : "Mary",
             "name_last" : "Brown",
-            "email" : "second@person.com"
+            "email" : "second@person.com",
+            "profile_img_url" : ''
         }
     ]
 

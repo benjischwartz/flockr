@@ -83,7 +83,8 @@ def test_user_setemail_positive_case():
         "email": "newemail@gmail.com",
         "name_first": "First",
         "name_last": "User",
-        "handle": "firstuser"
+        "handle": "firstuser",
+        'profile_img_url': ''
     })
 
 def test_user_setemail_already_used():
@@ -140,6 +141,7 @@ def test_user_profile_positive_case():
         'name_last' : 'User',
         'handle' : '12345',
         'email' : 'seconduser@gmail.com',
+        'profile_img_url': ''
     })
 
 def test_user_profile_uid_not_valid():

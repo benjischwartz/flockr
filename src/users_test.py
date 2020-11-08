@@ -18,14 +18,16 @@ def test_users_all_positive_test():
         'name_first' : 'First',
         'name_last' : 'User',
         'handle' : '12345',
-        'email' : 'firstuser@gmail.com' 
+        'email' : 'firstuser@gmail.com',
+        'profile_img_url': ''
     },
     {
         'u_id' : userTwo['u_id'],
         'name_first' : 'Second',
         'name_last' : 'User',
         'handle' : '123456',
-        'email' : 'seconduser@gmail.com'
+        'email' : 'seconduser@gmail.com',
+        'profile_img_url': ''
     }
     ])
 
