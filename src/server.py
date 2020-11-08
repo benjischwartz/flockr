@@ -281,13 +281,13 @@ def user_profile_sethandle():
     return dumps(user.user_profile_sethandle(payload["token"], payload["handle"]))
 
 @APP.route("/user/profile/uploadphoto/", methods=['POST'])
-def user_profile_uploadphoto():
+def user_profile_uploadphoto(url):
     '''
     enables the user to upload a photo as their profile picture
     return {}
     '''
     payload = request.get_json()
-    return dumps(user.user_profile_uploadphoto(payload["token"], payload["img_url"], payload["x_start"], payload["y_start"], payload["x_end"], payload["y_end"]))
+    return dumps(user.user_profile_uploadphoto(payload["token"], payload["img_url"], url, payload["x_start"], payload["y_start"], payload["x_end"], payload["y_end"]))
 
 @APP.route("/imgurl/<path:path>")
 def static_returning_images(path):

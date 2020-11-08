@@ -225,7 +225,7 @@ def user_profile_uploadphoto_positive_case():
     x_end = 400
     y_end = 300
 
-    response = user_profile_uploadphoto(userOne['token'], img_url, x_start, y_start, x_end, y_end)
+    response = user_profile_uploadphoto(userOne['token'], img_url, "", x_start, y_start, x_end, y_end)
     assert(response == {})
 
     userprofile = user_profile(userOne['token'], userOne['u_id'])
@@ -245,7 +245,7 @@ def user_profile_uploadphoto_invalid_url():
     x_end = 200
     y_end = 100
     with pytest.raises(InputError):
-        user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
 
 def user_profile_uploadphoto_not_jpg():
     ''' Uploading a photo which is not of a .jpg format and ensuring it returns an InputError'''
@@ -257,7 +257,7 @@ def user_profile_uploadphoto_not_jpg():
     x_end = 200
     y_end = 100
     with pytest.raises(InputError):
-        user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
 
 def user_profile_uploadphoto_not_dimensions():
     '''Ensuring that cropping an image with larger dimensions returns an InputError. '''
@@ -269,7 +269,7 @@ def user_profile_uploadphoto_not_dimensions():
     x_end = 1000
     y_end = 3000
     with pytest.raises(InputError):
-        user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
 
 def user_profile_uploadphoto_negative_directions():
     '''Ensuring that cropping an image with negative dimensions to start returns an InputError'''
@@ -281,5 +281,5 @@ def user_profile_uploadphoto_negative_directions():
     x_end = 200
     y_end = 300
     with pytest.raises(InputError):
-        user_profile_uploadphoto(firstUser['token'], img_url, x_start, y_start, x_end, y_end)
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
 

@@ -167,6 +167,7 @@ def user_profile_uploadphoto(token, img_url, server_url, x_start, y_start, x_end
     Parameters:
         token (str): refers to a valid user on flockr who is calling this function
         img_url (str): URL on the Internet of the image to be uploaded
+        server_url (str): URL of the server
         x_start (int): pixels from the left to start cropping
         y_start (int): pixels from the top to start cropping
         x_end (int): pixels from the left to end cropping
