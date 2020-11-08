@@ -158,7 +158,7 @@ def user_profile_sethandle(token, handle_str):
     return {
     }
 
-def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
+def user_profile_uploadphoto(token, img_url, server_url, x_start, y_start, x_end, y_end):
     '''
     The function allows a user to upload a photo given a URL on the Internet and then crops
     the image to the specified dimensions. It then stores the image with a unique ID in the
@@ -226,7 +226,7 @@ def user_profile_uploadphoto(token, img_url, x_start, y_start, x_end, y_end):
 
     # Save URL in the user profile details
     email = email_given_jwt(token)
-    users[email]['profile_img_url'] = save_url
+    users[email]['profile_img_url'] = server_url + "/imgurl/" + randomised_filename
     
     # Cropping Image to Given Dimensions
     cropped = img.crop((x_start,y_start, x_end, y_end))
