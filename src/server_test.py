@@ -808,7 +808,41 @@ def test_user_profile_sethandle(url):
             "profile_img_url" : ''
         }
     }
-   
+
+def test_user_profile_uploadphoto(url):
+    """
+    testing a positive case for user_profile_sethandle
+    """ 
+    
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+
+    result = requests.post(f"{url}/user/profile/uploadphoto", json={
+        "token" : user_one['token'],
+        "img_url" : "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg",
+        "x_start" : 0,
+        "y_start" : 0,
+        "x_end" : 400,
+        "y_end" : 300
+    })
+    assert(result.json() == {})
+    
+    user_one_profile = requests.get(f"{url}/user/profile", params={
+        "token": user_one["token"],
+        "u_id": 1
+    })
+    
+    user_one_profile = user_one_profile.json()
+    profile_img_url = user_one_profile['user']['profile_img_url']
+    image = requests.get(profile_img_url)
+    
+    assert(image.status_code == 200)
+
 def test_users_all(url):
     """
     testing a positive case for users_all
