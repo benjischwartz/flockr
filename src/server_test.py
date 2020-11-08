@@ -7,6 +7,7 @@ import requests
 import urllib
 from other import clear
 from check_token import jwt_given_email
+
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():
@@ -697,7 +698,7 @@ def test_server_message_sendlater(url):
         "token" : user_one["token"],
         "channel_id" : 1,
         "message" : "Hello",
-        "time" : time() + 3600
+        "time_sent" : time() + 3600
     })
     message_one = message_one.json()
     assert message_one == {'message_id' : 1}
