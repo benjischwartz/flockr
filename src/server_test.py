@@ -8,7 +8,8 @@ import urllib
 from other import clear
 from check_token import jwt_given_email
 from flask_mail import Mail, Message
-import check_reset_code
+from check_reset_code import code_given_email, email_given_code
+import data
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():
@@ -125,28 +126,39 @@ def test_server_auth_logout_login(url):
     assert user_one_login == {'u_id' : 1 , 'token' : user_one_login_token}
 
 def test_server_auth_passwordreset_request_reset(url):
-    MAIL_SUPPRESS_SEND = False
     user_one_register = requests.post(f"{url}/auth/register", json={
-        "email" : "benji.schwartz2013@gmail.com",   # has to be a valid email
+        "email" : "flockrrecipient@gmail.com",   # has to be a valid email
         "password" : "catdog",
-        "name_first" : "Benji",
-        "name_last" : "Schwartz"})
-    register_result = requests.post(f"{url}/auth/passwordreset/request", json={
-        "email" : "benji.schwartz2013@gmail.com"
+        "name_first" : "Flockr",
+        "name_last" : "Example"})
+    request_result = requests.post(f"{url}/auth/passwordreset/request", json={
+        "email" : "flockrrecipient@gmail.com"
     })
-    r = requests.post(f"{url}/auth/passwordreset/reset", json={
-        "code" : check_reset_code.code_given_email("benji.schwartz2013@gmail.com"),
-        "new_password" : "newpassword123"})
-    assert r.json == {}
-    new_password = check_reset_code.password_given_email("benji.schwartz2013@gmail.com")
-    assert new_password == "newpassword123"     # password successfully changed
+    assert request_result.json() == {}
 
-    # assert register_result == {}
-    # TODO: figure out a way to test this function without 
-    # using passwordreset_rest function. 
-    # ideas: 
-    #   - check the number of outgoing emails sent?
-    #   - check the `200` return value indicating success?
+    # THIS RETURNS `-1`
+    print(code_given_email("flockrrecipient@gmail.com"))
+
+    r = requests.post(f"{url}/auth/passwordreset/reset", json={
+        "code" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImZsb2NrcnJlY2lwaWVudEBnbWFpbC5jb20ifQ.cj110NVzUXWDdWSca4HWefPDs1zFK82ceP_F7kygVL0",
+        "new_password" : "newpassword123"})
+    assert r.json() == {}
+
+    # testing successful login
+    assert(requests.post(f"{url}/auth/login", json= {
+        "email" : "flockrrecipient@gmail.com",
+        "password" : "newpassword123"
+    }))
+
+    # new_password = check_reset_code.password_given_email("benji.schwartz2013@gmail.com")
+    # assert new_password == "newpassword123"     # password successfully changed
+
+#     # assert register_result == {}
+#     # TODO: figure out a way to test this function without 
+#     # using passwordreset_rest function. 
+#     # ideas: 
+#     #   - check the number of outgoing emails sent?
+#     #   - check the `200` return value indicating success?
 
  
 def test_server_channel_invite(url):    

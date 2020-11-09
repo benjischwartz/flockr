@@ -173,9 +173,14 @@ def auth_passwordreset_request(email):
     """
     # create a hashed code with jwt.encode(), using the user's email as the payload, 
     # and 'reset' as the secret
-    code = jwt.encode({'email': email}, 'reset').decode('utf-8')
-    codes[email] = code
-    return {}
+    for emails in users.keys():
+        if email == emails:
+            code = jwt.encode({'email': email}, 'reset').decode('utf-8')
+            codes[email] = code
+            return {}
+    raise InputError (description="Supplied email not valid")
+
+
 
 def auth_passwordreset_reset(code, new_password):
     """
@@ -185,11 +190,14 @@ def auth_passwordreset_reset(code, new_password):
     if email is not None:
         # raise an InputError if password is not at least 6 letters, 
         # or if new password is the same as old password
-        if len(new_password) < 6 or new_password == users[email]['password']:
+        if len(new_password) < 6:
             raise InputError(description="Password too short")
 
+        elif sha256_crypt.verify(new_password, users[email]['password']):
+            raise InputError(description="New password same as old password")
+
         # reset password
-        users[email]['password'] = new_password
+        users[email]['password'] = sha256_crypt.hash(new_password)
 
         # remove code from codes dictionary
         del codes[email]

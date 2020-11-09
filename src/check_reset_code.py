@@ -17,5 +17,6 @@ def email_given_code(code):
 def password_given_email(email):
     for emails in users.keys():
         if email == emails:
-            return users[email]['password']
+            return users[email]['password']            
+    # no password found for the given email
     return None
