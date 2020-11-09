@@ -144,7 +144,7 @@ def test_get_handle_long_name():
 
 def test_passwordreset_request():
     clear()
-    result = auth_register('flockrrecipient@gmail.com', '123abc!@#', 'Example', 'Recipient')
+    auth_register('flockrrecipient@gmail.com', '123abc!@#', 'Example', 'Recipient')
     request_result = auth_passwordreset_request('flockrrecipient@gmail.com')
     assert request_result == {}
     assert code_given_email('flockrrecipient@gmail.com') is not None     # there exists a valid reset code in the code dictionary
@@ -166,7 +166,7 @@ def test_passwordreset_reset_invalid_code():
     
 def test_passwordreset_invalid_newpassword():
     clear()
-    result = auth_register('johndoe@gmail.com', '123abc!@#', 'John', 'Doe')
+    auth_register('johndoe@gmail.com', '123abc!@#', 'John', 'Doe')
     auth_passwordreset_request('johndoe@gmail.com')
     with pytest.raises(InputError):
         auth_passwordreset_reset(code_given_email('johndoe@gmail.com'), 'short')   # expect fail since password too short
