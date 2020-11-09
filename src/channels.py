@@ -1,7 +1,7 @@
 from data import channel, users, tokens
 from error import InputError, AccessError
 from check_token import user_id_given_token
-
+from time import time
 
 
 def channels_list(token):
@@ -135,8 +135,11 @@ def channels_create(token, name, is_public):
             'all_members' : {
                 user_id_given_token(token) : True
             },
-            'messages' : []
-            
+            'messages' : [],
+            'standup' : False,
+            'time_finish' : time(),
+            'standuptime' : time(),
+            'standuplist' : []
         }
     
     return {

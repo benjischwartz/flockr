@@ -39,7 +39,10 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #           'u_id': 1,
     #           'message': 'Hello again',
     #           'time_created': 1582426799,
-    #       }
+    #       },
+    #       'standup' : True,
+    #       'standuptime' : 1582426799,
+    #       'standuplist' : 
     #     ]
     # }
 }
