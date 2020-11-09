@@ -131,7 +131,7 @@ def test_server_auth_passwordreset_request_reset(url):
     auth_passwordreset_reset
     '''
 
-    user_one_register = requests.post(f"{url}/auth/register", json={
+    requests.post(f"{url}/auth/register", json={
         "email" : "flockrrecipient@gmail.com",   # has to be a valid email
         "password" : "catdog",
         "name_first" : "Flockr",
