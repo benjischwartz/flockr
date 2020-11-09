@@ -82,6 +82,11 @@ def auth_login():
 
 @APP.route("/auth/passwordreset/request", methods=['POST'])
 def auth_passwordreset_request():
+    """
+    requesting a password reset for a valid email
+    Sends an email containing the reset code to the supplied email address.
+    returns {} if successful, otherwise InputError.
+    """
     payload = request.get_json()
     result = auth.auth_passwordreset_request(payload["email"])
     code = check_reset_code.code_given_email(payload["email"])
@@ -99,6 +104,11 @@ def auth_passwordreset_request():
 
 @APP.route("/auth/passwordreset/reset", methods=['POST'])
 def auth_passwordreset_reset():
+    """
+    Given a reset code for a user, set that user's new password to the password provided.
+    If code provided is invalid or user's new password is unsuitable, raise InputError.
+    returns {}
+    """
     payload = request.get_json()
     return dumps(auth.auth_passwordreset_reset(payload["code"], payload["new_password"]))
 

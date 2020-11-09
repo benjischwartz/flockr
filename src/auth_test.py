@@ -4,8 +4,7 @@ import pytest
 from error import InputError
 from other import clear
 from check_token import get_handle, jwt_given_email
-from check_reset_code import code_given_email, password_given_email
-import data     # TODO: REMOVE THIS
+from check_reset_code import code_given_email, email_given_code
 
 # checking the successful registration of a user
 # checking the successful login of a user
@@ -145,25 +144,25 @@ def test_get_handle_long_name():
 
 def test_passwordreset_request():
     clear()
-    assert len(data.codes) == 0  # codes initially empty
     result = auth_register('flockrrecipient@gmail.com', '123abc!@#', 'Example', 'Recipient')
     request_result = auth_passwordreset_request('flockrrecipient@gmail.com')
     assert request_result == {}
-    assert len(data.codes) == 1  # new code added
     assert code_given_email('flockrrecipient@gmail.com') is not None     # there exists a valid reset code in the code dictionary
 
 def test_passwordreset_reset():
     # continuation from previous test
     reset_result = auth_passwordreset_reset(code_given_email('flockrrecipient@gmail.com'), 'newpassword123')
     assert reset_result == {}
-    assert len(data.codes) == 0  # password reset, code removed
-    assert auth_login('flockrrecipient@gmail.com', 'newpassword123')    # successfully reset password
+    assert auth_login('flockrrecipient@gmail.com', 'newpassword123')    # successfully login with new password
+
+    auth_logout(jwt_given_email('flockrrecipient@gmail.com'))           # user logs out
+    with pytest.raises(InputError):
+        auth_login('flockrreceipient@gmail.com', '123abc!@#')           # user fails to log in with old password
     
 def test_passwordreset_reset_invalid_code():
     # continuation from previous tests
     with pytest.raises(InputError):
         auth_passwordreset_reset('invalidcode', 'newpassword456')           # expect fail since invalid code given
-    assert auth_login('flockrrecipient@gmail.com', 'newpassword123')        # password unchanged
     
 def test_passwordreset_invalid_newpassword():
     clear()
@@ -176,19 +175,15 @@ def test_twousers_reset():
     """
     Two users request a password reset. First user successfully enters code
     and their password is changed. Second user successfully enters a code with
-    their previous email and reset fails. 
+    their previous password and reset fails. 
     """
     clear()
-    assert len(data.codes) == 0
-    auth_register('johndoe@gmail.com', '123abc!@#', 'John', 'Doe')
-    auth_register('flockrrecipient@gmail.com', '123abc!@#', 'Example', 'Recipient')
-    auth_passwordreset_request('johndoe@gmail.com')
+    auth_register('johndoe@gmail.com', '123abc!@#', 'John', 'Doe')      # users register
+    auth_register('flockrrecipient@gmail.com', '123abc!@#', 'Example', 'Recipient') 
+
+    auth_passwordreset_request('johndoe@gmail.com')                     # both users request password reset
     auth_passwordreset_request('flockrrecipient@gmail.com')    
-    assert len(data.codes) == 2
 
-    auth_passwordreset_reset(code_given_email('johndoe@gmail.com'), 'new_password')
-    assert len(data.codes) == 1
-
+    auth_passwordreset_reset(code_given_email('johndoe@gmail.com'), 'new_password')     # first user successfully resets with new password
     with pytest.raises(InputError):
-        auth_passwordreset_reset(code_given_email('flockrrecipient@gmail.com'), '123abc!@#')
-    assert len(data.codes) == 1
+        auth_passwordreset_reset(code_given_email('flockrrecipient@gmail.com'), '123abc!@#') # second user fails with old password

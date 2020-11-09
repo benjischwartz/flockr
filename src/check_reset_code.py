@@ -1,22 +1,19 @@
 from data import users, codes
+import jwt
 
 def code_given_email(email):
-    for emails in codes.keys():
-        if email == emails:
-            return codes[email]
-    # no code found for the given email
-    return None
+    """
+    returns a valid reset code for a supplied email
+    """
+    return jwt.encode({'email': email}, 'reset').decode('utf-8')
 
 def email_given_code(code):
-    for emails in codes.keys():
-        if codes[emails] == code:
-            return emails
-    # no email found for the given code
-    return None
-
-def password_given_email(email):
-    for emails in users.keys():
-        if email == emails:
-            return users[email]['password']            
-    # no password found for the given email
-    return None
+    """
+    returns the email of a valid code
+    otherwise returns None
+    """
+    try:
+        decoded_jwt = jwt.decode(code, 'reset', algorithms='HS256')
+        return decoded_jwt['email']
+    except Exception:
+        return None

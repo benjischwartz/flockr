@@ -126,6 +126,11 @@ def test_server_auth_logout_login(url):
     assert user_one_login == {'u_id' : 1 , 'token' : user_one_login_token}
 
 def test_server_auth_passwordreset_request_reset(url):
+    '''
+    test a positive case for auth_passwordreset_request and
+    auth_passwordreset_reset
+    '''
+
     user_one_register = requests.post(f"{url}/auth/register", json={
         "email" : "flockrrecipient@gmail.com",   # has to be a valid email
         "password" : "catdog",
@@ -136,11 +141,8 @@ def test_server_auth_passwordreset_request_reset(url):
     })
     assert request_result.json() == {}
 
-    # THIS RETURNS `-1`
-    print(code_given_email("flockrrecipient@gmail.com"))
-
     r = requests.post(f"{url}/auth/passwordreset/reset", json={
-        "code" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImZsb2NrcnJlY2lwaWVudEBnbWFpbC5jb20ifQ.cj110NVzUXWDdWSca4HWefPDs1zFK82ceP_F7kygVL0",
+        "code" : code_given_email("flockrrecipient@gmail.com"),
         "new_password" : "newpassword123"})
     assert r.json() == {}
 
@@ -150,15 +152,7 @@ def test_server_auth_passwordreset_request_reset(url):
         "password" : "newpassword123"
     }))
 
-    # new_password = check_reset_code.password_given_email("benji.schwartz2013@gmail.com")
-    # assert new_password == "newpassword123"     # password successfully changed
-
-#     # assert register_result == {}
-#     # TODO: figure out a way to test this function without 
-#     # using passwordreset_rest function. 
-#     # ideas: 
-#     #   - check the number of outgoing emails sent?
-#     #   - check the `200` return value indicating success?
+    #TODO: test that there is an outgoing email.
 
  
 def test_server_channel_invite(url):    
