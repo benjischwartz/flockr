@@ -224,7 +224,7 @@ def message_sendlater(token, channel_id, message, time_sent):
         'message_id' : message_id,
         'u_id': token_u_id,
         'message' : message,
-        'time_created' : time(),
+        'time_created' : time_sent,
         'reacts' : [],
         'is_pinned' : False
     }
