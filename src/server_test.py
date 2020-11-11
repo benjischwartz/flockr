@@ -142,7 +142,7 @@ def test_server_auth_passwordreset_request_reset(url):
     assert request_result.json() == {}
 
     r = requests.post(f"{url}/auth/passwordreset/reset", json={
-        "code" : code_given_email("flockrrecipient@gmail.com"),
+        "reset_code" : code_given_email("flockrrecipient@gmail.com"),
         "new_password" : "newpassword123"})
     assert r.json() == {}
 

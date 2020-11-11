@@ -182,11 +182,11 @@ def auth_passwordreset_request(email):
 
 
 
-def auth_passwordreset_reset(code, new_password):
+def auth_passwordreset_reset(reset_code, new_password):
     """
     Given a reset code for a user, set that user's new password to the password provided.
     """
-    email = email_given_code(code)
+    email = email_given_code(reset_code)
     if email is not None:
         # raise an InputError if password is not at least 6 letters, 
         # or if new password is the same as old password

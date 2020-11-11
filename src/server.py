@@ -110,7 +110,7 @@ def auth_passwordreset_reset():
     returns {}
     """
     payload = request.get_json()
-    return dumps(auth.auth_passwordreset_reset(payload["code"], payload["new_password"]))
+    return dumps(auth.auth_passwordreset_reset(payload["reset_code"], payload["new_password"]))
 
 @APP.route("/channel/invite", methods=['POST'])
 def channel_invite():
