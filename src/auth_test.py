@@ -49,6 +49,16 @@ def test_register_logout_login():
     login_result = auth_login('validemail@gmail.com', '123abc!@#')
     assert type(login_result) is dict
 
+def test_invalid_password_login_attempt():
+    """
+    User registers, logs out and then attempts to login with an invalid password.
+    """
+    clear()
+    result = auth_register('validemail@gmail.com', '123abc!@#', 'Firstname', 'Lastname')
+    auth_logout(result['token'])
+    with pytest.raises(InputError):
+        assert auth_login('validemail@gmail.com', 'wrongpassword')
+
 
 # Checking the registration of users with invalid firstname, lastname, and password
 def test_invalid_email_register():
@@ -104,7 +114,7 @@ def test_logout_invalidate_token():
 def test_invalid_logout():
     clear()
      #expect to return false since token is not valid
-    assert auth_logout('invalidemaillogout@gmail.com') == {'is_success': False}
+    assert auth_logout('invalidtoken') == {'is_success': False}
 
 def test_logout_twice():
     clear()
