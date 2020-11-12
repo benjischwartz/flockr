@@ -8,6 +8,8 @@ import urllib
 from other import clear
 from check_token import jwt_given_email
 from datetime import datetime
+from time import timedelta
+
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():

@@ -16,7 +16,7 @@ def test_standup_start_positive():
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    timer_start = standup_start(user_one['token'], channel_one['channel_id'], 10)
+    standup_start(user_one['token'], channel_one['channel_id'], 10)
 
     assert standup_active(user_one['token'], channel_one['channel_id'])['is_active'] == True
 
