@@ -390,13 +390,22 @@ def message_unreact(token, message_id, react_id):
 #             break
 #     if message_valid == False:
 #         raise InputError(description="The message id is not valid.")
-       
+      
+#     if channel[message_channel]['messages'][message_index]['is_pinned'] == True
+#         raise InputError (description="This message is already pinned.")
+#
 #     # raise accesserror if user with token 'token' is not part of the channel
 #     # that the message is part of 
 #     if token_u_id not in channel[message_channel]['all_members']:
 #         raise InputError (description="User is not part of the channel with this message.")
-
-#     channel[message_channel]['messages']['is_pinned'] == True
+#
+      # token_permission_id = permission_id_given_token(token)
+      # check permissions to pin and if permitted then pin message; if not 
+      # raise an accesserror
+#     if token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
+#        channel[message_channel]['messages'][message_index]['is_pinned'] == True
+#     else:
+#        raise AccessError(description="This user is not authorised to edit this message.")
 
 #     return {}
 
