@@ -57,7 +57,7 @@ def test_invalid_password_login_attempt():
     result = auth_register('validemail@gmail.com', '123abc!@#', 'Firstname', 'Lastname')
     auth_logout(result['token'])
     with pytest.raises(InputError):
-        assert auth_login('validemail@gmail.com', 'wrongpassword')
+        auth_login('validemail@gmail.com', 'wrongpassword')
 
 
 # Checking the registration of users with invalid firstname, lastname, and password
