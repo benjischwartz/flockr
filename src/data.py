@@ -42,7 +42,8 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #       },
     #       'standup' : True,
     #       'standuptime' : 1582426799,
-    #       'standuplist' : 
+    #       'standuplist' : '',
+    
     #     ]
     # }
 }

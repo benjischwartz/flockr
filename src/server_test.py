@@ -7,6 +7,7 @@ import requests
 import urllib
 from other import clear
 from check_token import jwt_given_email
+from datetime import datetime
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():
@@ -884,7 +885,77 @@ def test_search_single_message(url):
     assert search_result[0]['message_id'] == 1
     assert search_result[0]['u_id'] == 1
     assert search_result[0]['message'] == "Hello World"
-    
+
+def test_standup_start(url):
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    time_before = datetime.now()
+    message_one = requests.post(f"{url}/standup/start", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "length" : 10
+    })
+    message_one = message_one.json()
+    now = time_before + timedelta(seconds=10)
+    assert message_one == {
+        'time_finish' : int(now.timestamp())
+    }
+
+def test_standup_active(url):
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+
+    channel_one_messages = requests.get(f"{url}/standup/active", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages == {
+        'is_active' : False,
+        'time_finish' : None
+    }
+
+def test_standup_send(url):
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    message_one = requests.post(f"{url}/standup/send", json={
+        "token" : user_one["token"], 
+        "channel_id" : 1,
+        "message" : "hello"
+    })
+    message_one = message_one.json()
+    assert message_one == {}
+
 def test_clear(url):
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",

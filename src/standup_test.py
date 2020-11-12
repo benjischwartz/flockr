@@ -7,6 +7,18 @@ from channels import channels_create, channels_listall
 from error import InputError, AccessError
 from standup import standup_start, standup_active, standup_send
 from other import clear
+from message import message_send
+
+def test_standup_start_positive():
+    '''
+    A positive test case for standup_start function.
+    '''
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    timer_start = standup_start(user_one['token'], channel_one['channel_id'], 10)
+
+    assert standup_active(user_one['token'], channel_one['channel_id'])['is_active'] == True
 
 def test_standup_start_invalid_channel():
     ''' 
@@ -25,10 +37,10 @@ def test_standup_start_already_running():
     '''
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    channels_create(user_one['token'], 'randChannel', True)
-    standup_start(user_one['token'], 1, 10)
+    channel_one = channels_create(user_one['token'], 'randChannel', True)
+    standup_start(user_one['token'], channel_one['channel_id'], 10)
     with pytest.raises(InputError):
-        standup_start(user_one['token'], 1, 10)
+        standup_start(user_one['token'], channel_one['channel_id'], 10)
 
 def test_standup_start_invalid_token():
     '''
@@ -36,10 +48,10 @@ def test_standup_start_invalid_token():
     '''
     clear()
     user = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
-    userchannel_id = channels_create(user['token'], 'userchannel', True)
+    channel_one = channels_create(user['token'], 'userchannel', True)
     auth_logout(user['token'])
     with pytest.raises(AccessError):
-        standup_start(user['token'], 1, 10)
+        standup_start(user['token'], channel_one['channel_id'], 10)
 
 def test_standup_active_invalid_channel_id():
     '''
@@ -57,10 +69,10 @@ def test_standup_active_invalid_token():
     '''
     clear()
     user_one = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
-    channels_create(user_one['token'], 'userchannel', True)
+    channel_one = channels_create(user_one['token'], 'userchannel', True)
     auth_logout(user_one['token'])
     with pytest.raises(AccessError):
-        standup_active(user_one['token'], 1)
+        standup_active(user_one['token'], channel_one['channel_id'])
 
 def test_standup_send_invalid_channel_id():
     '''
@@ -79,9 +91,9 @@ def test_standup_send_message_too_long():
     '''
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
-    channel_one= channels_create(user_one['token'], 'channel_one', True)
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
     message_long = 'a'*1001
-    standup_start(user_one['token'], 1, 10)
+    standup_start(user_one['token'], channel_one['channel_id'], 10)
     with pytest.raises(InputError):
         standup_send(user_one['token'], channel_one['channel_id'], message_long)
 

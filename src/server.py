@@ -11,6 +11,7 @@ import message
 import search
 import user
 import other
+import standup
 
 def defaultHandler(err):
     response = err.get_response()
@@ -339,7 +340,34 @@ def search_messages():
         return dumps(search.search(token, query))
     else:
         raise  InputError(description="token or qeury string is invalid")
-        
+
+@APP.route("/standup/start", methods=['POST'])
+def standup_start():
+    '''
+    '''
+    token = request.args.get('token')
+    token = token if token is not None else False
+    channel_id = request.args.get('channel_id')
+    length = request.args.get('length')
+    return dumps(standup.standup_start(token, channel_id, length))
+
+@APP.route('/standup/active', methods=['GET'])
+def standup_active():
+    '''
+    '''
+    token = request.args.get('token')
+    channel_id = request.args.get('channel_id')
+    return dumps(standup.standup_active(token, channel_id))
+
+@APP.route('/standup/send', methods=['POST'])
+def standup_send():
+    '''
+    '''
+    token = request.args.get('token')
+    channel_id = request.args.get('channel_id')
+    message = request.args.get('message')
+    return dumps(standup.standup_send(token, channel_id, message))
+
 @APP.route("/clear/", methods=['DELETE'])
 def clear():
     """
