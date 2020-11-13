@@ -3,8 +3,9 @@ from other import clear
 import error
 import pytest
 from channels import channels_create, channels_list
+from channel import channel_join
 from auth import auth_register
-from message import message_send
+from message import message_send, message_react
 
 # test for Access Error and Invalid Token
 def test_access_error():
@@ -41,14 +42,28 @@ def test_pattern_match_unavailable_channel():
 def test_single_channel_multiple_matches():
     clear()
     user_one = auth_register("first@user.com", "password", "Jane", "Applebaum")
+    user_two = auth_register("second@user.com", "password", "Jane", "Applebaum")
     new_channel_one = channels_create(user_one['token'],"channel_one", True)
+    channel_join(user_two['token'], new_channel_one['channel_id'])
     message_send(user_one['token'], new_channel_one['channel_id'], "this is a message")
     message_send(user_one['token'], new_channel_one['channel_id'], "this is another message")
+    message_react(user_one['token'], 1, 1)
     assert len(search(user_one['token'], "is")['messages']) == 2 
     assert search(user_one['token'], "is")['messages'][0]['message_id'] == 1 
     assert search(user_one['token'], "is")['messages'][1]['message_id'] == 2
     assert search(user_one['token'], "is")['messages'][0]['message'] == "this is a message"     
     assert search(user_one['token'], "is")['messages'][1]['message'] == "this is another message"
+    assert search(user_one['token'], "is")['messages'][0]['reacts'] == [{
+        'react_id' : 1,
+        'u_ids': [1],
+        'is_this_user_reacted': True
+    }]
+    assert search(user_two['token'], "is")['messages'][0]['reacts'] == [{
+        'react_id' : 1,
+        'u_ids': [1],
+        'is_this_user_reacted': False
+    }]
+    
 
 # test expecting multiple string matches in different channels: both public
 def test_multiple_channel_multiple_matches():
@@ -63,6 +78,8 @@ def test_multiple_channel_multiple_matches():
     assert search(user_one['token'], "is")['messages'][1]['message_id'] == 2
     assert search(user_one['token'], "is")['messages'][0]['message'] == "this is a message"     
     assert search(user_one['token'], "is")['messages'][1]['message'] == "this is another message"
+    assert search(user_one['token'], "is")['messages'][0]['message'] == "this is a message"     
+
 
 # test no matches with query string not found
 def test_no_matches():
