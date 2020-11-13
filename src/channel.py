@@ -131,7 +131,7 @@ def channel_details(token, channel_id):
                             'profile_img_url': profile_img_url }
         details['all_members'].append(any_member_details)
     
-    data_store()
+    
     return details
 
 
@@ -239,7 +239,6 @@ def channel_messages(token, channel_id, start):
     else:
         all_messages['end'] = start + 50
     
-    data_store()
     return all_messages
 
 def channel_leave(token, channel_id):

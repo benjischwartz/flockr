@@ -54,7 +54,6 @@ def user_profile(token, u_id):
     if user is None:
         raise InputError(description="Invalid ID.")
     
-    data_store()
     return {
         'user': user
     }

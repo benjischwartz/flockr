@@ -64,7 +64,6 @@ def search(token, query_string):
                     }
                 result.append(message_dict) 
 
-    data_store()
     return {'messages' : result}
 
 

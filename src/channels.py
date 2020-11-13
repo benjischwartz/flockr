@@ -39,7 +39,6 @@ def channels_list(token):
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
     
-    data_store()
     # return in format specified
     return returnDict
     #### format for return ####
@@ -83,7 +82,6 @@ def channels_listall(token):
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
 
-    data_store()
     return returnDict
     #### format for return ####
     # return {

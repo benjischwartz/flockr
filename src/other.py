@@ -50,7 +50,6 @@ def users_all(token):
         }
         final_list.append(user)
 
-    data_store()
     # Should return a dictionary, not list
     return {
         'users': final_list
