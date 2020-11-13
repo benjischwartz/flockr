@@ -161,19 +161,22 @@ def test_server_channel_invite(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id" : 2,
                 "name_first" : "Second",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             }
         ]
     }
@@ -205,14 +208,16 @@ def test_server_channel_details(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                "profile_img_url": ""
             }
         ]
     }
@@ -290,12 +295,14 @@ def test_server_channel_join(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2,
                 "name_first": "Second",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ]
         
@@ -341,7 +348,8 @@ def test_server_channel_leave(url):
     assert channel_one_details['all_members'] == [{
                 "u_id": 1,
                 "name_first": "Joe",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }]
         
 
@@ -384,24 +392,28 @@ def test_server_channel_addowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -444,24 +456,28 @@ def test_server_channel_removeowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -483,19 +499,22 @@ def test_server_channel_removeowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
