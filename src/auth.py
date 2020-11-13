@@ -152,7 +152,8 @@ def auth_register(email, password, name_first, name_last):
             'name_last' : name_last,
             'password' : sha256_crypt.hash(password),   # hashed password
             'permission_id' : permission_id, 
-            'handle' : concatenate
+            'handle' : concatenate,
+            'profile_img_url': ''
         }
     
     # validate token

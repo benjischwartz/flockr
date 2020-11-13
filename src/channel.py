@@ -110,9 +110,11 @@ def channel_details(token, channel_id):
             if owner_member == users[user]['u_id']:
                 first_name = users[user]['name_first']
                 last_name = users[user]['name_last']
+                profile_img_url = users[user]['profile_img_url']
         owner_details = {  'u_id' : owner_member, 
                         'name_first' : first_name, 
-                        'name_last' : last_name }
+                        'name_last' : last_name,
+                        'profile_img_url': profile_img_url }
         details['owner_members'].append(owner_details)
     
     # find all members of channel and  their u_id, first name and last name  
@@ -121,9 +123,11 @@ def channel_details(token, channel_id):
             if any_member == users[user]['u_id']:
                 first_name = users[user]['name_first']
                 last_name = users[user]['name_last']
+                profile_img_url = users[user]['profile_img_url']
         any_member_details = { 'u_id' : any_member, 
                             'name_first' : first_name, 
-                            'name_last' : last_name }
+                            'name_last' : last_name,
+                            'profile_img_url': profile_img_url }
         details['all_members'].append(any_member_details)
     
     return details
