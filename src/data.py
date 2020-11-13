@@ -18,6 +18,11 @@ tokens = [
     # 'kdjfakljdflka.skajflkjlkkk.lkjalkfjd'
     ]
 
+# reset password codes temporarily stored in a dictionary
+codes = {
+    # 'email' : 'code'
+}
+
 channel = { # 'channel_id' are the int values themselves, per channel
     # 'channel_id' : {
     #     'channel_name' : " ",
