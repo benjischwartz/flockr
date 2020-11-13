@@ -35,12 +35,10 @@ def test_url(url):
     '''
     assert url.startswith("http")
 
-def test_exception_accesserror(url):
+def test_exception_accesserror_inputerror(url):
     '''
-    test that when an accesserror is raised by a function, the error code of
+    test that when an inputerror and accesserror is raised by a function, the error code of
     the response status is 400
-    this test uses an invalid token passed to channel_details to raise the 
-    accesserror
     '''
     
     user_one = requests.post(f"{url}/auth/register", json={
@@ -49,6 +47,14 @@ def test_exception_accesserror(url):
         "name_first" : "Joe",
         "name_last" : "Bloggs"})
     user_one = user_one.json()
+    channel_details_response = requests.get(f"{url}/channel/details", params={
+        "token" : user_one["token"],
+        "channel_id" : 1
+    })
+    #inputerror; since no channels have been create yet
+    channel_details_response = channel_details_response.json()
+    assert 'code' in channel_details_response
+    assert channel_details_response['code'] == 400
     requests.post(f"{url}/channels/create", json={
         "token" : user_one["token"],
         "name" : "channel_one",
@@ -57,28 +63,7 @@ def test_exception_accesserror(url):
     requests.post(f"{url}/auth/logout", json= {
         "token" : user_one['token']
         })
-    channel_details_response = requests.get(f"{url}/channel/details", params={
-        "token" : user_one["token"],
-        "channel_id" : 1
-    })
-    channel_details_response = channel_details_response.json()
-    assert 'code' in channel_details_response
-    assert channel_details_response['code'] == 400
-
-def test_exception_inputerror(url):
-    '''
-    test that when an inputerror is raised by a function, the error code of
-    the response status is 400
-    this test uses an invalid channel_id passed to channel_details to raise an 
-    inputerror; since no channels have been created, any channel_id is invalid
-    '''
-    
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "Joe",
-        "name_last" : "Bloggs"})
-    user_one = user_one.json()
+    #invalid token because user logged out
     channel_details_response = requests.get(f"{url}/channel/details", params={
         "token" : user_one["token"],
         "channel_id" : 1
@@ -88,23 +73,9 @@ def test_exception_inputerror(url):
     assert channel_details_response['code'] == 400
 
     
-def test_server_auth_register(url):
+def test_server_auth_register_logout_login(url):
     '''
-    test a positive case for auth_register
-    '''
-     
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "Joe",
-        "name_last" : "Bloggs"})
-    user_one = user_one.json()
-    user_one_token = jwt_given_email("first@person.com")
-    assert user_one == {'u_id' : 1 , 'token' : user_one_token}
-    
-def test_server_auth_logout_login(url):
-    '''
-    test a positive case for auth_login and auth_logout
+    test a positive case for auth_register, auth_login and auth_logout
     '''
      
     user_one_register = requests.post(f"{url}/auth/register", json={
@@ -112,6 +83,10 @@ def test_server_auth_logout_login(url):
         "password" : "catdog",
         "name_first" : "Joe",
         "name_last" : "Bloggs"})
+    user_one = user_one_register.json()
+    user_one_token = jwt_given_email("first@person.com")
+    assert user_one == {'u_id' : 1 , 'token' : user_one_token}
+    user_one_token = jwt_given_email("first@person.com")
     user_one_register = user_one_register.json()
     user_one_logout = requests.post(f"{url}/auth/logout", json= {
         "token" : user_one_register['token']})
@@ -150,14 +125,11 @@ def test_server_auth_passwordreset_request_reset(url):
         "password" : "newpassword123"
     }))
 
-    #TODO: test that there is an outgoing email.
-
  
-def test_server_channel_invite(url):    
+def test_server_channel_invite_details(url):    
     '''
-    test a positive case for channel_invite
+    test a positive case for channel_invite and channel_details
     '''
-     
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -208,46 +180,7 @@ def test_server_channel_invite(url):
             }
         ]
     }
-    
-def test_server_channel_details(url):
-    '''
-    test a positive case for channel_details
-    '''
-     
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    user_one = user_one.json()
-    requests.post(f"{url}/channels/create", json={
-        "token" : user_one["token"],
-        "name" : "channel_one",
-        "is_public" : True
-    })
-    channel_one_details = requests.get(f"{url}/channel/details", params={
-        "token" : user_one["token"],
-        "channel_id" : 1
-    })
-    assert channel_one_details.json() == {    
-        "name": "channel_one",
-        "owner_members": [
-            {
-                "u_id": 1,
-                "name_first": "First",
-                "name_last": "Bloggs"
-            }
-        ],
-        "all_members": [
-            {
-                "u_id": 1,
-                "name_first": "First",
-                "name_last": "Bloggs"
-            }
-        ]
-    }
-    
+
 def test_server_channel_messages(url):
     '''
     test a positive case for channel_messages
@@ -283,58 +216,11 @@ def test_server_channel_messages(url):
     assert channel_one_messages["messages"][0]["u_id"] == user_one['u_id']
     assert channel_one_messages["messages"][0]["message"] == 'Hello'
     assert prior_send < channel_one_messages["messages"][0]["time_created"] < after_send
-
-
-def test_server_channel_join(url):
-    '''
-    test a positive case for channel_join
-    '''
-     
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"})
-    user_one = user_one.json()
-    requests.post(f"{url}/channels/create", json = {
-        "token" : user_one["token"],
-        "name" : "channel_one",
-        "is_public" : True
-    })
-    user_two = requests.post(f"{url}/auth/register", json={
-        "email" : "second@person.com",
-        "password" : "catdog",
-        "name_first" : "Second",
-        "name_last" : "Bloggs"})
-    user_two = user_two.json()
-    j = requests.post(f"{url}/channel/join", json = {
-        "token" : user_two["token"],
-        "channel_id" : 1
-    })
-    assert j.json() == {}
-    channel_one_details = requests.get(f"{url}/channel/details", params={
-        "token" : user_one["token"],
-        "channel_id" : 1
-    })
-    channel_one_details = channel_one_details.json()
-    assert channel_one_details['all_members'] == [
-            {
-                "u_id": 1,
-                "name_first": "First",
-                "name_last": "Bloggs"
-            },
-            {
-                "u_id": 2,
-                "name_first": "Second",
-                "name_last": "Bloggs"
-            }
-        ]
         
-    
 
-def test_server_channel_leave(url):
+def test_server_channel_join_leave(url):
     '''
-    test a positive case for channel_leave
+    test a positive case for channel_join and channel_leave
     '''
      
     user_one = requests.post(f"{url}/auth/register", json={
@@ -358,6 +244,25 @@ def test_server_channel_leave(url):
         "token" : user_two["token"],
         "channel_id" : 1
     })
+    channel_one_details = requests.get(f"{url}/channel/details", params={
+        "token" : user_one["token"],
+        "channel_id" : 1
+    })
+    channel_one_details = channel_one_details.json()
+    print(channel_one_details)
+    assert channel_one_details['all_members'] == [
+            {
+                "u_id": 1,
+                "name_first": "Joe",
+                "name_last": "Bloggs"
+            },
+            {
+                "u_id": 2,
+                "name_first": "James",
+                "name_last": "Lee"
+            }
+        ]
+        
     assert r.json() == {}
     r = requests.post(f"{url}/channel/leave", json = {
         "token" : user_two["token"],
@@ -376,70 +281,10 @@ def test_server_channel_leave(url):
             }]
         
 
-def test_server_channel_addowner(url):
-    '''
-    test a positive case for channel_addowner
-    '''
-    
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "Joe",
-        "name_last" : "Bloggs"})
-    user_one = user_one.json()
-    requests.post(f"{url}/channels/create", json = {
-        "token" : user_one["token"],
-        "name" : "channel_one",
-        "is_public" : True
-    })
-    user_two = requests.post(f"{url}/auth/register", json={
-        "email" : "second@person.com",
-        "password" : "catdog",
-        "name_first" : "James",
-        "name_last" : "Lee"})
-    user_two = user_two.json()
-    r = requests.post(f"{url}/channel/addowner", json={
-        "token": user_one["token"],
-        "channel_id": 1,
-        "u_id": 2,
-    })
-    assert r.json() == {}
-    channel_one_details = requests.get(f"{url}/channel/details", params={
-        "token": user_one["token"],
-        "channel_id": 1,
-    })
-    channel_one_details = channel_one_details.json()
-    assert channel_one_details == {
-        "name": "channel_one", 
-        "owner_members": [
-            {
-                "u_id": 1, 
-                "name_first" : "Joe",
-                "name_last" : "Bloggs"
-            },
-            {
-                "u_id": 2, 
-                "name_first" : "James",
-                "name_last" : "Lee"
-            }
-        ],
-        "all_members": [
-            {
-                "u_id": 1, 
-                "name_first" : "Joe",
-                "name_last" : "Bloggs"
-            },
-            {
-                "u_id": 2, 
-                "name_first" : "James",
-                "name_last" : "Lee"
-            }
-        ],
-    }
 
-def test_server_channel_removeowner(url):
+def test_server_channel_addowner_removeowner(url):
     '''
-    test a positive case for channel_removeowner
+    test a positive case for channel_addowner channel_removeowner
     '''
 
     user_one = requests.post(f"{url}/auth/register", json={
@@ -464,7 +309,7 @@ def test_server_channel_removeowner(url):
         "u_id": 2,
     })
     assert r.json() == {}
-    # checking the owners of the channel prior to removeowner
+    # checking the new owner is added
     initial_details = requests.get(f"{url}/channel/details", params={
         "token": user_one["token"],
         "channel_id": 1,
@@ -508,6 +353,7 @@ def test_server_channel_removeowner(url):
         "token": user_one["token"],
         "channel_id": 1,
     })
+    # check removal of owner is successful
     assert final_details.json() == {
         "name": "channel_one", 
         "owner_members": [
@@ -531,27 +377,10 @@ def test_server_channel_removeowner(url):
         ],
     }
 
-def test_server_channels_create_public(url):
-    '''
-    test a positive case for channels_create creatubg a public channel
-    '''
 
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "Joe",
-        "name_last" : "Bloggs"})
-    user_one = user_one.json()
-    r = requests.post(f"{url}/channels/create", json={
-        "token" : user_one["token"],
-        "name" : "channel_one",
-        "is_public" : True
-    })
-    assert r.json() == {"channel_id" : 1 }
-
-def test_server_channels_list_listall(url):
+def test_server_channels_create_list_listall(url):
     '''
-    test a positive case for channels_list and channels_listall
+    test a positive case for channels_create channels_list and channels_listall
     '''
      
     user_one = requests.post(f"{url}/auth/register", json={
@@ -571,6 +400,7 @@ def test_server_channels_list_listall(url):
         "name" : "channel_one",
         "is_public" : True
     })
+    # test channel has been created
     assert channel_one.json() == {"channel_id" : 1 } 
     channel_two = requests.post(f"{url}/channels/create", json={
         "token" : user_two["token"],
