@@ -355,90 +355,98 @@ def message_unreact(token, message_id, react_id):
     
     return {}
 
-# def message_pin(token, message_id):
-#     '''
-#     Given a message within a channel, mark it as "pinned" to be given special 
-#     display treatment by the frontend
+def message_pin(token, message_id):
+    '''
+    Given a message within a channel, mark it as "pinned" to be given special 
+    display treatment by the frontend
     
-#     Parameters:
-#         token (str): refers to a valid user on flockr who is sending the message
-#         channel_id (int): identifies the channel the user is sending a message to
-#         react_id (int): identifies the type of react the user wants to make
-#             react_id of 1 is the only valid react for now
+    Parameters:
+        token (str): refers to a valid user on flockr who is sending the message
+        channel_id (int): identifies the channel the user is sending a message to
+        react_id (int): identifies the type of react the user wants to make
+            react_id of 1 is the only valid react for now
     
-#     Returns:
-#         (dict): {'message_id' : ___ }
-#     '''
-#     # raise accesserror if the token is invalid
-#     token_u_id = user_id_given_token(token)
-#     if token_u_id == None:
-#         raise AccessError(description="Token passed is not valid. If you recently reset your "
-#             "email you will need to logout and login again using your updated email.")
+    Returns:
+        (dict): {'message_id' : ___ }
+    '''
+    # raise accesserror if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
-#     # raise inputerror if the message_id is invalid and find the channel and
-#     # indexation of the message with id 'message_id'
-#     message_valid = False
-#     for a_channel in channel:
-#         message_index = 0
-#         for a_message in channel[a_channel]['messages']:
-#             if a_message['message_id'] == message_id:
-#                message_channel = a_channel
-#                message_valid = True
-#                break
-#             message_index += 1
-#         if message_valid == True:
-#             break
-#     if message_valid == False:
-#         raise InputError(description="The message id is not valid.")
+    # raise inputerror if the message_id is invalid and find the channel and
+    # indexation of the message with id 'message_id'
+    message_valid = False
+    for a_channel in channel:
+        message_index = 0
+        for a_message in channel[a_channel]['messages']:
+            if a_message['message_id'] == message_id:
+               message_channel = a_channel
+               message_valid = True
+               break
+            message_index += 1
+        if message_valid == True:
+            break
+    if message_valid == False:
+        raise InputError(description="The message id is not valid.")
       
-#     if channel[message_channel]['messages'][message_index]['is_pinned'] == True
-#         raise InputError (description="This message is already pinned.")
-#
-#     # raise accesserror if user with token 'token' is not part of the channel
-#     # that the message is part of 
-#     if token_u_id not in channel[message_channel]['all_members']:
-#         raise InputError (description="User is not part of the channel with this message.")
-#
-      # token_permission_id = permission_id_given_token(token)
-      # check permissions to pin and if permitted then pin message; if not 
-      # raise an accesserror
-#     if token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
-#        channel[message_channel]['messages'][message_index]['is_pinned'] == True
-#     else:
-#        raise AccessError(description="This user is not authorised to edit this message.")
+    if channel[message_channel]['messages'][message_index]['is_pinned']:
+        raise InputError (description="This message is already pinned.")
 
-#     return {}
+    # raise accesserror if user with token 'token' is not part of the channel
+    # that the message is part of 
+    if token_u_id not in channel[message_channel]['all_members']:
+        raise InputError (description="User is not part of the channel with this message.")
 
-# def message_unpin(token, message_id):
+    token_permission_id = permission_id_given_token(token)
+    #   check permissions to pin and if permitted then pin message; if not 
+    #   raise an accesserror
+    if token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
+       channel[message_channel]['messages'][message_index]['is_pinned'] = True
+    else:
+       raise AccessError(description="This user is not authorised to edit this message.")
 
-#     # raise accesserror if the token is invalid
-#     token_u_id = user_id_given_token(token)
-#     if token_u_id == None:
-#         raise AccessError(description="Token passed is not valid. If you recently reset your "
-#             "email you will need to logout and login again using your updated email.")
+    return {}
+
+def message_unpin(token, message_id):
+
+    # raise accesserror if the token is invalid
+    token_u_id = user_id_given_token(token)
+    if token_u_id == None:
+        raise AccessError(description="Token passed is not valid. If you recently reset your "
+            "email you will need to logout and login again using your updated email.")
     
-#     # raise inputerror if the message_id is invalid and find the channel and
-#     # indexation of the message with id 'message_id'
-#     message_valid = False
-#     for a_channel in channel:
-#         message_index = 0
-#         for a_message in channel[a_channel]['messages']:
-#             if a_message['message_id'] == message_id:
-#                message_channel = a_channel
-#                message_valid = True
-#                break
-#             message_index += 1
-#         if message_valid == True:
-#             break
-#     if message_valid == False:
-#         raise InputError(description="The message id is not valid.")
-        
-#     # raise accesserror if user with token 'token' is not part of the channel
-#     # that the message is part of 
-#     if token_u_id not in channel[message_channel]['all_members']:
-#         raise InputError (description="User is not part of the channel with this message.")
-    
-#     channel[message_channel]['messages']['is_pinned'] == False
+    # raise inputerror if the message_id is invalid and find the channel and
+    # indexation of the message with id 'message_id'
+    message_valid = False
+    for a_channel in channel:
+        message_index = 0
+        for a_message in channel[a_channel]['messages']:
+            if a_message['message_id'] == message_id:
+               message_channel = a_channel
+               message_valid = True
+               break
+            message_index += 1
+        if message_valid == True:
+            break
+    if message_valid == False:
+        raise InputError(description="The message id is not valid.")
 
-#     return {}
+    # raise InputError if message is already unpinned
+    if channel[message_channel]['messages'][message_index]['is_pinned'] is False:
+        raise InputError (description="This message is already unpinned.")
+
+    token_permission_id = permission_id_given_token(token)
+    # raise accesserror if user with token 'token' is not part of the channel
+    # that the message is part of 
+    if token_u_id not in channel[message_channel]['all_members']:
+        raise InputError (description="User is not part of the channel with this message.")
+    
+    if token_permission_id == 1 or token_u_id in channel[message_channel]['owner_members']:
+       channel[message_channel]['messages'][message_index]['is_pinned'] = False
+    else:
+       raise AccessError(description="This user is not authorised to edit this message.")
+
+    return {}
 

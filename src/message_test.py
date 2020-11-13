@@ -1066,8 +1066,156 @@ def test_message_unreact_invalid_token():
 
 
 # tests for message_pin
+def test_message_pin_valid_input_true():
+    '''
+    check that a message has been pinned successfully
+    '''
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    assert message_pin(user_one['token'], 1) == {}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages['messages'][0]['is_pinned'] is True
+    
+def test_message_pin_already_pinned():
+    '''
+    check that pinning a message that is already pinned raises an access error
+    '''
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    assert message_pin(user_one['token'], 1) == {}
+    with pytest.raises(InputError):
+        message_pin(user_one['token'], 1)
+
+def test_message_pin_multiple_messages():
+    '''
+    check message_pin only pints the specified message if there are 
+    multiple messages in the channel   
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi2')
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi3')
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi4')
+    assert message_pin(user_one['token'],rand_message['message_id']) == {}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages['messages'][0]['is_pinned'] is False
+    assert channel_one_messages['messages'][2]['is_pinned'] is False
+    assert channel_one_messages['messages'][1]['is_pinned'] is True
+        
+        
+def test_message_pin_invalid_message_id():
+    '''
+    check an inputerror is raised if the message_id is invalid (eg. it has been
+    deleted)
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_remove(user_one['token'], rand_message['message_id'])
+    with pytest.raises(InputError):
+        message_pin(user_one['token'], rand_message['message_id'])
+
+
+def test_message_react_user_not_part_of_channel():
+    '''
+    check an inputerror is raised if a user tries to react to a message but they 
+    have left the channel and are thus not a member of it anymore
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    channel_leave(user_one['token'], channel_one['channel_id'])
+    with pytest.raises(InputError):
+        message_pin(user_one['token'], rand_message['message_id'])   
+
+def test_message_react_invalid_token():
+    '''
+    check an accesserror is raised when the token is not valid 
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', False)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    auth_logout(user_one['token'])
+    with pytest.raises(AccessError):
+        message_pin(user_one['token'], rand_message['message_id'])
 
 # tests for message_unpin
+
+def test_message_unpin_valid_input():
+    '''
+    check that message_unpin successfully unpins a message
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_pin(user_one['token'], 1)
+    assert message_unpin(user_one['token'], 1) == {}
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages['messages'][0]['is_pinned'] is False
+        
+
+def test_message_unpin_twice():
+    '''
+    check that unpinning a message that is unpinned
+    raises an InputError
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_pin(user_one['token'], 1)
+    message_unpin(user_one['token'], 1)
+    with pytest.raises(InputError):
+        message_unpin(user_one['token'], 1)
+        
+
+
+def test_message_unpin_valid_input_multiple_messages():
+    '''
+    check message_react is able to unpin the correct message if there are 
+    multiple messages in the channel   
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_send(user_one['token'], channel_one['channel_id'], 'Hi2')
+
+
+    rand_message1 = message_send(user_one['token'], channel_one['channel_id'], 'Hi3')
+    rand_message2 = message_send(user_one['token'], channel_one['channel_id'], 'Hi4')
+
+    message_pin(user_one['token'],rand_message1['message_id'])
+    message_pin(user_one['token'],rand_message2['message_id'])
+
+    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
+
+    # assert channel_one_messages['messages'][1]['is_pinned'] is True
+    # assert channel_one_messages['messages'][2]['is_pinned'] is True
+
+    # assert message_unpin(user_one['token'],rand_message1['message_id']) == {}
+
+    # assert channel_one_messages['messages'][1]['is_pinned'] is False
+    # assert channel_one_messages['messages'][2]['is_pinned'] is False
 
 
 
