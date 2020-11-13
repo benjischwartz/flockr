@@ -194,19 +194,22 @@ def test_server_channel_invite(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id" : 2,
                 "name_first" : "Second",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             }
         ]
     }
@@ -238,14 +241,16 @@ def test_server_channel_details(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                "profile_img_url": ""
             }
         ]
     }
@@ -323,12 +328,14 @@ def test_server_channel_join(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2,
                 "name_first": "Second",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ]
         
@@ -374,7 +381,8 @@ def test_server_channel_leave(url):
     assert channel_one_details['all_members'] == [{
                 "u_id": 1,
                 "name_first": "Joe",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }]
         
 
@@ -417,24 +425,28 @@ def test_server_channel_addowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -477,24 +489,28 @@ def test_server_channel_removeowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -516,19 +532,22 @@ def test_server_channel_removeowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -730,7 +749,8 @@ def test_server_user_profile(url):
             "name_first" : "First",
             "name_last" : "Bloggs",
             "handle_str" : "firstbloggs",
-            "email" : "first@person.com"
+            "email" : "first@person.com",
+            "profile_img_url" : ''
         }
     }
 
@@ -763,7 +783,8 @@ def test_server_user_profile_setname(url):
             "email": "first@person.com",
             "name_first": "New First",
             "name_last": "New Last",
-            "handle_str": "firstbloggs"
+            "handle_str": "firstbloggs",
+            "profile_img_url" : ''
         }
     }
 
@@ -803,7 +824,8 @@ def test_server_user_profile_setemail(url):
             "email": "newemail@person.com",
             "name_first": "First",
             "name_last": "Bloggs",
-            "handle_str": "firstbloggs"
+            "handle_str": "firstbloggs",
+            "profile_img_url" : ''
         }
     }
 
@@ -834,10 +856,45 @@ def test_user_profile_sethandle(url):
             "name_first": "First",
             "name_last": "Bloggs",
             "handle_str": "newfirst",
-            "email": "first@person.com"
+            "email": "first@person.com",
+            "profile_img_url" : ''
         }
     }
-   
+
+def test_user_profile_uploadphoto(url):
+    """
+    testing a positive case for user_profile_sethandle
+    """ 
+    
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+
+    result = requests.post(f"{url}/user/profile/uploadphoto", json={
+        "token" : user_one['token'],
+        "img_url" : "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg",
+        "x_start" : 0,
+        "y_start" : 0,
+        "x_end" : 400,
+        "y_end" : 300
+    })
+    assert(result.json() == {})
+    
+    user_one_profile = requests.get(f"{url}/user/profile", params={
+        "token": user_one["token"],
+        "u_id": 1
+    })
+    
+    user_one_profile = user_one_profile.json()
+    profile_img_url = user_one_profile['user']['profile_img_url']
+    image = requests.get(profile_img_url)
+    
+    assert(image.status_code == 200)
+
 def test_users_all(url):
     """
     testing a positive case for users_all
@@ -860,7 +917,8 @@ def test_users_all(url):
             "u_id" : 1,
             "name_first" : "First",
             "name_last" : "Bloggs",
-            "email" : "first@person.com"
+            "email" : "first@person.com",
+            "profile_img_url" : ''
         }]
     }
 
@@ -970,7 +1028,8 @@ def test_clear(url):
             "u_id" : 1,
             "name_first" : "Mary",
             "name_last" : "Brown",
-            "email" : "second@person.com"
+            "email" : "second@person.com",
+            "profile_img_url" : ''
         }]
     }
 

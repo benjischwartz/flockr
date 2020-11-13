@@ -1,6 +1,6 @@
 import sys
 from json import dumps
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from error import InputError
 from flask_mail import Mail, Message
@@ -324,6 +324,21 @@ def user_profile_sethandle():
     '''
     payload = request.get_json()
     return dumps(user.user_profile_sethandle(payload["token"], payload["handle"]))
+
+@APP.route("/imgurl/<path:filename>")
+def static_returning_images(filename):
+    return send_from_directory('imgurl/', filename)
+
+@APP.route("/user/profile/uploadphoto", methods=['POST'])
+def user_profile_uploadphoto():
+    '''
+    enables the user to upload a photo as their profile picture
+    return {}
+    '''
+    payload = request.get_json()
+    current_url = request.base_url
+    server_url = current_url.replace("/user/profile/uploadphoto", "")
+    return dumps(user.user_profile_uploadphoto(payload["token"], payload["img_url"], server_url, payload["x_start"], payload["y_start"], payload["x_end"], payload["y_end"]))
 
 @APP.route("/users/all", methods=['GET'])
 def users_all():

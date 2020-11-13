@@ -33,19 +33,22 @@ def test_channel_invite_valid_input():
             {
                 'u_id': user_one['u_id'],
                 'name_first': 'First',
-                'name_last': 'User'
+                'name_last': 'User',
+                'profile_img_url': ''
             }
         ],
         'all_members': [
             {
                 'u_id': user_one['u_id'],
                 'name_first': 'First',
-                'name_last': 'User'
+                'name_last': 'User',
+                'profile_img_url': ''
             },
             {
                 'u_id': user_two['u_id'],
                 'name_first': 'Second', 
-                'name_last': 'User'
+                'name_last': 'User',
+                'profile_img_url': ''
             }
         ]
     }
@@ -193,14 +196,16 @@ def test_channel_details_valid_input_single_user():
             {
                 'u_id' : user_one['u_id'], 
                 'name_first': 'First', 
-                'name_last' : 'User'
+                'name_last' : 'User',
+                'profile_img_url': ''
             }
         ],
          'all_members' : [
             {
                 'u_id' : user_one['u_id'], 
                 'name_first': 'First', 
-                'name_last' : 'User'
+                'name_last' : 'User',
+                'profile_img_url': ''
             }
         ]
      }
@@ -227,19 +232,22 @@ def test_channel_details_valid_input_multiple_users():
             {
                 'u_id' : user_one['u_id'], 
                 'name_first': 'First', 
-                'name_last' : 'User'
+                'name_last' : 'User',
+                'profile_img_url': ''
             }
         ],
         'all_members' : [
             {
                 'u_id' : user_one['u_id'], 
                 'name_first': 'First', 
-                'name_last' : 'User'
+                'name_last' : 'User',
+                'profile_img_url': ''
             },
             {   
                 'u_id' : user_three['u_id'], 
                 'name_first': 'Third', 
-                'name_last' : 'User'
+                'name_last' : 'User',
+                'profile_img_url': ''
             }
         ]
      }
@@ -558,7 +566,8 @@ def test_channel_leave_normal_case():
     {
         'u_id' : user['u_id'],
         'name_first' : 'first',
-        'name_last' : 'last'
+        'name_last' : 'last',
+        'profile_img_url': ''
     }
     ])
 # if the person removed is a owner,check whether the function actually removed him
@@ -575,7 +584,8 @@ def test_channel_leave_normal_case_owner():
     {
         'u_id' : user['u_id'],
         'name_first' : 'first',
-        'name_last' : 'last'
+        'name_last' : 'last',
+        'profile_img_url': ''
     }
     ]) 
 
@@ -649,12 +659,14 @@ def test_channel_join_normal_case():
     {
         'u_id' : user['u_id'],
         'name_first' : 'first',
-        'name_last' : 'last'
+        'name_last' : 'last',
+        'profile_img_url': ''
     },
     {
         'u_id' : joiner['u_id'],
         'name_first' : 'first',
-        'name_last' : 'last'
+        'name_last' : 'last',
+        'profile_img_url': ''
     }
     ])
     
@@ -671,12 +683,14 @@ def test_channel_join_private_owner():
     {
         'u_id' : user['u_id'],
         'name_first' : 'first',
-        'name_last' : 'last'
+        'name_last' : 'last',
+        'profile_img_url': ''
     },
     {
         'u_id' : joiner['u_id'],
         'name_first' : 'first',
-        'name_last' : 'last'
+        'name_last' : 'last',
+        'profile_img_url': ''
     }
     ])
 
@@ -702,24 +716,28 @@ def test_channel_addowner_standard_input():
             {
                 'u_id': 2,
                 'name_first': 'Jane',
-                'name_last': 'Citizen'
+                'name_last': 'Citizen',
+                'profile_img_url': ''
             }, 
             {
                 'u_id': 3,
                 'name_first' : 'Jane',
-                'name_last': 'Citizen'
+                'name_last': 'Citizen',
+                'profile_img_url': ''
             }
         ],
         'all_members': [
             {
                 'u_id': 2,
                 'name_first': 'Jane',
-                'name_last': 'Citizen'
+                'name_last': 'Citizen',
+                'profile_img_url': ''
             }, 
             {
                 'u_id': 3,
                 'name_first' : 'Jane',
-                'name_last': 'Citizen'
+                'name_last': 'Citizen',
+                'profile_img_url': ''
             }
         ]
     })
@@ -819,19 +837,22 @@ def test_channel_removeowner_standard_input():
             {
                 'u_id': 2,
                 'name_first': 'Jane',
-                'name_last': 'Citizen'
+                'name_last': 'Citizen',
+                'profile_img_url': ''
             }
         ],
         'all_members': [
             {
                 'u_id': 2,
                 'name_first': 'Jane',
-                'name_last': 'Citizen'
+                'name_last': 'Citizen',
+                'profile_img_url': ''
             }, 
             {
                 'u_id': 3,
                 'name_first' : 'Jane',
-                'name_last': 'Citizen'
+                'name_last': 'Citizen',
+                'profile_img_url': ''
             }
         ]
     })
