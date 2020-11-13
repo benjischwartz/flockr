@@ -1210,6 +1210,51 @@ def test_message_unpin_valid_input_multiple_messages():
     channel_one_messages_after = channel_messages(user_one['token'], channel_one['channel_id'],0)
     assert channel_one_messages_after['messages'][0]['is_pinned'] is True
     assert channel_one_messages_after['messages'][1]['is_pinned'] is False
+       
+def test_message_unpin_invalid_message_id():
+    '''
+    check an inputerror is raised if the message_id is invalid (eg. it has been
+    deleted)
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_pin(user_one['token'],rand_message['message_id'])
+    message_remove(user_one['token'], rand_message['message_id'])
+    with pytest.raises(InputError):
+        message_unpin(user_one['token'], rand_message['message_id'])
+
+
+def test_message_unpin_user_not_part_of_channel():
+    '''
+    check an inputerror is raised if a user tries to unreact to a message but they 
+    have left the channel and are thus not a member of it anymore
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_pin(user_one['token'], rand_message['message_id'])   
+    channel_leave(user_one['token'], channel_one['channel_id'])
+    with pytest.raises(InputError):
+        message_unpin(user_one['token'], rand_message['message_id'])   
+
+def test_message_unpin_invalid_token():
+    '''
+    check an accesserror is raised when the token is not valid 
+    '''
+    
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', False)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
+    message_pin(user_one['token'], rand_message['message_id'])   
+    auth_logout(user_one['token'])
+    with pytest.raises(AccessError):
+        message_unpin(user_one['token'], rand_message['message_id'])
 
 
 
