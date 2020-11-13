@@ -34,25 +34,26 @@ def standup_start(token, channel_id, length):
 
     channel[channel_id]['standup'] = True
     now = datetime.now() + timedelta(seconds=int(length))
-    channel[channel_id]['standtime'] = int(now.timestamp())
-    final_time = channel[channel_id]['standtime']
+    channel[channel_id]['standuptime'] = int(now.timestamp())
+    final_time = channel[channel_id]['standuptime']
 
     timer = Timer(int(length), message_to_be_sent, [token, channel_id])
     timer.start()
 
     return {
-        'finish_time': final_time
+        'time_finish': final_time
     }
 
 def message_to_be_sent(token, channel_id):
     '''
     this is a helper function, which is ran after interval seconds have passed.
     '''
-    message_send(token, channel_id, channel[channel_id]['standlist'])
+    if channel[channel_id]['standuplist'] != '':
+        message_send(token, channel_id, channel[channel_id]['standuplist'])
 
     channel[channel_id]['standup'] = False
-    channel[channel_id]['standtime'] = None
-    channel[channel_id]['standlist'] = ''
+    channel[channel_id]['standuptime'] = None
+    channel[channel_id]['standuplist'] = ''
 
     return
 
@@ -106,10 +107,11 @@ def standup_send(token, channel_id, message):
     if channel[channel_id]['standup'] != True:
         raise InputError(description="standup is not active.")
 
-    full_name = users[token]['name_first'] + users[token]['name_last']
+    email = email_given_jwt(token)
+    full_name = users[email]['name_first'] + users[email]['name_last']
     final_message = full_name + ': ' + str(message)
-
-    if channel[channel_id]['standuplist'] is None:
+    
+    if channel[channel_id]['standuplist'] == '':
         channel[channel_id]['standuplist'] = final_message
     else:
         channel[channel_id]['standuplist'] += '/n' + final_message

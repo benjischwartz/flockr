@@ -1,5 +1,6 @@
-from data import users, tokens
+from data import users, tokens, channel
 import jwt
+
 
 def user_id_given_token(token):
     '''
@@ -62,3 +63,11 @@ def email_given_jwt(token):
     except Exception:
         return None
 
+
+def standup_list_given_active_channel_id(channel_id):
+    """
+    Given the channel_id with existing standup
+    returns the standuplist of the standup period
+    """
+
+    return channel[channel_id]['standuplist']

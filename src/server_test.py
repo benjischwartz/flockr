@@ -901,14 +901,14 @@ def test_standup_start(url):
         "is_public" : True
     })
     time_before = datetime.now()
-    message_one = requests.post(f"{url}/standup/start", json={
+    message_standup = requests.post(f"{url}/standup/start", json={
         "token" : user_one["token"],
         "channel_id" : 1,
         "length" : 10
     })
-    message_one = message_one.json()
+    message_standup = message_standup.json()
     now = time_before + timedelta(seconds=10)
-    assert message_one == {
+    assert message_standup == {
         'time_finish' : int(now.timestamp())
     }
 
@@ -920,15 +920,16 @@ def test_standup_active(url):
         "name_last" : "Bloggs"
     })
     user_one = user_one.json()
-    requests.post(f"{url}/channels/create", json={
+    channel_one = requests.post(f"{url}/channels/create", json={
         "token" : user_one["token"],
         "name" : "channel_one",
         "is_public" : True
     })
+    channel_one = channel_one.json()
 
     channel_one_messages = requests.get(f"{url}/standup/active", params={
         "token" : user_one["token"],
-        "channel_id" : 1,
+        "channel_id" : channel_one["channel_id"]
     })
     channel_one_messages = channel_one_messages.json()
     assert channel_one_messages == {
@@ -944,16 +945,23 @@ def test_standup_send(url):
         "name_last" : "Bloggs"
     })
     user_one = user_one.json()
-    requests.post(f"{url}/channels/create", json={
+    channel_one = requests.post(f"{url}/channels/create", json={
         "token" : user_one["token"],
         "name" : "channel_one",
         "is_public" : True
     })
+    channel_one = channel_one.json()
+    requests.post(f"{url}/standup/start", json={
+        "token" : user_one["token"],
+        "channel_id" : channel_one["channel_id"],
+        "length" : 10
+    })
     message_one = requests.post(f"{url}/standup/send", json={
         "token" : user_one["token"], 
-        "channel_id" : 1,
+        "channel_id" : channel_one["channel_id"],
         "message" : "hello"
     })
+
     message_one = message_one.json()
     assert message_one == {}
 

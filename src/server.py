@@ -345,28 +345,28 @@ def search_messages():
 def standup_start():
     '''
     '''
-    token = request.args.get('token')
-    token = token if token is not None else False
-    channel_id = request.args.get('channel_id')
-    length = request.args.get('length')
-    return dumps(standup.standup_start(token, channel_id, length))
+    payload = request.get_json()
+    return dumps(standup.standup_start(payload["token"], int(payload["channel_id"]), int(payload["length"])))
 
 @APP.route('/standup/active', methods=['GET'])
 def standup_active():
     '''
     '''
     token = request.args.get('token')
-    channel_id = request.args.get('channel_id')
-    return dumps(standup.standup_active(token, channel_id))
+    channel_id = int(request.args.get('channel_id'))
+    token = token if token is not None else False
+    channel_id = channel_id if channel_id is not None else False
+    if token and channel_id:
+        return dumps(standup.standup_active(token, channel_id))
+    else:
+        raise InputError(description="token or channel_id is invalid")
 
 @APP.route('/standup/send', methods=['POST'])
 def standup_send():
     '''
     '''
-    token = request.args.get('token')
-    channel_id = request.args.get('channel_id')
-    message = request.args.get('message')
-    return dumps(standup.standup_send(token, channel_id, message))
+    payload = request.get_json()
+    return dumps(standup.standup_send(payload["token"], int(payload["channel_id"]), payload["message"]))
 
 @APP.route("/clear/", methods=['DELETE'])
 def clear():

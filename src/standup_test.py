@@ -1,5 +1,4 @@
 import pytest
-import data
 from auth import auth_register, auth_logout
 from channel import channel_invite, channel_details, channel_messages
 from channel import channel_leave, channel_join, channel_addowner, channel_removeowner
@@ -8,6 +7,7 @@ from error import InputError, AccessError
 from standup import standup_start, standup_active, standup_send
 from other import clear
 from message import message_send
+from check_token import standup_list_given_active_channel_id
 
 def test_standup_start_positive():
     '''
@@ -120,3 +120,16 @@ def test_standup_send_unauthorised_user():
     message = 'hi'
     with pytest.raises(AccessError):
         standup_send(user_two['token'], channel_one['channel_id'], message)
+
+def test_standup_send_positive():
+    '''
+    positive test for standup_send
+    '''
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    message = 'hi'
+    standup_start(user_one['token'], channel_one['channel_id'], 10)
+    standup_send(user_one['token'], channel_one['channel_id'], message)
+    
+    assert standup_list_given_active_channel_id(channel_one["channel_id"]) == 'FirstUser: hi'
