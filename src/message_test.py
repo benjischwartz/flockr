@@ -658,7 +658,7 @@ def test_message_sendlater_valid_input_5_chars():
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     sending_time = time() + 3600
     assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 1}
-    # maintenance testing done with frontend to check message actually gets sent
+    # manual testing done with frontend to check message actually gets sent
 
 def test_message_sendlater_valid_input_1000_chars():
     '''
@@ -671,7 +671,7 @@ def test_message_sendlater_valid_input_1000_chars():
     message_long = 'a'*1000
     sending_time = time() + 3600
     assert message_sendlater(user_one['token'], channel_one['channel_id'], message_long, sending_time) == {'message_id': 1}
-    # maintenance testing done with frontend to check message actually gets sent
+    # manual testing done with frontend to check message actually gets sent
 
 
 def test_message_sendlater_invalid_time():
