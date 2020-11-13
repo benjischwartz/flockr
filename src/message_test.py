@@ -1125,7 +1125,7 @@ def test_message_pin_invalid_message_id():
         message_pin(user_one['token'], rand_message['message_id'])
 
 
-def test_message_react_user_not_part_of_channel():
+def test_message_pin_user_not_part_of_channel():
     '''
     check an inputerror is raised if a user tries to react to a message but they 
     have left the channel and are thus not a member of it anymore
@@ -1139,7 +1139,7 @@ def test_message_react_user_not_part_of_channel():
     with pytest.raises(InputError):
         message_pin(user_one['token'], rand_message['message_id'])   
 
-def test_message_react_invalid_token():
+def test_message_pin_invalid_token():
     '''
     check an accesserror is raised when the token is not valid 
     '''
