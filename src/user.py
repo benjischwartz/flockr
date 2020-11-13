@@ -189,9 +189,9 @@ def user_profile_uploadphoto(token, img_url, server_url, x_start, y_start, x_end
     try:
         r = requests.head(img_url)
         img_url_status_code = r.status_code
+        #Check if URL is valid but does not return Success HTTP 200 Response
         if (img_url_status_code != 200):
             raise InputError(description="URL Invalid")
-        
     except requests.ConnectionError:
         raise InputError(description="URL Invalid")
     
@@ -202,12 +202,9 @@ def user_profile_uploadphoto(token, img_url, server_url, x_start, y_start, x_end
     
     # Save image in the "imgurl" folder
     randomised_filename = str(uuid.uuid4()) + ".jpg"
-    try:
-        save_url = "src/imgurl/" + randomised_filename
-        urllib.request.urlretrieve(img_url, save_url)
-    except:
-        save_url = "imgurl/" + randomised_filename
-        urllib.request.urlretrieve(img_url, save_url)
+    save_url = "src/imgurl/" + randomised_filename
+    urllib.request.urlretrieve(img_url, save_url)
+
     img = Image.open(save_url)
 
     # Check if the image is within the bounds
@@ -216,12 +213,12 @@ def user_profile_uploadphoto(token, img_url, server_url, x_start, y_start, x_end
         raise InputError(description="Cropping bounds are not within the dimensions of the image")
 
     # Checking Width
-    if (x_start > img.size[0]):
+    if (x_end > img.size[0]):
         os.remove(save_url)
         raise InputError(description="Cropping bounds are not within the dimensions of the image")
     
     # Checking Height
-    if (y_start > img.size[1]):
+    if (y_end > img.size[1]):
         os.remove(save_url)
         raise InputError(description="Cropping bounds are not within the dimensions of the image")
 
