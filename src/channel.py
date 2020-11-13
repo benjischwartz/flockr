@@ -4,6 +4,8 @@ from check_token import user_id_given_token, permission_id_given_token
 from auth import auth_register
 from channels import channels_create
 from other import clear
+from time import time
+
 
 def channel_invite(token, channel_id, u_id):
     '''
@@ -18,6 +20,7 @@ def channel_invite(token, channel_id, u_id):
     Returns:
         (dict): {}
     '''
+    
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -41,9 +44,9 @@ def channel_invite(token, channel_id, u_id):
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError (description="User is not authorised to invite to this channel.")
     
-    # print message when user with u_id 'u_id' is already part of the channel 
+    # raise inputerror when user with u_id 'u_id' is already part of the channel 
     if u_id in channel[channel_id]['all_members']:
-        return {}
+        raise InputError (description="User already a part of this channel")
     
     # add member with u_id as a member of the channel
     channel[channel_id]['all_members'][u_id] = True
@@ -107,9 +110,11 @@ def channel_details(token, channel_id):
             if owner_member == users[user]['u_id']:
                 first_name = users[user]['name_first']
                 last_name = users[user]['name_last']
+                profile_img_url = users[user]['profile_img_url']
         owner_details = {  'u_id' : owner_member, 
                         'name_first' : first_name, 
-                        'name_last' : last_name }
+                        'name_last' : last_name,
+                        'profile_img_url': profile_img_url }
         details['owner_members'].append(owner_details)
     
     # find all members of channel and  their u_id, first name and last name  
@@ -118,9 +123,11 @@ def channel_details(token, channel_id):
             if any_member == users[user]['u_id']:
                 first_name = users[user]['name_first']
                 last_name = users[user]['name_last']
+                profile_img_url = users[user]['profile_img_url']
         any_member_details = { 'u_id' : any_member, 
                             'name_first' : first_name, 
-                            'name_last' : last_name }
+                            'name_last' : last_name,
+                            'profile_img_url': profile_img_url }
         details['all_members'].append(any_member_details)
     
     return details
@@ -148,8 +155,14 @@ def channel_messages(token, channel_id, start):
                    'u_id': 1,
                    'message': 'Hello world',
                    'time_created': 1582426789,
-               }
-           ],
+                   'reacts' : [
+                        {
+                            'react_id' : 1
+                            'u_ids' : [2, 3]
+                            'is_this_user_reacted' : False
+                        }
+                    ],
+                }
            'start': 0,
            'end': 50,
          }
@@ -185,27 +198,43 @@ def channel_messages(token, channel_id, start):
     all_messages['start'] = start
     num_message = 0
     
+
     # find the details of each message in the channel up to start + 50
     for message in reversed(channel[channel_id]['messages']):
-        if num_message >= start and num_message < (start + 50):
-            msg_id = message['message_id']
-            msg_u_id = message['u_id']
-            msg_content = message['message']
-            msg_time = message['time_created']
-            message_dict = {'message_id': msg_id, 
-                            'u_id' : msg_u_id, 
-                            'message' : msg_content, 
-                            'time_created' : msg_time}
+        if num_message >= start and message['time_created'] <= time():
+            react_list = []
+            for react in message['reacts']:
+                if token_u_id in react['u_ids']:
+                    react_dict = {
+                        'react_id' : react['react_id'],
+                        'u_ids' : react['u_ids'],
+                        'is_this_user_reacted' : True
+                    }
+                else:
+                    react_dict = {
+                        'react_id' : react['react_id'],
+                        'u_ids' : react['u_ids'],
+                        'is_this_user_reacted' : False
+                    }
+                react_list.append(react_dict)
+            message_dict = {
+                'message_id': message['message_id'],
+                'u_id': message['u_id'],
+                'message': message['message'],
+                'time_created': message['time_created'],
+                'reacts' : react_list,
+                'is_pinned' : message['is_pinned']
+                }
             all_messages['messages'].append(message_dict)
-        num_message += 1
-        if num_message == start + 50:
+        if len(all_messages['messages']) == 50:
             break
+        num_message += 1
     
     # determine and create the value for end in the return dictionary
-    if num_message < start + 50:
+    if len(all_messages['messages']) < 50:
         all_messages['end'] = -1
     else:
-        all_messages['end'] = num_message
+        all_messages['end'] = start + 50
        
     return all_messages
 

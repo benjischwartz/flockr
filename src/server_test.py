@@ -164,59 +164,26 @@ def test_server_channel_invite_details(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id" : 2,
                 "name_first" : "Second",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             }
         ]
     }
 
-def test_server_channel_messages(url):
-    '''
-    test a positive case for channel_messages
-    '''
-     
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    user_one = user_one.json()
-    requests.post(f"{url}/channels/create", json={
-        "token" : user_one["token"],
-        "name" : "channel_one",
-        "is_public" : True
-    })
-    prior_send = time()
-    requests.post(f"{url}/message/send", json={
-        "token" : user_one["token"],
-        "channel_id" : 1,
-        "message" : "Hello"
-    })
-    channel_one_messages = requests.get(f"{url}/channel/messages", params={
-        "token" : user_one["token"],
-        "channel_id" : 1,
-        "start" : 0
-    })
-    after_send = time()
-    channel_one_messages = channel_one_messages.json()
-    assert len(channel_one_messages["messages"]) == 1
-    assert channel_one_messages["messages"][0]["message_id"] == 1
-    assert channel_one_messages["messages"][0]["u_id"] == user_one['u_id']
-    assert channel_one_messages["messages"][0]["message"] == 'Hello'
-    assert prior_send < channel_one_messages["messages"][0]["time_created"] < after_send
-        
 
 def test_server_channel_join_leave(url):
     '''
@@ -244,26 +211,26 @@ def test_server_channel_join_leave(url):
         "token" : user_two["token"],
         "channel_id" : 1
     })
+    assert r.json() == {}
     channel_one_details = requests.get(f"{url}/channel/details", params={
         "token" : user_one["token"],
         "channel_id" : 1
     })
     channel_one_details = channel_one_details.json()
-    print(channel_one_details)
     assert channel_one_details['all_members'] == [
             {
                 "u_id": 1,
                 "name_first": "Joe",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2,
                 "name_first": "James",
-                "name_last": "Lee"
+                "name_last": "Lee",
+                'profile_img_url': ''
             }
         ]
-        
-    assert r.json() == {}
     r = requests.post(f"{url}/channel/leave", json = {
         "token" : user_two["token"],
         "channel_id" : 1
@@ -277,9 +244,9 @@ def test_server_channel_join_leave(url):
     assert channel_one_details['all_members'] == [{
                 "u_id": 1,
                 "name_first": "Joe",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }]
-        
 
 
 def test_server_channel_addowner_removeowner(url):
@@ -320,24 +287,28 @@ def test_server_channel_addowner_removeowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -360,19 +331,22 @@ def test_server_channel_addowner_removeowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -437,11 +411,12 @@ def test_server_channels_create_list_listall(url):
         ]
     }
 
-     
-def test_server_message_send(url):
-    """
-    Testing a positive case for message_send 
-    """
+
+def test_server_channel_messages_message_send_edit_remove(url):
+    '''
+    test a positive case for channel_messages, message_send, message_edit
+    and message_remove
+    '''
      
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -455,35 +430,43 @@ def test_server_message_send(url):
         "name" : "channel_one",
         "is_public" : True
     })
+    prior_send = time()
     send_message = requests.post(f"{url}/message/send", json={
         "token" : user_one["token"],
         "channel_id" : 1,
         "message" : "Hello"
     })
     assert send_message.json() == {"message_id" : 1}
-    
-def test_server_message_remove(url):
-    """
-    testing a positive case for message_remove
-    """
-     
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    user_one = user_one.json()
-    requests.post(f"{url}/channels/create", json={
-        "token" : user_one["token"],
-        "name" : "channel_one",
-        "is_public" : True
-    })
-    requests.post(f"{url}/message/send", json={
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
         "token" : user_one["token"],
         "channel_id" : 1,
-        "message" : "Hello"
+        "start" : 0
     })
+    after_send = time()
+    channel_one_messages = channel_one_messages.json()
+    assert len(channel_one_messages["messages"]) == 1
+    assert channel_one_messages["messages"][0]["message_id"] == 1
+    assert channel_one_messages["messages"][0]["u_id"] == user_one['u_id']
+    assert channel_one_messages["messages"][0]["message"] == 'Hello'
+    assert channel_one_messages["messages"][0]["reacts"] == []
+    assert channel_one_messages["messages"][0]["is_pinned"] == False
+    assert prior_send < channel_one_messages["messages"][0]["time_created"] < after_send
+    
+    edit_message = requests.put(f"{url}/message/edit", json={
+        "token" : user_one["token"],
+        "message_id" : 1,
+        "message" : "Hi world"
+    })
+    edit_message = edit_message.json()
+    assert edit_message == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['message'] == "Hi world" 
+
     requests.delete(f"{url}/message/remove", json={
         "token" : user_one["token"],
         "channel_id" : 1,
@@ -500,9 +483,35 @@ def test_server_message_remove(url):
         'end' : -1
     }
 
-def test_server_message_edit(url):
+def test_server_message_sendlater(url):
     """
     testing a positive case for message_edit
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    message_one = requests.post(f"{url}/message/sendlater", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello",
+        "time_sent" : time() + 3600
+    })
+    message_one = message_one.json()
+    assert message_one == {'message_id' : 1}
+
+def test_server_message_react_unreact(url):
+    """
+    testing a positive case for message_react and message_unreact
     """
      
     user_one = requests.post(f"{url}/auth/register", json={
@@ -522,22 +531,43 @@ def test_server_message_edit(url):
         "channel_id" : 1,
         "message" : "Hello"
     })
-    requests.put(f"{url}/message/edit", json={
+    first_react = requests.post(f"{url}/message/react", json={
         "token" : user_one["token"],
         "message_id" : 1,
-        "message" : "Hi world"
+        "react_id" : 1
     })
+    first_react = first_react.json()
+    assert first_react == {}
     channel_one_messages = requests.get(f"{url}/channel/messages", params={
         "token" : user_one["token"],
         "channel_id" : 1,
         "start" : 0
     })
     channel_one_messages = channel_one_messages.json()
-    assert channel_one_messages['messages'][0]['message'] == "Hi world" 
-
-def test_server_user_profile(url):
+    assert channel_one_messages['messages'][0]['reacts'] == [{
+        "react_id" : 1,
+        "u_ids" : [1],
+        "is_this_user_reacted": True
+    }]
+    first_unreact = requests.post(f"{url}/message/unreact", json={
+        "token" : user_one["token"],
+        "message_id" : 1,
+        "react_id" : 1
+    })
+    first_unreact = first_unreact.json()
+    assert first_unreact == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['reacts'] == []
+    
+def test_server_user_profile_all_profile(url):
     """
-    testing a positive case for user_profile
+    testing a positive case for user_profile, user_profile_setname, user_profile_setemail,
+    user_profile_sethandle, user_profile_uploadphoto
     """
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -546,8 +576,6 @@ def test_server_user_profile(url):
         "name_last" : "Bloggs"
     })
     user_one = user_one.json()
-
-
     token = user_one["token"]
     u_id = user_one["u_id"]
     user_one_profile = requests.get(f"{url}/user/profile?token={token}&u_id={u_id}")
@@ -558,23 +586,10 @@ def test_server_user_profile(url):
             "name_first" : "First",
             "name_last" : "Bloggs",
             "handle_str" : "firstbloggs",
-            "email" : "first@person.com"
+            "email" : "first@person.com",
+            "profile_img_url" : ''
         }
     }
-
-def test_server_user_profile_setname(url):
-    """
-    testing a positive case for user_profile_setname
-    """     
-
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    user_one = user_one.json()
-
     name_change = requests.put(f"{url}/user/profile/setname", json={
         "token" : user_one["token"],
         "name_first" : "New First",
@@ -591,36 +606,23 @@ def test_server_user_profile_setname(url):
             "email": "first@person.com",
             "name_first": "New First",
             "name_last": "New Last",
-            "handle_str": "firstbloggs"
+            "handle_str": "firstbloggs",
+            "profile_img_url" : ''
         }
     }
-
-
-def test_server_user_profile_setemail(url):
-    """
-    testing a positive case for user_profile_setemail
-    """    
-  
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    user_one = user_one.json()
-    
     email_change = requests.put(f"{url}/user/profile/setemail", json={
         "token" : user_one["token"],
         "email": "newemail@person.com"
     })
     assert email_change.json() == {}
-
+    user_one = requests.post(f"{url}/auth/logout", json={
+        "token": user_one["token"]
+    })
     user_one = requests.post(f"{url}/auth/login", json={
         "email" : "newemail@person.com",
         "password" : "catdog"
     })
     user_one = user_one.json()
-    
     user_one_profile = requests.get(f"{url}/user/profile", params={
         "token": user_one["token"],
         "u_id": 1
@@ -629,24 +631,12 @@ def test_server_user_profile_setemail(url):
         {
             "u_id": 1,
             "email": "newemail@person.com",
-            "name_first": "First",
-            "name_last": "Bloggs",
-            "handle_str": "firstbloggs"
+            "name_first": "New First",
+            "name_last": "New Last",
+            "handle_str": "firstbloggs",
+            "profile_img_url" : ''
         }
     }
-
-def test_user_profile_sethandle(url):
-    """
-    testing a positive case for user_profile_sethandle
-    """ 
-    
-    user_one = requests.post(f"{url}/auth/register", json={
-        "email" : "first@person.com",
-        "password" : "catdog",
-        "name_first" : "First",
-        "name_last" : "Bloggs"
-    })
-    user_one = user_one.json()
     new_handle = requests.put(f"{url}/user/profile/sethandle", json={
         "token" : user_one["token"],
         "handle": "newfirst"
@@ -659,13 +649,33 @@ def test_user_profile_sethandle(url):
     assert user_one_profile.json() == { "user" : 
         {
             "u_id": 1,
-            "name_first": "First",
-            "name_last": "Bloggs",
+            "name_first": "New First",
+            "name_last": "New Last",
             "handle_str": "newfirst",
-            "email": "first@person.com"
+            "email": "newemail@person.com",
+            "profile_img_url" : ''
         }
     }
-   
+    result = requests.post(f"{url}/user/profile/uploadphoto", json={
+        "token" : user_one['token'],
+        "img_url" : "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg",
+        "x_start" : 0,
+        "y_start" : 0,
+        "x_end" : 400,
+        "y_end" : 300
+    })
+    assert(result.json() == {})
+    
+    user_one_profile = requests.get(f"{url}/user/profile", params={
+        "token": user_one["token"],
+        "u_id": 1
+    })
+    user_one_profile = user_one_profile.json()
+    profile_img_url = user_one_profile['user']['profile_img_url']
+    image = requests.get(profile_img_url)
+    
+    assert(image.status_code == 200)
+
 def test_users_all(url):
     """
     testing a positive case for users_all
@@ -688,7 +698,8 @@ def test_users_all(url):
             "u_id" : 1,
             "name_first" : "First",
             "name_last" : "Bloggs",
-            "email" : "first@person.com"
+            "email" : "first@person.com",
+            "profile_img_url" : ''
         }]
     }
 
@@ -752,6 +763,8 @@ def test_search_single_message(url):
     assert search_result['messages'][0]['message_id'] == 1
     assert search_result['messages'][0]['u_id'] == 1
     assert search_result['messages'][0]['message'] == "Hello World"
+    assert search_result['messages'][0]['reacts'] == []
+    assert search_result['messages'][0]['is_pinned'] == False
     
 def test_clear(url):
     user_one = requests.post(f"{url}/auth/register", json={
@@ -798,7 +811,8 @@ def test_clear(url):
             "u_id" : 1,
             "name_first" : "Mary",
             "name_last" : "Brown",
-            "email" : "second@person.com"
+            "email" : "second@person.com",
+            "profile_img_url" : ''
         }]
     }
 
