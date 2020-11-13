@@ -658,8 +658,7 @@ def test_message_sendlater_valid_input_5_chars():
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     sending_time = time() + 3600
     assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 1}
-    #TODO: maintenance testing
-    # OR could create a function that gives the details of any message regardless of time_created
+    # maintenance testing done with frontend to check message actually gets sent
 
 def test_message_sendlater_valid_input_1000_chars():
     '''
@@ -672,8 +671,7 @@ def test_message_sendlater_valid_input_1000_chars():
     message_long = 'a'*1000
     sending_time = time() + 3600
     assert message_sendlater(user_one['token'], channel_one['channel_id'], message_long, sending_time) == {'message_id': 1}
-    #TODO: maintenance testing
-    # OR could create a function that gives the details of any message regardless of time_created
+    # maintenance testing done with frontend to check message actually gets sent
 
 
 def test_message_sendlater_invalid_time():
@@ -776,7 +774,6 @@ def test_message_react_valid_input_user_reacted_true():
     }
         
 
-# TODO: Move this test to channel_messages
 def test_message_react_valid_input_user_reacted_false():
     '''
     check that when a channel message has multiple users, only the user who 
