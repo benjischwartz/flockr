@@ -1,4 +1,4 @@
-from data import users, channel
+from data import users, channel, data_store, data_retreive
 from error import InputError, AccessError
 from check_token import user_id_given_token, email_given_jwt
 import re
@@ -33,7 +33,7 @@ def user_profile(token, u_id):
 
         }
     '''
-
+    data_retreive()
     user = None
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
@@ -53,7 +53,8 @@ def user_profile(token, u_id):
 
     if user is None:
         raise InputError(description="Invalid ID.")
-
+    
+    data_store()
     return {
         'user': user
     }
@@ -72,7 +73,7 @@ def user_profile_setname(token, name_first, name_last):
 
         }
     '''
-
+    data_retreive()
     #Error Checking: Raise an Input Error if Names not Between 1 & 50 Characters
     if (len(name_first) < 1) or (len(name_first) > 50):
         raise InputError(description="First Name is not Between 1 and 50 Characters")
@@ -89,6 +90,7 @@ def user_profile_setname(token, name_first, name_last):
     users[email]['name_first'] = name_first
     users[email]['name_last'] = name_last
 
+    data_store()
     return {
     }
 
@@ -105,6 +107,7 @@ def user_profile_setemail(token, email):
 
         }
     '''
+    data_retreive()
     #Error Checking: Raise an InputError if the email is invalid
     if (check(email) != "Valid Email"):
         raise InputError (description="Invalid email")
@@ -122,6 +125,7 @@ def user_profile_setemail(token, email):
     old_email = email_given_jwt(token)
     users[email] = users.pop(old_email)
 
+    data_store()
     return {
     }
 
@@ -138,6 +142,7 @@ def user_profile_sethandle(token, handle_str):
 
         }
     '''
+    data_retreive()
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
         raise AccessError(description="Token passed is not valid. If you recently reset your "
@@ -155,6 +160,7 @@ def user_profile_sethandle(token, handle_str):
     email = email_given_jwt(token)
     users[email]['handle'] = handle_str
     
+    data_store()
     return {
     }
 
@@ -179,6 +185,7 @@ def user_profile_uploadphoto(token, img_url, server_url, x_start, y_start, x_end
         }
     '''
 
+    data_retreive()
     # Check if the token is valid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
@@ -230,6 +237,7 @@ def user_profile_uploadphoto(token, img_url, server_url, x_start, y_start, x_end
     cropped = img.crop((x_start,y_start, x_end, y_end))
     cropped.save(save_url)
 
+    data_store()
     return {
     }
     

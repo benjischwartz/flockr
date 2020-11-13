@@ -1,4 +1,4 @@
-
+import json
 
 users = {
     # 'email': {
@@ -62,5 +62,49 @@ channel = { # 'channel_id' are the int values themselves, per channel
 
 highest_ids = { # for iteration 2, records the highest message_id outputted
     #'highest_message_id' : 2
-    }      
+    } 
 
+all_data = {
+        "users": users,
+        "tokens": tokens,
+        "codes": codes,
+        "channel": channel,
+        "highest_ids": highest_ids
+}     
+
+def data_store():
+    global all_data
+    global users
+    global tokens
+    global codes
+    global channel
+    global highest_ids
+    all_data = {
+        "users": users,
+        "tokens": tokens,
+        "codes": codes,
+        "channel": channel,
+        "highest_ids": highest_ids
+    }
+
+    with open('src/all_data.json', 'w') as outfile:
+        json.dump(all_data, outfile)
+
+def data_retreive():
+    global all_data
+    global users
+    global tokens
+    global codes
+    global channel
+    global highest_ids
+
+    with open('src/all_data.json') as infile:
+        try:
+            all_data = json.load(infile)
+            users = all_data['users']
+            tokens = all_data['tokens']
+            codes = all_data['codes']
+            channel = all_data['channel']
+            highest_ids = all_data['highest_ids']
+        except:
+            return

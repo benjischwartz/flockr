@@ -1,4 +1,4 @@
-from data import users, channel
+from data import users, channel, data_store, data_retreive
 from error import InputError, AccessError
 from check_token import user_id_given_token, permission_id_given_token
 from auth import auth_register
@@ -20,7 +20,7 @@ def channel_invite(token, channel_id, u_id):
     Returns:
         (dict): {}
     '''
-    
+    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -51,6 +51,7 @@ def channel_invite(token, channel_id, u_id):
     # add member with u_id as a member of the channel
     channel[channel_id]['all_members'][u_id] = True
     
+    data_store()
     return {}
 
 def channel_details(token, channel_id):
@@ -82,7 +83,7 @@ def channel_details(token, channel_id):
          }
 
     '''
-    
+    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -130,6 +131,7 @@ def channel_details(token, channel_id):
                             'profile_img_url': profile_img_url }
         details['all_members'].append(any_member_details)
     
+    data_store()
     return details
 
 
@@ -167,7 +169,8 @@ def channel_messages(token, channel_id, start):
            'end': 50,
          }
     '''
-        
+    
+    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -235,7 +238,8 @@ def channel_messages(token, channel_id, start):
         all_messages['end'] = -1
     else:
         all_messages['end'] = start + 50
-       
+    
+    data_store()
     return all_messages
 
 def channel_leave(token, channel_id):
@@ -252,7 +256,7 @@ def channel_leave(token, channel_id):
 
         }
     '''
-
+    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -272,7 +276,8 @@ def channel_leave(token, channel_id):
     # if the user is an owner, remove them from the list
     if token_u_id in channel[channel_id]['owner_members']:
         channel[channel_id]['owner_members'].pop(token_u_id)
-        
+    
+    data_store()
     return {}
 
 def channel_join(token, channel_id):
@@ -289,6 +294,7 @@ def channel_join(token, channel_id):
 
         }
     '''
+    data_retreive()
 
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
@@ -313,6 +319,8 @@ def channel_join(token, channel_id):
     
     channel[channel_id]['all_members'][token_u_id] = True
     
+    data_store()
+
     return {}
 
 def channel_addowner(token, channel_id, u_id):
@@ -329,6 +337,7 @@ def channel_addowner(token, channel_id, u_id):
     Returns:
         {}
     """
+    data_retreive()
     # raise an inputerror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
@@ -360,6 +369,8 @@ def channel_addowner(token, channel_id, u_id):
     # in the case of adding a user who is not a member of the channel
     channel[channel_id]['all_members'][u_id] = True
 
+    data_store()
+
     return {}
 
 def channel_removeowner(token, channel_id, u_id):
@@ -376,6 +387,7 @@ def channel_removeowner(token, channel_id, u_id):
     Returns:
         {}
     """
+    data_retreive()
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
@@ -402,6 +414,8 @@ def channel_removeowner(token, channel_id, u_id):
 
     # removing owner from the list of owner members
     channel[channel_id]['owner_members'].pop(u_id)
+
+    data_store()
 
     return {}
 
