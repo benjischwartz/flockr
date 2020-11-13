@@ -9,7 +9,7 @@ from other import clear
 from check_token import jwt_given_email
 from flask_mail import Mail, Message
 from check_reset_code import code_given_email, email_given_code
-import data
+
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():
