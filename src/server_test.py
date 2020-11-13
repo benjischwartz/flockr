@@ -289,6 +289,8 @@ def test_server_channel_messages(url):
     assert channel_one_messages["messages"][0]["message_id"] == 1
     assert channel_one_messages["messages"][0]["u_id"] == user_one['u_id']
     assert channel_one_messages["messages"][0]["message"] == 'Hello'
+    assert channel_one_messages["messages"][0]["reacts"] == []
+    assert channel_one_messages["messages"][0]["is_pinned"] == False
     assert prior_send < channel_one_messages["messages"][0]["time_created"] < after_send
 
 
@@ -726,6 +728,115 @@ def test_server_message_edit(url):
     channel_one_messages = channel_one_messages.json()
     assert channel_one_messages['messages'][0]['message'] == "Hi world" 
 
+def test_server_message_sendlater(url):
+    """
+    testing a positive case for message_edit
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    message_one = requests.post(f"{url}/message/sendlater", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello",
+        "time_sent" : time() + 3600
+    })
+    message_one = message_one.json()
+    assert message_one == {'message_id' : 1}
+
+def test_server_message_react(url):
+    """
+    testing a positive case for message_react
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/message/send", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello"
+    })
+    first_react = requests.post(f"{url}/message/react", json={
+        "token" : user_one["token"],
+        "message_id" : 1,
+        "react_id" : 1
+    })
+    first_react = first_react.json()
+    assert first_react == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['reacts'] == [{
+        "react_id" : 1,
+        "u_ids" : [1],
+        "is_this_user_reacted": True
+    }]
+         
+def test_server_message_unreact(url):
+    """
+    testing a positive case for message_unreact
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/message/send", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello"
+    })
+    requests.post(f"{url}/message/react", json={
+        "token" : user_one["token"],
+        "message_id" : 1,
+        "react_id" : 1
+    })
+    first_unreact = requests.post(f"{url}/message/unreact", json={
+        "token" : user_one["token"],
+        "message_id" : 1,
+        "react_id" : 1
+    })
+    first_unreact = first_unreact.json()
+    assert first_unreact == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['reacts'] == []
+    
 def test_server_user_profile(url):
     """
     testing a positive case for user_profile
@@ -982,6 +1093,8 @@ def test_search_single_message(url):
     assert search_result['messages'][0]['message_id'] == 1
     assert search_result['messages'][0]['u_id'] == 1
     assert search_result['messages'][0]['message'] == "Hello World"
+    assert search_result['messages'][0]['reacts'] == []
+    assert search_result['messages'][0]['is_pinned'] == False
     
 def test_clear(url):
     user_one = requests.post(f"{url}/auth/register", json={
