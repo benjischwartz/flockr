@@ -2,7 +2,7 @@ import pytest
 from auth import auth_register, auth_logout
 from channel import channel_messages, channel_join, channel_leave
 from channels import channels_create
-from message import message_send, message_remove, message_edit, message_sendlater, message_react, message_unreact
+from message import message_send, message_remove, message_edit, message_sendlater, message_react, message_unreact, message_pin, message_unpin
 from error import InputError, AccessError
 from other import clear
 from time import time
@@ -1199,23 +1199,17 @@ def test_message_unpin_valid_input_multiple_messages():
 
     message_send(user_one['token'], channel_one['channel_id'], 'Hi')
     message_send(user_one['token'], channel_one['channel_id'], 'Hi2')
-
-
     rand_message1 = message_send(user_one['token'], channel_one['channel_id'], 'Hi3')
     rand_message2 = message_send(user_one['token'], channel_one['channel_id'], 'Hi4')
-
     message_pin(user_one['token'],rand_message1['message_id'])
     message_pin(user_one['token'],rand_message2['message_id'])
-
-    channel_one_messages = channel_messages(user_one['token'], channel_one['channel_id'],0)
-
-    # assert channel_one_messages['messages'][1]['is_pinned'] is True
-    # assert channel_one_messages['messages'][2]['is_pinned'] is True
-
-    # assert message_unpin(user_one['token'],rand_message1['message_id']) == {}
-
-    # assert channel_one_messages['messages'][1]['is_pinned'] is False
-    # assert channel_one_messages['messages'][2]['is_pinned'] is False
+    channel_one_messages_init = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages_init['messages'][0]['is_pinned'] is True
+    assert channel_one_messages_init['messages'][1]['is_pinned'] is True
+    assert message_unpin(user_one['token'],rand_message1['message_id']) == {}
+    channel_one_messages_after = channel_messages(user_one['token'], channel_one['channel_id'],0)
+    assert channel_one_messages_after['messages'][0]['is_pinned'] is True
+    assert channel_one_messages_after['messages'][1]['is_pinned'] is False
 
 
 
