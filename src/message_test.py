@@ -1092,7 +1092,7 @@ def test_message_pin_already_pinned():
 
 def test_message_pin_multiple_messages():
     '''
-    check message_pin only pints the specified message if there are 
+    check message_pin only pins the specified message if there are 
     multiple messages in the channel   
     '''
     
@@ -1108,6 +1108,24 @@ def test_message_pin_multiple_messages():
     assert channel_one_messages['messages'][0]['is_pinned'] is False
     assert channel_one_messages['messages'][2]['is_pinned'] is False
     assert channel_one_messages['messages'][1]['is_pinned'] is True
+
+def test_message_pin_user_no_permission():
+    '''
+    check that if a user who does not have the right permission tries
+    to pin a message, message_pin raises AccessError
+    '''
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+
+    # second user joins channel but is not an owner
+    user_two = auth_register('seconduser@gmail.com', '123abc!@#', 'Second', 'User')
+    channel_join(user_two['token'], channel_one['channel_id'])
+
+    with pytest.raises(AccessError):
+        message_pin(user_two['token'], rand_message['message_id'])
+
         
         
 def test_message_pin_invalid_message_id():
@@ -1221,11 +1239,28 @@ def test_message_unpin_invalid_message_id():
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hello')
-    message_pin(user_one['token'],rand_message['message_id'])
+    message_pin(user_one['token'], rand_message['message_id'])
     message_remove(user_one['token'], rand_message['message_id'])
     with pytest.raises(InputError):
         message_unpin(user_one['token'], rand_message['message_id'])
 
+def test_message_unpin_user_no_permission():
+    '''
+    check that if a user who does not have the right permission tries
+    to pin a message, message_pin raises AccessError
+    '''
+    clear()
+    user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    rand_message = message_send(user_one['token'], channel_one['channel_id'], 'Hi')
+    message_pin(user_one['token'], rand_message['message_id'])
+
+    # second user joins channel but is not an owner
+    user_two = auth_register('seconduser@gmail.com', '123abc!@#', 'Second', 'User')
+    channel_join(user_two['token'], channel_one['channel_id'])
+
+    with pytest.raises(AccessError):
+        message_unpin(user_two['token'], rand_message['message_id'])
 
 def test_message_unpin_user_not_part_of_channel():
     '''
