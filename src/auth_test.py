@@ -5,6 +5,7 @@ from error import InputError
 from other import clear
 from check_token import get_handle, jwt_given_email
 from check_reset_code import code_given_email, email_given_code
+from user import user_profile
 
 # checking the successful registration of a user
 # checking the successful login of a user
@@ -13,7 +14,7 @@ def test_register_return_values():
     result = auth_register('validemail@gmail.com', '123abc!@#', 'hello', 'goodbye')
     result['token'] == jwt_given_email('validemail@gmail.com') #user is registered
     assert type(result['u_id']) is int, "registration unsuccessful"
-    profile  = user_profile(userOne['token'], userone['u_id'])
+    profile  = user_profile(result['token'], result['u_id'])
     assert profile == { 'user' : {
         'u_id' : result['u_id'],
         'name_first' : 'hello',
