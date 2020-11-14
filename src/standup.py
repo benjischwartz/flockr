@@ -17,6 +17,7 @@ def standup_start(token, channel_id, length):
     '''
     For a given channel, start the standup period whereby for
     the next "length" seconds if someone calls "standup_send" with a message.
+    returns time_finish for standup period
     '''
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -60,7 +61,7 @@ def message_to_be_sent(token, channel_id):
 def standup_active(token, channel_id):
     '''
     For a given channel, return whether a standup is active in it,
-     and what time the standup finishes. If no standup is active,
+    and what time the standup finishes. If no standup is active,
     then time_finish returns None
     '''
 
@@ -74,21 +75,17 @@ def standup_active(token, channel_id):
 
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError(description="Member not in selected channel.")
-    if channel[channel_id]['standup'] == False:
-        return {
-            'is_active' : False,
-            'time_finish' : None
-        }
-    else:
-        return {
-            'is_active' : True,
-            'time_finish': channel[channel_id]['time_finish']
-        }
+
+    return {
+        'is_active' : channel[channel_id]['standup'],
+        'time_finish': channel[channel_id]['time_finish']
+    }
 
 def standup_send(token, channel_id, message):
     '''
     Sending a message to get buffered in the 
     standup queue, assuming a standup is currently active
+    returns {}
     '''
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -114,7 +111,7 @@ def standup_send(token, channel_id, message):
     if channel[channel_id]['standuplist'] == '':
         channel[channel_id]['standuplist'] = final_message
     else:
-        channel[channel_id]['standuplist'] += '/n' + final_message
+        channel[channel_id]['standuplist'] += '\n' + final_message
 
     return {
     }

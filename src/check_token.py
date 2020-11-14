@@ -66,8 +66,24 @@ def email_given_jwt(token):
 
 def standup_list_given_active_channel_id(channel_id):
     """
-    Given the channel_id with existing standup
+    Given the channel_id
     returns the standuplist of the standup period
     """
 
     return channel[channel_id]['standuplist']
+
+def standup_time_given_active_channel_id(channel_id):
+    """
+    Given the channel_id
+    returns the standuptime of the standup period
+    """
+
+    return channel[channel_id]['standuptime']
+
+def standup_given_active_channel_id(channel_id):
+    """
+    Given the channel_id
+    returns the standup status of the channel
+    """
+
+    return channel[channel_id]['standup']

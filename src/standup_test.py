@@ -4,10 +4,10 @@ from channel import channel_invite, channel_details, channel_messages
 from channel import channel_leave, channel_join, channel_addowner, channel_removeowner
 from channels import channels_create, channels_listall
 from error import InputError, AccessError
-from standup import standup_start, standup_active, standup_send
+from standup import standup_start, standup_active, standup_send, message_to_be_sent
 from other import clear
 from message import message_send
-from check_token import standup_list_given_active_channel_id
+from check_token import standup_list_given_active_channel_id, standup_time_given_active_channel_id, standup_given_active_channel_id
 
 def test_standup_start_positive():
     '''
@@ -53,6 +53,17 @@ def test_standup_start_invalid_token():
     with pytest.raises(AccessError):
         standup_start(user['token'], channel_one['channel_id'], 10)
 
+def test_standup_start_user_not_in_channel():
+    '''
+    check if the valid user is in the channel raise access error otherwise
+    '''
+    clear()
+    user_one = auth_register('user_one@gmail.com', '123abc!@#', 'First', 'Last')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    with pytest.raises(AccessError):
+        standup_start(user_two['token'], channel_one['channel_id'], 10)
+
 def test_standup_active_invalid_channel_id():
     '''
     check an inputerror is raised if the channel_id is invalid; in this test any 
@@ -65,7 +76,7 @@ def test_standup_active_invalid_channel_id():
 
 def test_standup_active_invalid_token():
     '''
-    check if the token enter is valid raise access error otherwiser
+    check if the token enter is valid raise access error otherwise.
     '''
     clear()
     user_one = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
@@ -73,6 +84,30 @@ def test_standup_active_invalid_token():
     auth_logout(user_one['token'])
     with pytest.raises(AccessError):
         standup_active(user_one['token'], channel_one['channel_id'])
+
+def test_standup_active_user_not_in_channel():
+    '''
+    check if the user who's calling the function is in the
+    channel raise access error otherwise.
+    '''
+    clear()
+    user_one = auth_register('user@gmail.com', '123abc!@#', 'First', 'Last')
+    user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
+    channel_one = channels_create(user_one['token'], 'channel_one', True)
+    with pytest.raises(AccessError):
+        standup_active(user_two['token'], channel_one['channel_id'])
+
+def test_standup_send_invalid_token():
+    '''
+    check if the token enter is valid raise access error otherwiser
+    '''
+    clear()
+    user_one = auth_register('user_one@gmail.com', '123abc!@#', 'First', 'Last')
+    channel_one = channels_create(user_one['token'], 'userchannel', True)
+    auth_logout(user_one['token'])
+    message = 'hi'
+    with pytest.raises(AccessError):
+        standup_send(user_one['token'], channel_one['channel_id'], message)
 
 def test_standup_send_invalid_channel_id():
     '''
@@ -133,3 +168,10 @@ def test_standup_send_positive():
     standup_send(user_one['token'], channel_one['channel_id'], message)
     
     assert standup_list_given_active_channel_id(channel_one["channel_id"]) == 'FirstUser: hi'
+    standup_send(user_one['token'], channel_one['channel_id'], message)
+    assert standup_list_given_active_channel_id(channel_one["channel_id"]) == 'FirstUser: hi\nFirstUser: hi'
+
+    message_to_be_sent(user_one['token'], channel_one['channel_id'])
+    assert standup_list_given_active_channel_id(channel_one["channel_id"]) == ''
+    assert standup_time_given_active_channel_id(channel_one["channel_id"]) == None
+    assert standup_given_active_channel_id(channel_one["channel_id"]) == False

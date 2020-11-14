@@ -137,8 +137,8 @@ def channels_create(token, name, is_public):
             },
             'messages' : [],
             'standup' : False,
-            'time_finish' : 0,
-            'standuptime' : 0,
+            'time_finish' : None,
+            'standuptime' : None,
             'standuplist' : ''
         }
     

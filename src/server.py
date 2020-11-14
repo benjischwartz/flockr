@@ -344,6 +344,9 @@ def search_messages():
 @APP.route("/standup/start", methods=['POST'])
 def standup_start():
     '''
+    For a given channel, start the standup period whereby for
+    the next "length" seconds if someone calls "standup_send" with a message.
+    returns time_finish for standup period
     '''
     payload = request.get_json()
     return dumps(standup.standup_start(payload["token"], int(payload["channel_id"]), int(payload["length"])))
@@ -351,6 +354,9 @@ def standup_start():
 @APP.route('/standup/active', methods=['GET'])
 def standup_active():
     '''
+    For a given channel, return whether a standup is active in it,
+    and what time the standup finishes. If no standup is active,
+    then time_finish returns None
     '''
     token = request.args.get('token')
     channel_id = int(request.args.get('channel_id'))
@@ -364,6 +370,9 @@ def standup_active():
 @APP.route('/standup/send', methods=['POST'])
 def standup_send():
     '''
+    Sending a message to get buffered in the 
+    standup queue, assuming a standup is currently active
+    returns {}
     '''
     payload = request.get_json()
     return dumps(standup.standup_send(payload["token"], int(payload["channel_id"]), payload["message"]))
