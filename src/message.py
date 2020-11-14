@@ -288,9 +288,12 @@ def message_react(token, message_id, react_id):
     if token_u_id not in channel[message_channel]['all_members']:
         raise InputError (description="User is not part of the channel with this message.")
     
+    # raise inputerror if react_id is invalid
     if react_id != 1:
         raise InputError (description="React is invalid")
     
+    # raise inputerror if user has already reacted to the message; if not 
+    # add user to relevant react_id list in message 
     react_list = channel[message_channel]['messages'][message_index]['reacts']
     if any(token_u_id in d['u_ids'] for d in react_list):
         raise InputError (description='You have already reacted to this message. Unreact first')
@@ -321,20 +324,24 @@ def message_unreact(token, message_id, react_id):
         message_channel = message_details['message_channel']
         message_index = message_details['message_index']
        
-        
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
     if token_u_id not in channel[message_channel]['all_members']:
         raise InputError (description="User is not part of the channel with this message.")
     
+    # raise inputerror if react_id is invalid
     if react_id != 1:
         raise InputError (description="React is invalid")
     
+    # raise inputerror if react has not been reacted to by the user
     react_list = channel[message_channel]['messages'][message_index]['reacts']
     react_index = next((i for i, item in enumerate(react_list) if item["react_id"] == react_id), None)
     if react_index == None or token_u_id not in react_list[react_index]['u_ids']:
        raise InputError(description="User has not reacted to with to this message with this react yet. You must react first to unreact.")
     
+    # remove the react from the message if after unreacting there are no more users 
+    # reacting with the react_id to the message; otherwise remove the authorised 
+    # user from the react
     u_id_index = react_list[react_index]['u_ids'].index(token_u_id)
     if len(channel[message_channel]['messages'][message_index]['reacts'][react_index]['u_ids']) == 1:
         react_list.pop(react_index)
