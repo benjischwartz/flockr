@@ -1,4 +1,4 @@
-from data import users, tokens, channel, highest_ids
+from data import users, tokens, channel, highest_ids, codes
 from check_token import user_id_given_token
 from user import user_profile
 from error import InputError, AccessError
@@ -15,6 +15,7 @@ def clear():
     tokens.clear()
     channel.clear()
     highest_ids.clear()
+    codes.clear()
     return {}
 
 def users_all(token):
@@ -33,10 +34,19 @@ def users_all(token):
     
     for tokens, data in users.items():
         selected_email = tokens
-        data.pop('password')
-        data.pop('permission_id')
-        data['email'] = selected_email
-        final_list.append(data)
+        # Using `.pop()` here was causing data to be deleted from the database
+        user = {
+            'u_id': data['u_id'],
+            'email': selected_email,
+            'name_first': data['name_first'],
+            'name_last': data['name_last'],
+            'handle_str': data['handle'],
+            'profile_img_url': data['profile_img_url']
+        }
+        final_list.append(user)
 
-    return final_list
+    # Should return a dictionary, not list
+    return {
+        'users': final_list
+    }
 

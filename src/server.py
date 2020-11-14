@@ -1,8 +1,9 @@
 import sys
 from json import dumps
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from error import InputError
+from flask_mail import Mail, Message
 import auth
 import channels
 import channel
@@ -12,6 +13,8 @@ import search
 import user
 import other
 import standup
+import smtplib
+import check_reset_code
 
 def defaultHandler(err):
     response = err.get_response()
@@ -25,6 +28,16 @@ def defaultHandler(err):
     return response
 
 APP = Flask(__name__)
+APP.config.update(
+	DEBUG=True,
+	#EMAIL SETTINGS
+	MAIL_SERVER='smtp.gmail.com',
+	MAIL_PORT=465,
+	MAIL_USE_SSL=True,
+	MAIL_USERNAME = 'flockrmail@gmail.com',
+	MAIL_PASSWORD = 'i2PXfayKUSKH7xW'
+	)
+mail = Mail(APP)
 CORS(APP)
 
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
@@ -40,7 +53,8 @@ def echo():
         'data': payload
     })
 
-@APP.route("/auth/register/", methods=['POST'])
+# No trailing `/`, this will cause issues with the frontend
+@APP.route("/auth/register", methods=['POST'])
 def auth_register():
     """
     creating a user in data.py's users dictionary
@@ -49,7 +63,7 @@ def auth_register():
     payload = request.get_json()
     return dumps(auth.auth_register(payload["email"], payload["password"], payload["name_first"], payload["name_last"]))
 
-@APP.route("/auth/logout/", methods=['POST'])
+@APP.route("/auth/logout", methods=['POST'])
 def auth_logout():
     """
     logging out a user given a valid token
@@ -58,7 +72,7 @@ def auth_logout():
     payload = request.get_json()
     return dumps(auth.auth_logout(payload["token"]))
 
-@APP.route("/auth/login/", methods=['POST'])
+@APP.route("/auth/login", methods=['POST'])
 def auth_login():
     """
     logging in a user given a valid email and username
@@ -67,7 +81,39 @@ def auth_login():
     payload = request.get_json()
     return dumps(auth.auth_login(payload["email"], payload["password"]))
 
-@APP.route("/channel/invite/", methods=['POST'])
+@APP.route("/auth/passwordreset/request", methods=['POST'])
+def auth_passwordreset_request():
+    """
+    requesting a password reset for a valid email
+    Sends an email containing the reset code to the supplied email address.
+    returns {} if successful, otherwise InputError.
+    """
+    payload = request.get_json()
+    result = auth.auth_passwordreset_request(payload["email"])
+    code = check_reset_code.code_given_email(payload["email"])
+
+    try:
+        msg = Message("Password reset code",
+          sender="flockrmail@gmail.com",
+           recipients=[payload["email"]])
+        msg.body = "Hello,\nhere is your reset code: "+code           
+        mail.send(msg)
+        return dumps(result)
+
+    except Exception as e:
+        return str(e)
+
+@APP.route("/auth/passwordreset/reset", methods=['POST'])
+def auth_passwordreset_reset():
+    """
+    Given a reset code for a user, set that user's new password to the password provided.
+    If code provided is invalid or user's new password is unsuitable, raise InputError.
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(auth.auth_passwordreset_reset(payload["reset_code"], payload["new_password"]))
+
+@APP.route("/channel/invite", methods=['POST'])
 def channel_invite():
     """
     enables a valid user of a channel to add a user to a channel
@@ -98,10 +144,9 @@ def channel_details():
         ],
       }
     """
-    token = request.args.get("token")
-    channel_id = request.args.get("channel_id")
-    token = token if not None else False
-    channel_id = int(channel_id) if not None else False
+
+    token = request.args.get("token") if not None else False
+    channel_id = int(request.args.get("channel_id")) if not None else False
     if token and channel_id:
         return dumps(channel.channel_details(token, channel_id))
     else:
@@ -129,7 +174,8 @@ def channel_messages():
     start = int(request.args.get("start"))
     return dumps(channel.channel_messages(token, channel_id, start))
 
-@APP.route("/channel/join/", methods=['POST'])
+
+@APP.route("/channel/join", methods=['POST'])
 def channel_join():
     """
     user joins channel
@@ -138,7 +184,7 @@ def channel_join():
     payload = request.get_json()
     return dumps(channel.channel_join(payload["token"], payload["channel_id"]))
 
-@APP.route("/channel/leave/", methods=['POST'])
+@APP.route("/channel/leave", methods=['POST'])
 def channel_leave():
     """
     user leaves channel
@@ -147,7 +193,7 @@ def channel_leave():
     payload = request.get_json()
     return dumps(channel.channel_leave(payload["token"], payload["channel_id"]))
 
-@APP.route("/channel/addowner/", methods=['POST'])
+@APP.route("/channel/addowner", methods=['POST'])
 def channel_addowner():
     """
     user adding owner
@@ -156,7 +202,7 @@ def channel_addowner():
     payload = request.get_json()
     return dumps(channel.channel_addowner(payload["token"], payload["channel_id"], payload["u_id"]))
 
-@APP.route("/channel/removeowner/", methods=['POST'])
+@APP.route("/channel/removeowner", methods=['POST'])
 def channel_removeowner():
     """
     user removing owner
@@ -164,7 +210,8 @@ def channel_removeowner():
     """
     payload = request.get_json()
     return dumps(channel.channel_removeowner(payload["token"], payload["channel_id"], payload["u_id"]))
-@APP.route("/channels/create/", methods=['POST'])
+
+@APP.route("/channels/create", methods=['POST'])
 def channels_create():
     """
     creates a new channel and returns {"channel_id": ____ }
@@ -204,7 +251,7 @@ def channels_listall():
     token = request.args.get("token")
     return dumps(channels.channels_listall(token))
 
-@APP.route("/message/send/", methods=['POST'])
+@APP.route("/message/send", methods=['POST'])
 def message_send():
     """
     sends a message to a specified channel
@@ -213,7 +260,7 @@ def message_send():
     payload = request.get_json()
     return dumps(message.message_send(payload['token'], payload['channel_id'], payload['message']))
 
-@APP.route("/message/remove/", methods=['DELETE'])
+@APP.route("/message/remove", methods=['DELETE'])
 def message_remove():
     """
     remove a message with a specified message_id
@@ -222,7 +269,7 @@ def message_remove():
     payload = request.get_json()
     return dumps(message.message_remove(payload['token'], payload['message_id']))
 
-@APP.route("/message/edit/", methods=['PUT'])
+@APP.route("/message/edit", methods=['PUT'])
 def message_edit():
     """
     edits a message with a specified message_id
@@ -230,6 +277,52 @@ def message_edit():
     """
     payload = request.get_json()
     return dumps(message.message_edit(payload['token'], payload['message_id'], payload['message']))
+
+
+@APP.route("/message/sendlater", methods=['POST'])
+def message_sendlater():
+    """
+    sends a message to a specified channel at a specified time
+    returns {"message_id" : ____}
+    """
+    payload = request.get_json()
+    return dumps(message.message_sendlater(payload['token'], payload['channel_id'], payload['message'], payload['time_sent']))
+
+@APP.route("/message/react", methods=['POST'])
+def message_react():
+    """
+    reacts to a specified message
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_react(payload['token'], payload['message_id'], payload['react_id']))
+
+@APP.route("/message/unreact", methods=['POST'])
+def message_unreact():
+    """
+    unreacts a specified message
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_unreact(payload['token'], payload['message_id'], payload['react_id']))
+
+@APP.route("/message/pin", methods=['POST'])
+def message_pin():
+    """
+    pins a specified message
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_pin(payload['token'], payload['message_id']))
+
+@APP.route("/message/unpin", methods=['POST'])
+def message_unpin():
+    """
+    unpins a specified message
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_unpin(payload['token'], payload['message_id']))
 
 @APP.route("/user/profile", methods=["GET"])
 def user_profile():
@@ -252,7 +345,7 @@ def user_profile():
     else:
         raise InputError(description="token or u_id is invalid")
 
-@APP.route("/user/profile/setname/", methods=['PUT'])
+@APP.route("/user/profile/setname", methods=['PUT'])
 def user_profile_setname():
     """
     enables the user to set their first and last name
@@ -261,7 +354,7 @@ def user_profile_setname():
     payload = request.get_json()
     return dumps(user.user_profile_setname(payload["token"], payload["name_first"], payload["name_last"]))
 
-@APP.route("/user/profile/setemail/", methods=['PUT'])
+@APP.route("/user/profile/setemail", methods=['PUT'])
 def user_profile_setemail():
     """
     enables the user to set their email
@@ -270,7 +363,7 @@ def user_profile_setemail():
     payload = request.get_json()
     return dumps(user.user_profile_setemail(payload["token"], payload["email"]))
 
-@APP.route("/user/profile/sethandle/", methods=['PUT'])
+@APP.route("/user/profile/sethandle", methods=['PUT'])
 def user_profile_sethandle():
     '''
     enables the user to set their handle
@@ -278,6 +371,21 @@ def user_profile_sethandle():
     '''
     payload = request.get_json()
     return dumps(user.user_profile_sethandle(payload["token"], payload["handle"]))
+
+@APP.route("/imgurl/<path:filename>")
+def static_returning_images(filename):
+    return send_from_directory('imgurl/', filename)
+
+@APP.route("/user/profile/uploadphoto", methods=['POST'])
+def user_profile_uploadphoto():
+    '''
+    enables the user to upload a photo as their profile picture
+    return {}
+    '''
+    payload = request.get_json()
+    current_url = request.base_url
+    server_url = current_url.replace("/user/profile/uploadphoto", "")
+    return dumps(user.user_profile_uploadphoto(payload["token"], payload["img_url"], server_url, payload["x_start"], payload["y_start"], payload["x_end"], payload["y_end"]))
 
 @APP.route("/users/all", methods=['GET'])
 def users_all():
@@ -308,7 +416,7 @@ def users_all():
     else:
         raise InputError(description="token passed in is None")
 
-@APP.route("/admin/userpermission/change/", methods=['POST'])
+@APP.route("/admin/userpermission/change", methods=['POST'])
 def change_permissions():
     """
     allows the changing of permissions levels for users/owners

@@ -1,10 +1,12 @@
 import pytest
-from user import user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle
+from user import (user_profile, user_profile_setname, user_profile_setemail, user_profile_sethandle,
+user_profile_uploadphoto)
 from auth import auth_register, auth_logout, auth_login
 from error import InputError, AccessError
 from other import clear
 from channels import channels_create
 from channel import channel_details
+from PIL import Image
 
 #User Setname Tests
 def test_user_setname_positive_case():
@@ -15,8 +17,8 @@ def test_user_setname_positive_case():
     #Create a Channel and Find Its Details to See if the Name has Changed
     #randomChannel_id = channels_create(userOne['token'], 'Random Channel', True)
     details = user_profile(userOne['token'], userOne['u_id'])
-    assert(details['name_first'] == 'New First')
-    assert(details['name_last'] == 'New Last')
+    assert(details['user']['name_first'] == 'New First')
+    assert(details['user']['name_last'] == 'New Last')
     pass
 
 def test_user_setname_name_first_short():
@@ -75,13 +77,14 @@ def test_user_setemail_positive_case():
     userOne = auth_login('newemail@gmail.com', '123abc!@#')
     #Checking Profile of User
     userProfile = user_profile(userOne['token'], 1)
-    assert(userProfile == {
+    assert(userProfile == { 'user' : {
         "u_id": 1,
         "email": "newemail@gmail.com",
         "name_first": "First",
         "name_last": "User",
-        "handle": "firstuser"
-    })
+        "handle_str": "firstuser",
+        'profile_img_url': ''
+    }})
 
 def test_user_setemail_already_used():
     ''' Test if Error is Returned if Email is Already Used '''
@@ -131,13 +134,14 @@ def test_user_profile_positive_case():
     userTwo = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     user_profile_sethandle(userTwo['token'], '12345')
     userprofile = user_profile(userOne['token'], userTwo['u_id'])
-    assert(userprofile == {
+    assert(userprofile == { 'user' : {
         'u_id' : userTwo['u_id'],
         'name_first' : 'Second',
         'name_last' : 'User',
-        'handle' : '12345',
+        'handle_str' : '12345',
         'email' : 'seconduser@gmail.com',
-    })
+        'profile_img_url': ''
+    }})
 
 def test_user_profile_uid_not_valid():
     ''' Test if error raise when the input u_id is invalid '''
@@ -172,7 +176,7 @@ def test_user_sethandle_positive_case():
     user_profile_sethandle(userOne['token'], '12345')
 
     details = user_profile(userOne['token'], userOne['u_id'])
-    assert(details['handle'] == '12345')
+    assert(details['user']['handle_str'] == '12345')
 
 def test_user_sethandle_length_short():
     ''' Test if error returned as expected if handle length is too short '''
@@ -208,3 +212,95 @@ def test_user_sethandle_invalid_token():
     
     with pytest.raises(AccessError):
         user_profile_sethandle('INVALID_TOKEN', '12345')
+
+# User Uploadphoto Tests
+def test_user_profile_uploadphoto_positive_case():
+    ''' Uploading a photo and checking that it is cropped to specified dimensions.'''
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg"
+    x_start = 0
+    y_start = 0
+    x_end = 400
+    y_end = 300
+
+    response = user_profile_uploadphoto(userOne['token'], img_url, "", x_start, y_start, x_end, y_end)
+    assert(response == {})
+
+    userprofile = user_profile(userOne['token'], userOne['u_id'])
+    assert('profile_img_url' in userprofile['user'])
+
+    img = Image.open("src/" + userprofile['user']['profile_img_url'])
+    assert(img.size[0] == 400)
+    assert(img.size[1] == 300)
+
+def test_user_profile_uploadphoto_invalid_token():
+    ''' Uploading a photo and checking that it is cropped to specified dimensions.'''
+    clear()
+    userOne = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg"
+    x_start = 0
+    y_start = 0
+    x_end = 100
+    y_end = 100
+
+    auth_logout(userOne["token"])
+    with pytest.raises(AccessError):
+        user_profile_uploadphoto(userOne['token'], img_url, "", x_start, y_start, x_end, y_end)
+    
+
+def test_user_profile_uploadphoto_invalid_url():
+    ''' Uploading a photo with an invalid URL and ensuring it returns an InputError'''
+    clear()
+    firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://www.invalidurl.com.au/image.jpg"
+    x_start = 0
+    y_start = 0
+    x_end = 200
+    y_end = 100
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
+    img_url = "https://www.unsw.edu.au/random.jpg"
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
+
+def test_user_profile_uploadphoto_not_jpg():
+    ''' Uploading a photo which is not of a .jpg format and ensuring it returns an InputError'''
+    clear()
+    firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://www.unsw.edu.au/content/dam/images/graphics/logos/unsw/unsw_0.png"
+    x_start = 0
+    y_start = 0
+    x_end = 200
+    y_end = 100
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
+
+def test_user_profile_uploadphoto_not_dimensions():
+    '''Ensuring that cropping an image with larger dimensions returns an InputError. '''
+    clear()
+    firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg"
+    x_start = 0
+    y_start = 0
+    x_end = 1000
+    y_end = 300
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
+    x_end = 250
+    y_end = 1000
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
+
+def test_user_profile_uploadphoto_negative_directions():
+    '''Ensuring that cropping an image with negative dimensions to start returns an InputError'''
+    clear()
+    firstUser = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
+    img_url = "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg"
+    x_start = -10
+    y_start = -10
+    x_end = 200
+    y_end = 300
+    with pytest.raises(InputError):
+        user_profile_uploadphoto(firstUser['token'], img_url, "", x_start, y_start, x_end, y_end)
+

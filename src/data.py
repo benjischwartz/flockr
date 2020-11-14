@@ -8,7 +8,8 @@ users = {
     #     'password' : " ",
     #     'permission_id' : 1, # Global flocker permission_id
     #     # 1 for owner of flocker, 2 for regular members 
-    #     'handle' : " "
+    #     'handle' : " ",
+    #     'profile_img_url' : " "
     #     }
     }
 
@@ -16,6 +17,11 @@ users = {
 tokens = [
     # 'kdjfakljdflka.skajflkjlkkk.lkjalkfjd'
     ]
+
+# reset password codes temporarily stored in a dictionary
+codes = {
+    # 'email' : 'code'
+}
 
 channel = { # 'channel_id' are the int values themselves, per channel
     # 'channel_id' : {
@@ -33,18 +39,33 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #           'u_id': 1,
     #           'message': 'Hello world',
     #           'time_created': 1582426789,
+    #           'reacts': [{
+    #                   "react_id" : 1,
+    #                   "u_ids : [1, 2, 3, 4, 5]
+    #               }]
+    #           'is_pinned' : False
     #       },
     #       {
     #           'message_id': 2,
     #           'u_id': 1,
     #           'message': 'Hello again',
     #           'time_created': 1582426799,
+<<<<<<< HEAD
     #       },
     #       'standup' : True,
     #       'standuptime' : 1582426799,
     #       'standuplist' : '',
     
     #     ]
+=======
+    #           'reacts': [
+    #                   { "react_id" : 1 },
+    #                   { "u_ids : [1, 3, 4, 5]},
+    #                   { "is_this_user_reacted" : False}
+    #               ]
+    #           'is_pinned' : False
+    #       }
+>>>>>>> master
     # }
 }
 

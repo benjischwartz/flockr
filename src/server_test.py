@@ -8,6 +8,8 @@ import urllib
 from other import clear
 from check_token import jwt_given_email
 from datetime import datetime, timedelta
+from flask_mail import Mail, Message
+from check_reset_code import code_given_email, email_given_code
 
 # Use this fixture to get the URL of the server.
 @pytest.fixture
@@ -123,6 +125,36 @@ def test_server_auth_logout_login(url):
     user_one_login = user_one_login.json()
     user_one_login_token = jwt_given_email("first@person.com")
     assert user_one_login == {'u_id' : 1 , 'token' : user_one_login_token}
+
+def test_server_auth_passwordreset_request_reset(url):
+    '''
+    test a positive case for auth_passwordreset_request and
+    auth_passwordreset_reset
+    '''
+
+    requests.post(f"{url}/auth/register", json={
+        "email" : "flockrrecipient@gmail.com",   # has to be a valid email
+        "password" : "catdog",
+        "name_first" : "Flockr",
+        "name_last" : "Example"})
+    request_result = requests.post(f"{url}/auth/passwordreset/request", json={
+        "email" : "flockrrecipient@gmail.com"
+    })
+    assert request_result.json() == {}
+
+    r = requests.post(f"{url}/auth/passwordreset/reset", json={
+        "reset_code" : code_given_email("flockrrecipient@gmail.com"),
+        "new_password" : "newpassword123"})
+    assert r.json() == {}
+
+    # testing successful login
+    assert(requests.post(f"{url}/auth/login", json= {
+        "email" : "flockrrecipient@gmail.com",
+        "password" : "newpassword123"
+    }))
+
+    #TODO: test that there is an outgoing email.
+
  
 def test_server_channel_invite(url):    
     '''
@@ -163,19 +195,22 @@ def test_server_channel_invite(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id" : 2,
                 "name_first" : "Second",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             }
         ]
     }
@@ -207,14 +242,16 @@ def test_server_channel_details(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                "profile_img_url": ""
             }
         ]
     }
@@ -253,6 +290,8 @@ def test_server_channel_messages(url):
     assert channel_one_messages["messages"][0]["message_id"] == 1
     assert channel_one_messages["messages"][0]["u_id"] == user_one['u_id']
     assert channel_one_messages["messages"][0]["message"] == 'Hello'
+    assert channel_one_messages["messages"][0]["reacts"] == []
+    assert channel_one_messages["messages"][0]["is_pinned"] == False
     assert prior_send < channel_one_messages["messages"][0]["time_created"] < after_send
 
 
@@ -292,12 +331,14 @@ def test_server_channel_join(url):
             {
                 "u_id": 1,
                 "name_first": "First",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2,
                 "name_first": "Second",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }
         ]
         
@@ -343,7 +384,8 @@ def test_server_channel_leave(url):
     assert channel_one_details['all_members'] == [{
                 "u_id": 1,
                 "name_first": "Joe",
-                "name_last": "Bloggs"
+                "name_last": "Bloggs",
+                'profile_img_url': ''
             }]
         
 
@@ -386,24 +428,28 @@ def test_server_channel_addowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -446,24 +492,28 @@ def test_server_channel_removeowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -485,19 +535,22 @@ def test_server_channel_removeowner(url):
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             }
         ],
         "all_members": [
             {
                 "u_id": 1, 
                 "name_first" : "Joe",
-                "name_last" : "Bloggs"
+                "name_last" : "Bloggs",
+                'profile_img_url': ''
             },
             {
                 "u_id": 2, 
                 "name_first" : "James",
-                "name_last" : "Lee"
+                "name_last" : "Lee",
+                'profile_img_url': ''
             }
         ],
     }
@@ -676,6 +729,151 @@ def test_server_message_edit(url):
     channel_one_messages = channel_one_messages.json()
     assert channel_one_messages['messages'][0]['message'] == "Hi world" 
 
+def test_server_message_sendlater(url):
+    """
+    testing a positive case for message_edit
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    message_one = requests.post(f"{url}/message/sendlater", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello",
+        "time_sent" : time() + 3600
+    })
+    message_one = message_one.json()
+    assert message_one == {'message_id' : 1}
+
+def test_server_message_react(url):
+    """
+    testing a positive case for message_react
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/message/send", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello"
+    })
+    first_react = requests.post(f"{url}/message/react", json={
+        "token" : user_one["token"],
+        "message_id" : 1,
+        "react_id" : 1
+    })
+    first_react = first_react.json()
+    assert first_react == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['reacts'] == [{
+        "react_id" : 1,
+        "u_ids" : [1],
+        "is_this_user_reacted": True
+    }]
+         
+def test_server_message_unreact(url):
+    """
+    testing a positive case for message_unreact
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/message/send", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello"
+    })
+    requests.post(f"{url}/message/react", json={
+        "token" : user_one["token"],
+        "message_id" : 1,
+        "react_id" : 1
+    })
+    first_unreact = requests.post(f"{url}/message/unreact", json={
+        "token" : user_one["token"],
+        "message_id" : 1,
+        "react_id" : 1
+    })
+    first_unreact = first_unreact.json()
+    assert first_unreact == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['reacts'] == []
+
+def test_server_message_pin(url):
+    """
+    testing a positive case for message_pin
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/message/send", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello"
+    })
+    first_pin = requests.post(f"{url}/message/pin", json={
+        "token" : user_one["token"],
+        "message_id" : 1
+    })
+    first_pin = first_pin.json()
+    assert first_pin == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['is_pinned'] is True
+    
 def test_server_user_profile(url):
     """
     testing a positive case for user_profile
@@ -693,12 +891,15 @@ def test_server_user_profile(url):
     u_id = user_one["u_id"]
     user_one_profile = requests.get(f"{url}/user/profile?token={token}&u_id={u_id}")
     user_one_profile = user_one_profile.json()
-    assert user_one_profile == {
-        "u_id" : 1,
-        "name_first" : "First",
-        "name_last" : "Bloggs",
-        "handle" : "firstbloggs",
-        "email" : "first@person.com"
+    assert user_one_profile == { "user" : 
+        {
+            "u_id" : 1,
+            "name_first" : "First",
+            "name_last" : "Bloggs",
+            "handle_str" : "firstbloggs",
+            "email" : "first@person.com",
+            "profile_img_url" : ''
+        }
     }
 
 def test_server_user_profile_setname(url):
@@ -724,13 +925,16 @@ def test_server_user_profile_setname(url):
         "token": user_one["token"],
         "u_id": 1
     })
-    assert(user_one_profile.json() == {
-        "u_id": 1,
-        "email": "first@person.com",
-        "name_first": "New First",
-        "name_last": "New Last",
-        "handle": "firstbloggs"
-    })
+    assert user_one_profile.json() == { "user" : 
+        {
+            "u_id": 1,
+            "email": "first@person.com",
+            "name_first": "New First",
+            "name_last": "New Last",
+            "handle_str": "firstbloggs",
+            "profile_img_url" : ''
+        }
+    }
 
 
 def test_server_user_profile_setemail(url):
@@ -750,7 +954,7 @@ def test_server_user_profile_setemail(url):
         "token" : user_one["token"],
         "email": "newemail@person.com"
     })
-    assert(email_change.json() == {})
+    assert email_change.json() == {}
 
     user_one = requests.post(f"{url}/auth/login", json={
         "email" : "newemail@person.com",
@@ -762,13 +966,16 @@ def test_server_user_profile_setemail(url):
         "token": user_one["token"],
         "u_id": 1
     })
-    assert(user_one_profile.json() == {
-        "u_id": 1,
-        "email": "newemail@person.com",
-        "name_first": "First",
-        "name_last": "Bloggs",
-        "handle": "firstbloggs"
-    })
+    assert user_one_profile.json() == { 'user' : 
+        {
+            "u_id": 1,
+            "email": "newemail@person.com",
+            "name_first": "First",
+            "name_last": "Bloggs",
+            "handle_str": "firstbloggs",
+            "profile_img_url" : ''
+        }
+    }
 
 def test_user_profile_sethandle(url):
     """
@@ -786,19 +993,56 @@ def test_user_profile_sethandle(url):
         "token" : user_one["token"],
         "handle": "newfirst"
     })
-    assert(new_handle.json() == {})
+    assert new_handle.json() == {}
     user_one_profile = requests.get(f"{url}/user/profile", params={
         "token": user_one["token"],
         "u_id": 1
     })
-    assert(user_one_profile.json() == {
-        "u_id": 1,
-        "name_first": "First",
-        "name_last": "Bloggs",
-        "handle": "newfirst",
-        "email": "first@person.com"
+    assert user_one_profile.json() == { "user" : 
+        {
+            "u_id": 1,
+            "name_first": "First",
+            "name_last": "Bloggs",
+            "handle_str": "newfirst",
+            "email": "first@person.com",
+            "profile_img_url" : ''
+        }
+    }
+
+def test_user_profile_uploadphoto(url):
+    """
+    testing a positive case for user_profile_sethandle
+    """ 
+    
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
     })
-   
+    user_one = user_one.json()
+
+    result = requests.post(f"{url}/user/profile/uploadphoto", json={
+        "token" : user_one['token'],
+        "img_url" : "https://newsroom.unsw.edu.au/sites/default/files/styles/full_width/public/thumbnails/image/04_scientia_1.jpg",
+        "x_start" : 0,
+        "y_start" : 0,
+        "x_end" : 400,
+        "y_end" : 300
+    })
+    assert(result.json() == {})
+    
+    user_one_profile = requests.get(f"{url}/user/profile", params={
+        "token": user_one["token"],
+        "u_id": 1
+    })
+    
+    user_one_profile = user_one_profile.json()
+    profile_img_url = user_one_profile['user']['profile_img_url']
+    image = requests.get(profile_img_url)
+    
+    assert(image.status_code == 200)
+
 def test_users_all(url):
     """
     testing a positive case for users_all
@@ -815,15 +1059,16 @@ def test_users_all(url):
     token = user_one["token"]
     users_list = requests.get(f"{url}/users/all?token={token}")
     users_list = users_list.json()
-    assert users_list == [
-        {
-            "handle": "firstbloggs",
+    assert users_list == {"users" : 
+        [{
+            "handle_str": "firstbloggs",
             "u_id" : 1,
             "name_first" : "First",
             "name_last" : "Bloggs",
-            "email" : "first@person.com"
-        }
-    ]
+            "email" : "first@person.com",
+            "profile_img_url" : ''
+        }]
+    }
 
 def test_admin_permissions_change(url):
     """
@@ -882,10 +1127,11 @@ def test_search_single_message(url):
 
     search_result = requests.get(f"{url}/search?token={token}&query_str={query_str}")
     search_result = search_result.json()
-    assert len(search_result) == 1
-    assert search_result[0]['message_id'] == 1
-    assert search_result[0]['u_id'] == 1
-    assert search_result[0]['message'] == "Hello World"
+    assert search_result['messages'][0]['message_id'] == 1
+    assert search_result['messages'][0]['u_id'] == 1
+    assert search_result['messages'][0]['message'] == "Hello World"
+    assert search_result['messages'][0]['reacts'] == []
+    assert search_result['messages'][0]['is_pinned'] == False
 
 def test_standup_start(url):
     user_one = requests.post(f"{url}/auth/register", json={
@@ -964,7 +1210,7 @@ def test_standup_send(url):
 
     message_one = message_one.json()
     assert message_one == {}
-
+    
 def test_clear(url):
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -1004,15 +1250,16 @@ def test_clear(url):
     r = requests.get(f"{url}/users/all?token={token}")
 
     r = r.json()
-    assert r == [
-        {
-            "handle" : "marybrown",
+    assert r == { "users" : 
+        [{
+            "handle_str" : "marybrown",
             "u_id" : 1,
             "name_first" : "Mary",
             "name_last" : "Brown",
-            "email" : "second@person.com"
-        }
-    ]
+            "email" : "second@person.com",
+            "profile_img_url" : ''
+        }]
+    }
 
     list_all_first =  requests.get(f"{url}/channels/listall", params={
         "token":user_two["token"]

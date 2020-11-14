@@ -1,8 +1,10 @@
-from data import users, tokens
+from data import users, tokens, codes
 import re
 from error import InputError
 from passlib.hash import sha256_crypt
 import jwt
+from check_token import email_given_jwt
+from check_reset_code import email_given_code
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -36,7 +38,7 @@ def auth_login(email, password):
 
     # raise an inputerror if the user is already logged in (token already valid)
     for token in tokens:
-        if {'email': email} == jwt.decode(token, 'secret', algorithms='HS256'):
+        if email == email_given_jwt(token):
             return { # logging in twice returns same token
                     'u_id': users[email]['u_id'],
                     'token': token,
@@ -150,7 +152,8 @@ def auth_register(email, password, name_first, name_last):
             'name_last' : name_last,
             'password' : sha256_crypt.hash(password),   # hashed password
             'permission_id' : permission_id, 
-            'handle' : concatenate
+            'handle' : concatenate,
+            'profile_img_url': ''
         }
     
     # validate token
@@ -162,3 +165,43 @@ def auth_register(email, password, name_first, name_last):
         'u_id' : newU_id,
         'token' : encoded_jwt,
     }
+
+def auth_passwordreset_request(email):
+    """
+    Given an email address, if the user is a registered user, send's them an email containing 
+    a specific secret code, that when entered in auth_passwordreset_reset, shows that the user 
+    trying to reset the password is the one who got sent this email.
+    """
+    # create a hashed code with jwt.encode(), using the user's email as the payload, 
+    # and 'reset' as the secret
+    for emails in users.keys():
+        if email == emails:
+            code = jwt.encode({'email': email}, 'reset').decode('utf-8')
+            codes[email] = code
+            return {}
+    raise InputError (description="Supplied email not valid")
+
+
+
+def auth_passwordreset_reset(reset_code, new_password):
+    """
+    Given a reset code for a user, set that user's new password to the password provided.
+    """
+    email = email_given_code(reset_code)
+    if email is not None:
+        # raise an InputError if password is not at least 6 letters, 
+        # or if new password is the same as old password
+        if len(new_password) < 6:
+            raise InputError(description="Password too short")
+
+        elif sha256_crypt.verify(new_password, users[email]['password']):
+            raise InputError(description="New password same as old password")
+
+        # reset password
+        users[email]['password'] = sha256_crypt.hash(new_password)
+
+        # remove code from codes dictionary
+        del codes[email]
+        return {}
+    
+    raise InputError (description="Reset code is not valid")
