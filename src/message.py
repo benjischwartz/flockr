@@ -99,7 +99,7 @@ def message_remove(token, message_id):
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
     if token_u_id not in channel[message_channel]['all_members']:
-        raise InputError (description="User is not part of the channel with this message.")
+        raise AccessError (description="User is not part of the channel with this message.")
     
     token_permission_id = permission_id_given_token(token)
     # check permissions to remove and if permitted then remove message; if not 
@@ -151,7 +151,7 @@ def message_edit(token, message_id, message):
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
     if token_u_id not in channel[message_channel]['all_members']:
-        raise InputError (description="User is not part of the channel with this message.")
+        raise AccessError (description="User is not part of the channel with this message.")
     
     # remove message if the message is an empty string or raise an inputerror 
     # if the message is over 1000 characters
@@ -282,22 +282,16 @@ def message_react(token, message_id, react_id):
     if react_id != 1:
         raise InputError (description="React is invalid")
     
-    if channel[message_channel]['messages'][message_index]['reacts'] == []:
-        new_react = {'react_id' : react_id, 'u_ids' : [token_u_id]}
-        channel[message_channel]['messages'][message_index]['reacts'].append(new_react)
+    react_list = channel[message_channel]['messages'][message_index]['reacts']
+    if any(token_u_id in d['u_ids'] for d in react_list):
+        raise InputError (description='You have already reacted to this message. Unreact first')
     else:
-        if any(token_u_id in d['u_ids'] for d in channel[message_channel]['messages'][message_index]['reacts']):
-            raise InputError (description='You have already reacted to this message. Unreact first')
-        if not any(react_id == d['react_id'] for d in channel[message_channel]['messages'][message_index]['reacts']):
+        react_index = next((i for i, item in enumerate(react_list) if item["react_id"] == react_id), None)
+        if react_index == None:
             new_react = {'react_id' : react_id, 'u_ids' : [token_u_id]}
-            channel[message_channel]['messages'][message_index]['reacts'].append(new_react)
+            react_list.append(new_react)
         else:
-            react_index = 0
-            for react_dict in channel[message_channel]['messages'][message_index]['reacts']:
-                if react_dict['react_id'] == react_id:
-                    break
-                react_index += 1
-            channel[message_channel]['messages'][message_index]['reacts'][react_index]['u_ids'].append(token_u_id)
+            react_list[react_index]['u_ids'].append(token_u_id)
             
     return {}
 
@@ -332,26 +326,17 @@ def message_unreact(token, message_id, react_id):
     
     if react_id != 1:
         raise InputError (description="React is invalid")
-        
-    if channel[message_channel]['messages'][message_index]['reacts'] == []:
-        raise InputError(description="There are no reacts to this message to unreact.")
-    if not any(token_u_id in d['u_ids'] and react_id == d['react_id'] for d in channel[message_channel]['messages'][message_index]['reacts']):
-        raise InputError(description="User has not reacted to with to this message with this react yet. You must react first to unreact.")
+    
+    react_list = channel[message_channel]['messages'][message_index]['reacts']
+    react_index = next((i for i, item in enumerate(react_list) if item["react_id"] == react_id), None)
+    if react_index == None or token_u_id not in react_list[react_index]['u_ids']:
+       raise InputError(description="User has not reacted to with to this message with this react yet. You must react first to unreact.")
+    
+    u_id_index = react_list[react_index]['u_ids'].index(token_u_id)
+    if len(channel[message_channel]['messages'][message_index]['reacts'][react_index]['u_ids']) == 1:
+        react_list.pop(react_index)
     else:
-        react_index = 0
-        for react_dict in channel[message_channel]['messages'][message_index]['reacts']:
-            if react_dict['react_id'] == react_id:
-                u_id_index = 0
-                for a_u_id in react_dict['u_ids']:
-                    if token_u_id == a_u_id:
-                        break
-                    u_id_index += 1
-                break
-            react_index += 1
-        if len(channel[message_channel]['messages'][message_index]['reacts'][react_index]['u_ids']) == 1:
-            channel[message_channel]['messages'][message_index]['reacts'].pop(react_index)
-        else:
-            channel[message_channel]['messages'][message_index]['reacts'][react_index]['u_ids'].pop(u_id_index)
+        react_list[react_index]['u_ids'].pop(u_id_index)
     
     return {}
 

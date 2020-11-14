@@ -253,10 +253,10 @@ def test_message_remove_valid_input_multiple_messages_remove_middle():
     for k in range(len(channel_one_messages_after['messages'])):
         assert channel_one_messages_after['messages'][k]['message_id'] != rand_message['message_id']
 
-#TODO: Check coz you switched this from accesserror to inputerror
+
 def test_message_remove_invalid_flockr_owner():
     '''
-    check an inputerror is raised if an owner of flockr tries to remove a message 
+    check an accesserror is raised if an owner of flockr tries to remove a message 
     from a channel they are not a member of
     '''
     
@@ -265,13 +265,12 @@ def test_message_remove_invalid_flockr_owner():
     user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     channel_one = channels_create(user_two['token'], 'channel_one', True)
     rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
-    with pytest.raises(InputError):
+    with pytest.raises(AccessError):
         message_remove(user_one['token'], rand_message['message_id'])
         
-#TODO: Check coz you switched this from accesserror to inputerror
 def test_message_remove_user_not_part_of_channel():
     '''
-    check an inputerror is raised when the user that sent the message has left 
+    check an accesserror is raised when the user that sent the message has left 
     the channel and is trying to delete the channel
     '''
     
@@ -282,7 +281,7 @@ def test_message_remove_user_not_part_of_channel():
     channel_join(user_two['token'], channel_one['channel_id'])
     rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
     channel_leave(user_two['token'], channel_one['channel_id'])
-    with pytest.raises(InputError):
+    with pytest.raises(AccessError):
         message_remove(user_two['token'], rand_message['message_id'])
    
 
@@ -541,10 +540,9 @@ def test_message_edit_not_authorised_to_remove():
     with pytest.raises(AccessError):
         message_edit(user_two['token'], rand_message['message_id'], 'Hello World')   
 
-#TODO: Check coz you switched this from accesserror to inputerror
 def test_message_edit_user_not_part_of_channel():
     '''
-    check an inputerror is raised if a user tries to edit a message but they 
+    check an acesserror is raised if a user tries to edit a message but they 
     have left the channel and are thus not a member of it anymore
     '''
     
@@ -555,10 +553,9 @@ def test_message_edit_user_not_part_of_channel():
     channel_join(user_two['token'], channel_one['channel_id'])
     rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
     channel_leave(user_two['token'], channel_one['channel_id'])
-    with pytest.raises(InputError):
+    with pytest.raises(AccessError):
         message_edit(user_two['token'], rand_message['message_id'], 'Hello World')   
 
-#TODO: Check coz you switched this from accesserror to inputerror
 def test_message_edit_invalid_flockr_owner():
     '''
     check an accesserror is raised if an owner of flockr tries to edit a message 
@@ -570,7 +567,7 @@ def test_message_edit_invalid_flockr_owner():
     user_two = auth_register('seconduser@gmail.com', '456abc!@#', 'Second', 'User')
     channel_one = channels_create(user_two['token'], 'channel_one', True)
     rand_message = message_send(user_two['token'], channel_one['channel_id'], 'Hello')
-    with pytest.raises(InputError):
+    with pytest.raises(AccessError):
         message_edit(user_one['token'],rand_message['message_id'], 'Hello World')
 
 
@@ -637,20 +634,11 @@ def test_message_sendlater_unique_id_after_remove():
     assert message_three['message_id'] != message_two['message_id']
 
     
-def test_channel_sendlater_valid_input_time_created():
-    '''
-    check that message_send creates a time_created property for the message based
-    on when message_send is called
-    ''' 
-    
-    #TODO: maintenance testing
-    # OR could create a function that gives the details of any message regardless of time_created
-    pass
-    
 
 def test_message_sendlater_valid_input_5_chars():
     '''
     check a message of 5 characters is sent successfully
+    manual testing done with frontend to check message actually gets sent
     '''
     
     clear()
@@ -658,11 +646,13 @@ def test_message_sendlater_valid_input_5_chars():
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     sending_time = time() + 3600
     assert message_sendlater(user_one['token'], channel_one['channel_id'], 'Hello', sending_time) == {'message_id': 1}
-    # manual testing done with frontend to check message actually gets sent
+
 
 def test_message_sendlater_valid_input_1000_chars():
     '''
     check a message of 1000 characters is successfully sent
+    
+    manual testing done with frontend to check message actually gets sent
     '''
     
     clear()
@@ -671,7 +661,7 @@ def test_message_sendlater_valid_input_1000_chars():
     message_long = 'a'*1000
     sending_time = time() + 3600
     assert message_sendlater(user_one['token'], channel_one['channel_id'], message_long, sending_time) == {'message_id': 1}
-    # manual testing done with frontend to check message actually gets sent
+
 
 
 def test_message_sendlater_invalid_time():
@@ -772,7 +762,7 @@ def test_message_react_valid_input_user_reacted_true():
         'u_ids' : [1],
         'is_this_user_reacted' : True
     }
-        
+
 
 def test_message_react_valid_input_user_reacted_false():
     '''
@@ -794,8 +784,6 @@ def test_message_react_valid_input_user_reacted_false():
         'is_this_user_reacted' : False
     }
         
-
-
 def test_message_react_valid_input_multiple_of_one_react():
     '''
     check that a message can be reacted to multiple times if the reacts are 
@@ -816,7 +804,7 @@ def test_message_react_valid_input_multiple_of_one_react():
         'u_ids' : [1, 2],
         'is_this_user_reacted' : True
     }
-        
+
 
 def test_message_react_valid_input_multiple_messages_react_middle():
     '''
@@ -957,8 +945,7 @@ def test_message_unreact_valid_input_multiple_reacts_same_react_id():
         'is_this_user_reacted' : False
     }
         
-
-
+        
 def test_message_unreact_valid_input_multiple_messages_react_middle():
     '''
     check message_react is able to unreact the correct message if there are 
