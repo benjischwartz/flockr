@@ -314,8 +314,8 @@ def message_pin():
     payload = request.get_json()
     return dumps(message.message_pin(payload['token'], payload['message_id']))
 
-@APP.route("/message/pin", methods=['POST'])
-def message_pin():
+@APP.route("/message/unpin", methods=['POST'])
+def message_unpin():
     """
     unpins a specified message
     returns {}
