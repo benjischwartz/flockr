@@ -3,6 +3,36 @@ from error import InputError, AccessError
 from check_token import user_id_given_token, permission_id_given_token
 from time import time
 
+
+def check_message(message_id):
+    '''
+    this is a helper function relevant to message functions
+    given a message_id, if the message is valid, it returns a dictionary with
+    message_details; otherwise it returns none
+    '''
+    message_valid = False
+    for a_channel in channel:
+        message_index = 0
+        for a_message in channel[a_channel]['messages']:
+            if a_message['message_id'] == message_id:
+               message_u_id = a_message['u_id']
+               message_channel = a_channel
+               message_valid = True
+               break
+            message_index += 1
+        if message_valid == True:
+            break
+    if message_valid == False:
+        return None
+    else:
+        return {
+            'message_u_id' : message_u_id, 
+            'message_channel' : message_channel,
+            'message_index' : message_index
+            }
+    
+    
+    
 def message_send(token, channel_id, message):
     '''
     Send a message from authorised_user to the channel specified by channel_id
@@ -15,7 +45,7 @@ def message_send(token, channel_id, message):
     Returns:
         (dict): {'message_id' : _}
     '''
-
+    
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -81,20 +111,13 @@ def message_remove(token, message_id):
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
-    message_valid = False
-    for a_channel in channel:
-        message_index = 0
-        for a_message in channel[a_channel]['messages']:
-            if a_message['message_id'] == message_id:
-               message_u_id = a_message['u_id']
-               message_channel = a_channel
-               message_valid = True
-               break
-            message_index += 1
-        if message_valid == True:
-            break
-    if message_valid == False:
+    message_details = check_message(message_id)
+    if message_details is None:
         raise InputError(description="The message id is not valid.")
+    else:
+        message_channel = message_details['message_channel']
+        message_index = message_details['message_index']
+        message_u_id = message_details['message_u_id']
              
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
@@ -133,20 +156,13 @@ def message_edit(token, message_id, message):
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
-    message_valid = False
-    for a_channel in channel:
-        message_index = 0
-        for a_message in channel[a_channel]['messages']:
-            if a_message['message_id'] == message_id:
-               message_u_id = a_message['u_id']
-               message_channel = a_channel
-               message_valid = True
-               break
-            message_index += 1
-        if message_valid == True:
-            break
-    if message_valid == False:
+    message_details = check_message(message_id)
+    if message_details is None:
         raise InputError(description="The message id is not valid.")
+    else:
+        message_channel = message_details['message_channel']
+        message_index = message_details['message_index']
+        message_u_id = message_details['message_u_id']
        
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
@@ -260,19 +276,12 @@ def message_react(token, message_id, react_id):
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
-    message_valid = False
-    for a_channel in channel:
-        message_index = 0
-        for a_message in channel[a_channel]['messages']:
-            if a_message['message_id'] == message_id:
-               message_channel = a_channel
-               message_valid = True
-               break
-            message_index += 1
-        if message_valid == True:
-            break
-    if message_valid == False:
+    message_details = check_message(message_id)
+    if message_details is None:
         raise InputError(description="The message id is not valid.")
+    else:
+        message_channel = message_details['message_channel']
+        message_index = message_details['message_index']
        
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
@@ -305,19 +314,13 @@ def message_unreact(token, message_id, react_id):
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
-    message_valid = False
-    for a_channel in channel:
-        message_index = 0
-        for a_message in channel[a_channel]['messages']:
-            if a_message['message_id'] == message_id:
-               message_channel = a_channel
-               message_valid = True
-               break
-            message_index += 1
-        if message_valid == True:
-            break
-    if message_valid == False:
+    message_details = check_message(message_id)
+    if message_details is None:
         raise InputError(description="The message id is not valid.")
+    else:
+        message_channel = message_details['message_channel']
+        message_index = message_details['message_index']
+       
         
     # raise accesserror if user with token 'token' is not part of the channel
     # that the message is part of 
@@ -362,19 +365,13 @@ def message_pin(token, message_id):
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
-    message_valid = False
-    for a_channel in channel:
-        message_index = 0
-        for a_message in channel[a_channel]['messages']:
-            if a_message['message_id'] == message_id:
-               message_channel = a_channel
-               message_valid = True
-               break
-            message_index += 1
-        if message_valid == True:
-            break
-    if message_valid == False:
+    message_details = check_message(message_id)
+    if message_details is None:
         raise InputError(description="The message id is not valid.")
+    else:
+        message_channel = message_details['message_channel']
+        message_index = message_details['message_index']
+       
       
     if channel[message_channel]['messages'][message_index]['is_pinned']:
         raise InputError (description="This message is already pinned.")
@@ -404,19 +401,13 @@ def message_unpin(token, message_id):
     
     # raise inputerror if the message_id is invalid and find the channel and
     # indexation of the message with id 'message_id'
-    message_valid = False
-    for a_channel in channel:
-        message_index = 0
-        for a_message in channel[a_channel]['messages']:
-            if a_message['message_id'] == message_id:
-               message_channel = a_channel
-               message_valid = True
-               break
-            message_index += 1
-        if message_valid == True:
-            break
-    if message_valid == False:
+    message_details = check_message(message_id)
+    if message_details is None:
         raise InputError(description="The message id is not valid.")
+    else:
+        message_channel = message_details['message_channel']
+        message_index = message_details['message_index']
+       
 
     # raise InputError if message is already unpinned
     if channel[message_channel]['messages'][message_index]['is_pinned'] is False:

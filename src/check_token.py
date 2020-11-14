@@ -62,3 +62,4 @@ def email_given_jwt(token):
     except Exception:
         return None
 
+
