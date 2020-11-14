@@ -9,7 +9,7 @@ from other import clear
 from check_token import jwt_given_email
 from flask_mail import Mail, Message
 from check_reset_code import code_given_email, email_given_code
-import data
+
 # Use this fixture to get the URL of the server.
 @pytest.fixture
 def url():
@@ -836,6 +836,42 @@ def test_server_message_unreact(url):
     })
     channel_one_messages = channel_one_messages.json()
     assert channel_one_messages['messages'][0]['reacts'] == []
+
+def test_server_message_pin(url):
+    """
+    testing a positive case for message_pin
+    """
+     
+    user_one = requests.post(f"{url}/auth/register", json={
+        "email" : "first@person.com",
+        "password" : "catdog",
+        "name_first" : "First",
+        "name_last" : "Bloggs"
+    })
+    user_one = user_one.json()
+    requests.post(f"{url}/channels/create", json={
+        "token" : user_one["token"],
+        "name" : "channel_one",
+        "is_public" : True
+    })
+    requests.post(f"{url}/message/send", json={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "message" : "Hello"
+    })
+    first_pin = requests.post(f"{url}/message/pin", json={
+        "token" : user_one["token"],
+        "message_id" : 1
+    })
+    first_pin = first_pin.json()
+    assert first_pin == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['is_pinned'] is True
     
 def test_server_user_profile(url):
     """
