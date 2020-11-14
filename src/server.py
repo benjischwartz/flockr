@@ -305,6 +305,24 @@ def message_unreact():
     payload = request.get_json()
     return dumps(message.message_unreact(payload['token'], payload['message_id'], payload['react_id']))
 
+@APP.route("/message/pin", methods=['POST'])
+def message_pin():
+    """
+    pins a specified message
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_pin(payload['token'], payload['message_id']))
+
+@APP.route("/message/unpin", methods=['POST'])
+def message_unpin():
+    """
+    unpins a specified message
+    returns {}
+    """
+    payload = request.get_json()
+    return dumps(message.message_unpin(payload['token'], payload['message_id']))
+
 @APP.route("/user/profile", methods=["GET"])
 def user_profile():
     """
