@@ -485,7 +485,7 @@ def standup_send():
     payload = request.get_json()
     return dumps(standup.standup_send(payload["token"], int(payload["channel_id"]), payload["message"]))
 
-@APP.route("/clear/", methods=['DELETE'])
+@APP.route("/clear", methods=['DELETE'])
 def clear():
     """
     check if all the data is cleared
