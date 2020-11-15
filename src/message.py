@@ -1,4 +1,5 @@
 from data import users, channel, highest_ids
+from data_persistence import data_store
 from error import InputError, AccessError
 from check_token import user_id_given_token, permission_id_given_token
 from time import time
@@ -88,6 +89,7 @@ def message_send(token, channel_id, message):
     # append dictionary to messages list of channel with id 'channel_id'
     channel[channel_id]['messages'].append(message_info)
     
+    data_store()
     return {
         'message_id': message_id,
     }
@@ -132,6 +134,8 @@ def message_remove(token, message_id):
         channel[message_channel]['messages'].pop(message_index)
     else:
         raise AccessError(description="This user is not authorised to remove this message.")
+
+    data_store()
     return {}
     
     
@@ -186,6 +190,7 @@ def message_edit(token, message_id, message):
     else:
         raise AccessError(description="This user is not authorised to remove this message.")
     
+    data_store()
     return {}
 
 def message_sendlater(token, channel_id, message, time_sent):
@@ -250,6 +255,7 @@ def message_sendlater(token, channel_id, message, time_sent):
     # append dictionary to messages list of channel with id 'channel_id'
     channel[channel_id]['messages'].append(message_info)
     
+    data_store()
     return {
         'message_id': message_id,
     }
@@ -306,7 +312,8 @@ def message_react(token, message_id, react_id):
             react_list.append(new_react)
         else:
             react_list[react_index]['u_ids'].append(token_u_id)
-            
+
+    data_store()       
     return {}
 
 def message_unreact(token, message_id, react_id):
@@ -350,6 +357,7 @@ def message_unreact(token, message_id, react_id):
     else:
         react_list[react_index]['u_ids'].pop(u_id_index)
     
+    data_store()
     return {}
 
 def message_pin(token, message_id):
@@ -397,7 +405,8 @@ def message_pin(token, message_id):
        channel[message_channel]['messages'][message_index]['is_pinned'] = True
     else:
        raise AccessError(description="This user is not authorised to edit this message.")
-
+    
+    data_store()
     return {}
 
 def message_unpin(token, message_id):
@@ -432,6 +441,7 @@ def message_unpin(token, message_id):
        channel[message_channel]['messages'][message_index]['is_pinned'] = False
     else:
        raise AccessError(description="This user is not authorised to edit this message.")
-
+    
+    data_store()
     return {}
 

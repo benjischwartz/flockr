@@ -2,6 +2,7 @@ from data import channel, users, tokens
 from error import InputError, AccessError
 from check_token import user_id_given_token
 from time import time
+from data_persistence import data_store
 
 
 def channels_list(token):
@@ -142,6 +143,7 @@ def channels_create(token, name, is_public):
             'standuplist' : ''
         }
     
+    data_store()
     return {
         'channel_id': newChannel_id
     }

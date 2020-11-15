@@ -3,6 +3,7 @@ from error import AccessError
 from channels import channels_list
 from channel import channel_messages
 from data import channel
+from data_persistence import data_store
 from time import time
 
 def search(token, query_string):

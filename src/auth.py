@@ -5,6 +5,7 @@ from passlib.hash import sha256_crypt
 import jwt
 from check_token import email_given_jwt
 from check_reset_code import email_given_code
+from data_persistence import data_store
 
 regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w{2,3}$'
 def check(email):
@@ -39,6 +40,7 @@ def auth_login(email, password):
     # raise an inputerror if the user is already logged in (token already valid)
     for token in tokens:
         if email == email_given_jwt(token):
+            data_store()
             return { # logging in twice returns same token
                     'u_id': users[email]['u_id'],
                     'token': token,
@@ -51,6 +53,7 @@ def auth_login(email, password):
                 #validate token
                 encoded_jwt = jwt.encode({'email': email}, 'secret').decode('utf-8')
                 tokens.append(encoded_jwt)
+                data_store()
                 return {
                     'u_id': users[email]['u_id'],
                     'token': encoded_jwt, ## token is a JWT where payload is user's email, secret is 'secret'
@@ -74,10 +77,12 @@ def auth_logout(token):
         if token == valid_token:
             # remove from tokens dict
             tokens.remove(token)
+            data_store()
             return {
                 'is_success': True,
             }
 
+    data_store()
     # not a valid token
     return {
         'is_success': False,
@@ -160,7 +165,7 @@ def auth_register(email, password, name_first, name_last):
     encoded_jwt = jwt.encode({'email': email}, 'secret').decode('utf-8')
     tokens.append(encoded_jwt)
     
-
+    data_store()
     return {
         'u_id' : newU_id,
         'token' : encoded_jwt,
@@ -178,6 +183,7 @@ def auth_passwordreset_request(email):
         if email == emails:
             code = jwt.encode({'email': email}, 'reset').decode('utf-8')
             codes[email] = code
+            data_store()
             return {}
     raise InputError (description="Supplied email not valid")
 
@@ -202,6 +208,7 @@ def auth_passwordreset_reset(reset_code, new_password):
 
         # remove code from codes dictionary
         del codes[email]
+        data_store()
         return {}
     
     raise InputError (description="Reset code is not valid")
