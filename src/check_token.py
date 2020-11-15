@@ -1,5 +1,4 @@
 from data import users, tokens
-from data_persistence import data_store, data_retreive
 import jwt
 
 def user_id_given_token(token):

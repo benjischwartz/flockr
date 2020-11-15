@@ -1,5 +1,5 @@
 from data import channel, users, tokens
-from data_persistence import data_retreive, data_store
+from data_persistence import data_store
 from error import InputError, AccessError
 from check_token import user_id_given_token
 
@@ -15,7 +15,6 @@ def channels_list(token):
     Returns:
         (dict): {}
     '''
-    data_retreive()
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
         raise AccessError(description="Token passed is not valid. If you recently reset your "
@@ -40,7 +39,6 @@ def channels_list(token):
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
     
-    data_store()
     # return in format specified
     return returnDict
     #### format for return ####
@@ -64,7 +62,6 @@ def channels_listall(token):
         (dict): {}
     '''
     
-    data_retreive()
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
         raise AccessError(description="Token passed in is not valid. If you recently reset your "
@@ -84,7 +81,6 @@ def channels_listall(token):
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
 
-    data_store()
     return returnDict
     #### format for return ####
     # return {
@@ -109,7 +105,6 @@ def channels_create(token, name, is_public):
         (dict): {}
     '''
 
-    data_retreive()
     # raise an accesserror if token is invalid
     if user_id_given_token(token) == None:
         raise AccessError(description="Token passed in is not valid. If you recently reset your "

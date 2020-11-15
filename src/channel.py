@@ -1,5 +1,5 @@
 from data import users, channel
-from data_persistence import data_store, data_retreive
+from data_persistence import data_store
 from error import InputError, AccessError
 from check_token import user_id_given_token, permission_id_given_token
 from auth import auth_register
@@ -21,7 +21,6 @@ def channel_invite(token, channel_id, u_id):
     Returns:
         (dict): {}
     '''
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -84,7 +83,6 @@ def channel_details(token, channel_id):
          }
 
     '''
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -132,7 +130,6 @@ def channel_details(token, channel_id):
                             'profile_img_url': profile_img_url }
         details['all_members'].append(any_member_details)
     
-    data_store()
     return details
 
 
@@ -171,7 +168,6 @@ def channel_messages(token, channel_id, start):
          }
     '''
     
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -239,7 +235,6 @@ def channel_messages(token, channel_id, start):
         all_messages['end'] = -1
     else:
         all_messages['end'] = start + 50
-    data_store()
     return all_messages
 
 def channel_leave(token, channel_id):
@@ -256,7 +251,6 @@ def channel_leave(token, channel_id):
 
         }
     '''
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -294,7 +288,6 @@ def channel_join(token, channel_id):
 
         }
     '''
-    data_retreive()
 
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
@@ -337,7 +330,6 @@ def channel_addowner(token, channel_id, u_id):
     Returns:
         {}
     """
-    data_retreive()
     # raise an inputerror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:
@@ -387,7 +379,6 @@ def channel_removeowner(token, channel_id, u_id):
     Returns:
         {}
     """
-    data_retreive()
     # raise an accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id is None:

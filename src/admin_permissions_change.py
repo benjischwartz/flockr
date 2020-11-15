@@ -1,5 +1,5 @@
 from data import users
-from data_persistence import data_retreive, data_store
+from data_persistence import data_store
 from error import AccessError, InputError
 from check_token import user_id_given_token, email_given_user_id, jwt_given_email, email_given_jwt
 
@@ -17,7 +17,6 @@ def admin_userpermission_change(token,u_id,permission_id):
     Returns:
         (dict): {}
     '''
-    data_retreive()
     # token itself is invalid, i.e. not a member or owner
     if user_id_given_token(token) == None:
         raise AccessError(description="Token passed is not valid. If you recently reset your "

@@ -1,5 +1,5 @@
 from data import users, channel, highest_ids
-from data_persistence import data_store, data_retreive
+from data_persistence import data_store
 from error import InputError, AccessError
 from check_token import user_id_given_token, permission_id_given_token
 from time import time
@@ -16,7 +16,6 @@ def message_send(token, channel_id, message):
     Returns:
         (dict): {'message_id' : _}
     '''
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -74,7 +73,6 @@ def message_remove(token, message_id):
     Returns:
         (dict): {}
     '''
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -129,7 +127,6 @@ def message_edit(token, message_id, message):
         (dict): {}
     '''
     
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -194,7 +191,6 @@ def message_sendlater(token, channel_id, message, time_sent):
         (dict): {'message_id' : ___ }
     '''
 
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -260,7 +256,6 @@ def message_react(token, message_id, react_id):
         (dict): {'message_id' : ___ }
     '''
     
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:
@@ -312,7 +307,6 @@ def message_react(token, message_id, react_id):
     return {}
 
 def message_unreact(token, message_id, react_id):
-    data_retreive()
     # raise accesserror if the token is invalid
     token_u_id = user_id_given_token(token)
     if token_u_id == None:

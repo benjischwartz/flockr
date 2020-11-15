@@ -1,5 +1,5 @@
 from data import users, tokens, channel, highest_ids, codes
-from data_persistence import data_store, data_retreive
+from data_persistence import data_store
 from check_token import user_id_given_token
 from user import user_profile
 from error import InputError, AccessError
@@ -12,7 +12,6 @@ def clear():
 
     returns {}
     '''
-    data_retreive()
 
     users.clear()
     tokens.clear()
@@ -30,7 +29,6 @@ def users_all(token):
 
     returns [{users}]
     '''
-    data_retreive()
     final_list = []
     selected_email = ' '
     token_u_id = user_id_given_token(token)
@@ -50,7 +48,6 @@ def users_all(token):
             'profile_img_url': data['profile_img_url']
         }
         final_list.append(user)
-    data_store()
     # Should return a dictionary, not list
     return {
         'users': final_list

@@ -1,5 +1,4 @@
 from data import users, codes
-from data_persistence import data_store, data_retreive
 import jwt
 
 def code_given_email(email):

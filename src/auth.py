@@ -1,5 +1,5 @@
 from data import users, tokens, codes
-from data_persistence import data_store, data_retreive
+from data_persistence import data_store
 import re
 from error import InputError
 from passlib.hash import sha256_crypt
@@ -36,7 +36,6 @@ def auth_login(email, password):
         {is success: False} if token not valid
         InputError if email entered is not valid or registered, or password not valid
     """
-    data_retreive()
     # raise an inputerror if the user is already logged in (token already valid)
     for token in tokens:
         if email == email_given_jwt(token):
@@ -71,7 +70,6 @@ def auth_logout(token):
         {is_success: True} if a token is successfully invalidated otherwise
         {is_success: False}
     """
-    data_retreive()
     for valid_token in tokens:
         if token == valid_token:
             # remove from tokens dict
@@ -104,7 +102,6 @@ def auth_register(email, password, name_first, name_last):
             'token': jwt
         }
     """
-    data_retreive()
     # raise an inputerror if email is invalid
     if not check(email):
         raise InputError (description="Invalid email")
@@ -175,7 +172,6 @@ def auth_passwordreset_request(email):
     a specific secret code, that when entered in auth_passwordreset_reset, shows that the user 
     trying to reset the password is the one who got sent this email.
     """
-    data_retreive()
     # create a hashed code with jwt.encode(), using the user's email as the payload, 
     # and 'reset' as the secret
     for emails in users.keys():
@@ -192,7 +188,6 @@ def auth_passwordreset_reset(reset_code, new_password):
     """
     Given a reset code for a user, set that user's new password to the password provided.
     """
-    data_retreive()
     email = email_given_code(reset_code)
     if email is not None:
         # raise an InputError if password is not at least 6 letters, 
