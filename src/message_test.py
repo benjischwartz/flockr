@@ -115,15 +115,13 @@ def test_message_send_valid_input_1000_chars():
 
 def test_message_send_empty_message():
     '''
-    check an inputerror is raised if the the input 'message' is an empty string
+    check an empty dictionary is returned if the input 'message' is an empty string
     '''
     
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
-    with pytest.raises(InputError):
-         message_send(user_one['token'], channel_one['channel_id'], '')
-                 
+    assert message_send(user_one['token'], channel_one['channel_id'], '') == {}
 
 def test_message_send_1001_characters():
     '''
@@ -678,15 +676,14 @@ def test_message_sendlater_invalid_time():
          
 def test_message_sendlater_empty_message():
     '''
-    check an inputerror is raised if the the input 'message' is an empty string
+    check an empty dictionary is returned if the input 'message' is an empty string
     '''
     
     clear()
     user_one = auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     channel_one = channels_create(user_one['token'], 'channel_one', True)
     sending_time = time() + 3600
-    with pytest.raises(InputError):
-         message_sendlater(user_one['token'], channel_one['channel_id'], '', sending_time)
+    assert message_sendlater(user_one['token'], channel_one['channel_id'], '', sending_time) == {}
                  
 
 def test_message_sendlater_1001_characters():

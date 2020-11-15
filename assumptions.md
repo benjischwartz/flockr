@@ -44,7 +44,7 @@ authenticated token
     * the user who sent the message cannot remove/edit the message if they have left the channel 
     - raise an AccessError if the user is not a member of the channel (based on the spec requirement for message_pin) 
       regardless of whether the user is an owner of Flockr or a regular Flockr user
-* message_send/message_sendlater - raise an InputError if the input 'message' is an empty string
+* message_send/message_sendlater - return an empty dictionary if the input 'message' is an empty string
 * message_edit - 'time_created' is NOT updated when a message is edited 
 * message_edit - raise an InputError if the input 'message' is over 1000 characters
 * pinning messages - when message_send creates a message, by default is_pinned is False (so default status of a message is unpinned).

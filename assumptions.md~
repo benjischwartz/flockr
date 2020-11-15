@@ -48,6 +48,6 @@ authenticated token
 * message_edit - 'time_created' is NOT updated when a message is edited 
 * message_edit - raise an InputError if the input 'message' is over 1000 characters
 * pinning messages - when message_send creates a message, by default is_pinned is False (so default status of a message is unpinned).
-* message_react - a user cannot have multiple reacts for one message eg. user one cannot react to message with message_id 1 with both a thumbs up and thumbs down (hypothetically if thumbs down or any other react existed).
+* message_react - a user cannot have multiple reacts for one message eg. user one cannot react to message with message_id 1 with both react_id 1 and react_id 2 (if hypothetically a react_id of 2 is a valid react_id)
 
 

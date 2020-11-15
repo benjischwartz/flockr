@@ -60,9 +60,10 @@ def message_send(token, channel_id, message):
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError (description="User is not authorised to send a message to this channel.")
     
-    # raise an inputerror if message is 0 characters or over 1000 characters in length
+    # return empty dictionry if message is an empty string or raise an inputerror
+    # if messsage is over 1000 characters in length
     if len(message) == 0: 
-        raise InputError (description="This message is too short")
+        return {}
     elif len(message) > 1000:
         raise InputError (description="This message is too long.")
     
@@ -221,9 +222,10 @@ def message_sendlater(token, channel_id, message, time_sent):
     if token_u_id not in channel[channel_id]['all_members']:
         raise AccessError (description="User is not authorised to send a message to this channel.")
     
-    # raise an inputerror if message is 0 characters or over 1000 characters in length
+    # return empty dictionry if message is an empty string or raise an inputerror
+    # if messsage is over 1000 characters in length
     if len(message) == 0: 
-        raise InputError (description="This message is too short")
+        return {}
     elif len(message) > 1000:
         raise InputError (description="This message is too long.")
     

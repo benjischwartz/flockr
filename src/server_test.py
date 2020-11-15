@@ -804,7 +804,6 @@ def test_server_search_single_message(url):
     assert search_result['messages'][0]['is_pinned'] == False
 
 def test_server_standup_start(url):
-    def test_server_standup_start(url):
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
