@@ -12,6 +12,7 @@ import message
 import search
 import user
 import other
+import standup
 import smtplib
 import check_reset_code
 
@@ -447,7 +448,43 @@ def search_messages():
         return dumps(search.search(token, query))
     else:
         raise  InputError(description="token or qeury string is invalid")
-        
+
+@APP.route("/standup/start", methods=['POST'])
+def standup_start():
+    '''
+    For a given channel, start the standup period whereby for
+    the next "length" seconds if someone calls "standup_send" with a message.
+    returns time_finish for standup period
+    '''
+    payload = request.get_json()
+    return dumps(standup.standup_start(payload["token"], int(payload["channel_id"]), int(payload["length"])))
+
+@APP.route('/standup/active', methods=['GET'])
+def standup_active():
+    '''
+    For a given channel, return whether a standup is active in it,
+    and what time the standup finishes. If no standup is active,
+    then time_finish returns None
+    '''
+    token = request.args.get('token')
+    channel_id = int(request.args.get('channel_id'))
+    token = token if token is not None else False
+    channel_id = channel_id if channel_id is not None else False
+    if token and channel_id:
+        return dumps(standup.standup_active(token, channel_id))
+    else:
+        raise InputError(description="token or channel_id is invalid")
+
+@APP.route('/standup/send', methods=['POST'])
+def standup_send():
+    '''
+    Sending a message to get buffered in the 
+    standup queue, assuming a standup is currently active
+    returns {}
+    '''
+    payload = request.get_json()
+    return dumps(standup.standup_send(payload["token"], int(payload["channel_id"]), payload["message"]))
+
 @APP.route("/clear", methods=['DELETE'])
 def clear():
     """
