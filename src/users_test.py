@@ -37,3 +37,4 @@ def test_users_all_invalid_token():
     auth_register('firstuser@gmail.com', '123abc!@#', 'First', 'User')
     with pytest.raises(AccessError):
         users_all("invalidtoken")
+    clear()
