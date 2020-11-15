@@ -1,4 +1,5 @@
-from data import users, tokens, channel, highest_ids, codes, data_store, data_retreive
+from data import users, tokens, channel, highest_ids, codes
+from data_persistence import data_store, data_retreive
 from check_token import user_id_given_token
 from user import user_profile
 from error import InputError, AccessError
@@ -49,7 +50,7 @@ def users_all(token):
             'profile_img_url': data['profile_img_url']
         }
         final_list.append(user)
-
+    data_store()
     # Should return a dictionary, not list
     return {
         'users': final_list

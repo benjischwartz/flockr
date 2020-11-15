@@ -35,6 +35,8 @@ def test_url(url):
     '''
     A simple sanity test to check that your server is set up properly
     '''
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     assert url.startswith("http")
 
 def test_exception_accesserror(url):
@@ -44,7 +46,8 @@ def test_exception_accesserror(url):
     this test uses an invalid token passed to channel_details to raise the 
     accesserror
     '''
-    
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -74,7 +77,8 @@ def test_exception_inputerror(url):
     this test uses an invalid channel_id passed to channel_details to raise an 
     inputerror; since no channels have been created, any channel_id is invalid
     '''
-    
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -94,7 +98,8 @@ def test_server_auth_register(url):
     '''
     test a positive case for auth_register
     '''
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -108,7 +113,8 @@ def test_server_auth_logout_login(url):
     '''
     test a positive case for auth_login and auth_logout
     '''
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one_register = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -130,7 +136,8 @@ def test_server_auth_passwordreset_request_reset(url):
     test a positive case for auth_passwordreset_request and
     auth_passwordreset_reset
     '''
-
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     requests.post(f"{url}/auth/register", json={
         "email" : "flockrrecipient@gmail.com",   # has to be a valid email
         "password" : "catdog",
@@ -159,7 +166,8 @@ def test_server_channel_invite(url):
     '''
     test a positive case for channel_invite
     '''
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -218,7 +226,8 @@ def test_server_channel_details(url):
     '''
     test a positive case for channel_details
     '''
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -259,7 +268,8 @@ def test_server_channel_messages(url):
     '''
     test a positive case for channel_messages
     '''
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -298,7 +308,8 @@ def test_server_channel_join(url):
     '''
     test a positive case for channel_join
     '''
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -347,7 +358,8 @@ def test_server_channel_leave(url):
     '''
     test a positive case for channel_leave
     '''
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -392,7 +404,8 @@ def test_server_channel_addowner(url):
     '''
     test a positive case for channel_addowner
     '''
-    
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -457,7 +470,8 @@ def test_server_channel_removeowner(url):
     '''
     test a positive case for channel_removeowner
     '''
-
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -558,7 +572,8 @@ def test_server_channels_create_public(url):
     '''
     test a positive case for channels_create creatubg a public channel
     '''
-
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -576,7 +591,8 @@ def test_server_channels_list_listall(url):
     '''
     test a positive case for channels_list and channels_listall
     '''
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -635,7 +651,8 @@ def test_server_message_send(url):
     """
     Testing a positive case for message_send 
     """
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -659,7 +676,8 @@ def test_server_message_remove(url):
     """
     testing a positive case for message_remove
     """
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -697,7 +715,8 @@ def test_server_message_edit(url):
     """
     testing a positive case for message_edit
     """
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -732,7 +751,8 @@ def test_server_message_sendlater(url):
     """
     testing a positive case for message_edit
     """
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -758,7 +778,8 @@ def test_server_message_react(url):
     """
     testing a positive case for message_react
     """
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -799,7 +820,8 @@ def test_server_message_unreact(url):
     """
     testing a positive case for message_unreact
     """
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -841,6 +863,8 @@ def test_server_user_profile(url):
     """
     testing a positive case for user_profile
     """
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -869,7 +893,8 @@ def test_server_user_profile_setname(url):
     """
     testing a positive case for user_profile_setname
     """     
-
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -904,7 +929,8 @@ def test_server_user_profile_setemail(url):
     """
     testing a positive case for user_profile_setemail
     """    
-  
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -944,7 +970,8 @@ def test_user_profile_sethandle(url):
     """
     testing a positive case for user_profile_sethandle
     """ 
-    
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -976,7 +1003,8 @@ def test_user_profile_uploadphoto(url):
     """
     testing a positive case for user_profile_sethandle
     """ 
-    
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -1010,7 +1038,8 @@ def test_users_all(url):
     """
     testing a positive case for users_all
     """ 
-    
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -1039,7 +1068,8 @@ def test_admin_permissions_change(url):
     user one makes user two admin, then user two removes user one
     works if test does not throw error
     """
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
     "email" : "first@person.com",
     "password" : "catdog",
@@ -1064,7 +1094,8 @@ def test_admin_permissions_change(url):
     assert remove_admin.json() == {}
 
 def test_search_single_message(url):
-     
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -1097,6 +1128,8 @@ def test_search_single_message(url):
     assert search_result['messages'][0]['is_pinned'] == False
     
 def test_clear(url):
+    clear = requests.delete(f"{url}/clear")
+    assert(clear.json() == {})
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",

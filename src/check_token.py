@@ -1,4 +1,5 @@
-from data import users, tokens, data_store, data_retreive
+from data import users, tokens
+from data_persistence import data_store, data_retreive
 import jwt
 
 def user_id_given_token(token):
@@ -7,12 +8,10 @@ def user_id_given_token(token):
     if the user is in database AND is logged in
     otherwise returns None
     '''
-    data_retreive()
     e = email_given_jwt(token)
     if token in tokens:
         if e in users:
             user_id = users[e]['u_id']
-            data_store()
             return user_id
     return None
 
@@ -22,10 +21,8 @@ def get_handle(u_id):
     returns the handle if the u_id is valid
     otherwise returns None
     '''
-    data_retreive()
     for email in users.keys():
         if u_id == users[email]['u_id']:
-            data_store()
             return users[email]['handle']
     return
 
@@ -34,10 +31,8 @@ def email_given_user_id(u_id):
     returns the email if the u_id is valid,
     otherwise returns None
     '''
-    data_retreive()
     for email in users:
         if u_id == users[email]['u_id']:
-            data_store()
             return email
     return None
 

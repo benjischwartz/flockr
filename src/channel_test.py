@@ -9,6 +9,8 @@ from error import InputError, AccessError
 from other import clear
 from time import time
 
+from data import users, tokens, codes, channel, highest_ids 
+
 # tests for channel_invite
 # note: since the owner of flockr (the first user registered) has the same 
     # permissions in channel_invite as a regular member of flockr, the first

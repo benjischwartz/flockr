@@ -2,7 +2,8 @@ from check_token import user_id_given_token
 from error import AccessError
 from channels import channels_list
 from channel import channel_messages
-from data import channel, data_store, data_retreive
+from data import channel
+from data_persistence import data_store, data_retreive
 from time import time
 
 def search(token, query_string):
@@ -63,7 +64,7 @@ def search(token, query_string):
                     'is_pinned' : message['is_pinned']
                     }
                 result.append(message_dict) 
-
+    data_store()
     return {'messages' : result}
 
 

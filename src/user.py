@@ -1,11 +1,10 @@
-from data import users, channel, data_store, data_retreive
+from data import users, channel
+from data_persistence import data_store, data_retreive
 from error import InputError, AccessError
 from check_token import user_id_given_token, email_given_jwt
 import re
 import requests
-#from werkzeug import secure_filename
 import os
-#import cv2
 import urllib
 import uuid
 from PIL import Image
@@ -53,7 +52,7 @@ def user_profile(token, u_id):
 
     if user is None:
         raise InputError(description="Invalid ID.")
-    
+    data_store()
     return {
         'user': user
     }

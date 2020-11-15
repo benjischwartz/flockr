@@ -1,4 +1,5 @@
-from data import channel, users, tokens, data_retreive, data_store
+from data import channel, users, tokens
+from data_persistence import data_retreive, data_store
 from error import InputError, AccessError
 from check_token import user_id_given_token
 
@@ -39,6 +40,7 @@ def channels_list(token):
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
     
+    data_store()
     # return in format specified
     return returnDict
     #### format for return ####
@@ -82,6 +84,7 @@ def channels_listall(token):
     # once channel list is created, package it up for return
     returnDict['channels'] = returnList
 
+    data_store()
     return returnDict
     #### format for return ####
     # return {
@@ -130,16 +133,15 @@ def channels_create(token, name, is_public):
     # with token user as owner and member
     channel[newChannel_id] = {
         'channel_name' : name,
-            'is_public' : is_public,
-            'owner_members': {
-                user_id_given_token(token) : True
-            },
-            'all_members' : {
-                user_id_given_token(token) : True
-            },
-            'messages' : []
-            
-        }
+        'is_public' : is_public,
+        'owner_members': {
+            user_id_given_token(token) : True
+        },
+        'all_members' : {
+            user_id_given_token(token) : True
+        },
+        'messages' : []    
+    }
     
     data_store()
     return {

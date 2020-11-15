@@ -1,4 +1,5 @@
-from data import users, channel, data_store, data_retreive
+from data import users, channel
+from data_persistence import data_store, data_retreive
 from error import InputError, AccessError
 from check_token import user_id_given_token, permission_id_given_token
 from auth import auth_register
@@ -131,7 +132,7 @@ def channel_details(token, channel_id):
                             'profile_img_url': profile_img_url }
         details['all_members'].append(any_member_details)
     
-    
+    data_store()
     return details
 
 
@@ -238,7 +239,7 @@ def channel_messages(token, channel_id, start):
         all_messages['end'] = -1
     else:
         all_messages['end'] = start + 50
-    
+    data_store()
     return all_messages
 
 def channel_leave(token, channel_id):

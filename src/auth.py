@@ -1,4 +1,5 @@
-from data import users, tokens, codes, data_store, data_retreive
+from data import users, tokens, codes
+from data_persistence import data_store, data_retreive
 import re
 from error import InputError
 from passlib.hash import sha256_crypt
