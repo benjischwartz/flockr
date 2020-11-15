@@ -8,7 +8,6 @@ from check_token import jwt_given_email
 from datetime import datetime, timedelta
 from flask_mail import Mail, Message
 from check_reset_code import code_given_email, email_given_code
-from unittest import assertTrue
 
 # Use this fixture to get the URL of the server.
 @pytest.fixture
@@ -714,7 +713,7 @@ def test_server_user_profile_all_profile(url):
     
     assert(image.status_code == 200)
 
-def test_users_all(url):
+def test_server_users_all(url):
     """
     testing a positive case for users_all
     """ 
@@ -741,7 +740,7 @@ def test_users_all(url):
         }]
     }
 
-def test_admin_permissions_change(url):
+def test_server_admin_permissions_change(url):
     """
     testing a positive case for changing admin privileges
     user one makes user two admin, then user two removes user one
@@ -771,7 +770,7 @@ def test_admin_permissions_change(url):
         "permission_id" : 2})
     assert remove_admin.json() == {}
 
-def test_search_single_message(url):
+def test_server_search_single_message(url):
      
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
@@ -804,7 +803,8 @@ def test_search_single_message(url):
     assert search_result['messages'][0]['reacts'] == []
     assert search_result['messages'][0]['is_pinned'] == False
 
-def test_standup_start(url):
+def test_server_standup_start(url):
+    def test_server_standup_start(url):
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -817,17 +817,17 @@ def test_standup_start(url):
         "name" : "channel_one",
         "is_public" : True
     })
-    time_before = datetime.now()
+    time_before = int((datetime.now() + timedelta(seconds=10)).timestamp())
     message_standup = requests.post(f"{url}/standup/start", json={
         "token" : user_one["token"],
         "channel_id" : 1,
         "length" : 10
     })
     message_standup = message_standup.json()
-    now = time_before + timedelta(seconds=10)
-    assertTrue(-2 <= (int(message_standup['time_finish']) - int(now.timestamp())) <= 2)
+    time_after = int((datetime.now() + timedelta(seconds=10)).timestamp())
+    assert time_before <= message_standup['time_finish'] <= time_after
 
-def test_standup_active(url):
+def test_server_standup_active(url):
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -852,7 +852,7 @@ def test_standup_active(url):
         'time_finish' : None
     }
 
-def test_standup_send(url):
+def test_server_standup_send(url):
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -880,7 +880,7 @@ def test_standup_send(url):
     message_one = message_one.json()
     assert message_one == {}
     
-def test_clear(url):
+def test_server_clear(url):
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
