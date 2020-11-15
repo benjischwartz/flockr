@@ -173,7 +173,12 @@ def test_passwordreset_reset_invalid_code():
     # continuation from previous tests
     with pytest.raises(InputError):
         auth_passwordreset_reset('invalidcode', 'newpassword456')           # expect fail since invalid code given
-    
+
+def test_passwordreset_request_invalid_email():
+    clear()
+    with pytest.raises(InputError):
+        auth_passwordreset_request('unregistered@gmail.com')
+        
 def test_passwordreset_invalid_newpassword():
     clear()
     auth_register('johndoe@gmail.com', '123abc!@#', 'John', 'Doe')
