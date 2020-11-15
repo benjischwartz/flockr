@@ -13,7 +13,13 @@ def channels_list(token):
         token (str): refers to a valid user on flockr; this user is the inviter
  
     Returns:
-        (dict): {}
+        (dict): { channels': [
+         	{
+         		'channel_id': 1,
+         		'name': 'My Channel',
+         	}
+          ],
+      }
     '''
 
     # raise an accesserror if token is invalid
@@ -42,15 +48,7 @@ def channels_list(token):
     
     # return in format specified
     return returnDict
-    #### format for return ####
-    # return {
-    #     'channels': [
-    #     	{
-    #     		'channel_id': 1,
-    #     		'name': 'My Channel',
-    #     	}
-    #     ],
-    # }
+
 
 def channels_listall(token):
     '''
@@ -60,7 +58,14 @@ def channels_listall(token):
         token (str): refers to a valid user on flockr; this user is the inviter
  
     Returns:
-        (dict): {}
+        (dict): {
+            'channels': [
+                {
+                    'channel_id': 1,
+                    'name': 'My Channel',
+                }
+            ],
+        }
     '''
 
     # raise an accesserror if token is invalid
@@ -83,15 +88,6 @@ def channels_listall(token):
     returnDict['channels'] = returnList
 
     return returnDict
-    #### format for return ####
-    # return {
-    #     'channels': [
-    #     	{
-    #     		'channel_id': 1,
-    #     		'name': 'My Channel',
-    #     	}
-    #     ],
-    # }
 
 def channels_create(token, name, is_public):
     '''
@@ -103,7 +99,9 @@ def channels_create(token, name, is_public):
         is_public (bool): True if the channel is public, otherwise False if private 
  
     Returns:
-        (dict): {}
+        (dict): {
+            'channel_id':_____
+            }
     '''
 
     # raise an accesserror if token is invalid
@@ -147,8 +145,4 @@ def channels_create(token, name, is_public):
     return {
         'channel_id': newChannel_id
     }
-    #### format for return ####
-    # return {
-    #     'channel_id': newChannel_id
-    # }
 

@@ -41,7 +41,7 @@ def test_exception_accesserror_inputerror(url):
     test that when an inputerror and accesserror is raised by a function, the error code of
     the response status is 400
     '''
-    
+    requests.delete(f"{url}/clear")
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -78,7 +78,7 @@ def test_server_auth_register_logout_login(url):
     '''
     test a positive case for auth_register, auth_login and auth_logout
     '''
-     
+    requests.delete(f"{url}/clear") 
     user_one_register = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -104,7 +104,7 @@ def test_server_auth_passwordreset_request_reset(url):
     test a positive case for auth_passwordreset_request and
     auth_passwordreset_reset
     '''
-
+    requests.delete(f"{url}/clear")
     requests.post(f"{url}/auth/register", json={
         "email" : "flockrrecipient@gmail.com",   # has to be a valid email
         "password" : "catdog",
@@ -131,6 +131,7 @@ def test_server_channel_invite_details(url):
     '''
     test a positive case for channel_invite and channel_details
     '''
+    requests.delete(f"{url}/clear")
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -190,7 +191,7 @@ def test_server_channel_join_leave(url):
     '''
     test a positive case for channel_join and channel_leave
     '''
-     
+    requests.delete(f"{url}/clear") 
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -254,7 +255,7 @@ def test_server_channel_addowner_removeowner(url):
     '''
     test a positive case for channel_addowner channel_removeowner
     '''
-
+    requests.delete(f"{url}/clear")
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -357,7 +358,7 @@ def test_server_channels_create_list_listall(url):
     '''
     test a positive case for channels_create channels_list and channels_listall
     '''
-     
+    requests.delete(f"{url}/clear") 
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -418,7 +419,7 @@ def test_server_channel_messages_message_send_edit_remove(url):
     test a positive case for channel_messages, message_send, message_edit
     and message_remove
     '''
-     
+    requests.delete(f"{url}/clear") 
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -468,16 +469,18 @@ def test_server_channel_messages_message_send_edit_remove(url):
     channel_one_messages = channel_one_messages.json()
     assert channel_one_messages['messages'][0]['message'] == "Hi world" 
 
-    requests.delete(f"{url}/message/remove", json={
+    remove_message = requests.delete(f"{url}/message/remove", json={
         "token" : user_one["token"],
         "channel_id" : 1,
         "message_id" : 1
     })
+    remove_message = remove_message.json()
+    assert remove_message == {}
     channel_one_messages = requests.get(f"{url}/channel/messages", params={
         "token" : user_one["token"],
         "channel_id" : 1,
         "start" : 0
-    },)
+    })
     assert channel_one_messages.json() == {
         'messages' : [],
         'start' : 0,
@@ -488,7 +491,7 @@ def test_server_message_sendlater(url):
     """
     testing a positive case for message_edit
     """
-     
+    requests.delete(f"{url}/clear") 
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -514,7 +517,7 @@ def test_server_message_react_unreact(url):
     """
     testing a positive case for message_react and message_unreact
     """
-     
+    requests.delete(f"{url}/clear") 
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -565,11 +568,11 @@ def test_server_message_react_unreact(url):
     channel_one_messages = channel_one_messages.json()
     assert channel_one_messages['messages'][0]['reacts'] == []
 
-def test_server_message_pin(url):
+def test_server_message_pin_unpin(url):
     """
-    testing a positive case for message_pin
+    testing a positive case for message_pin and message_unpin
     """
-     
+    requests.delete(f"{url}/clear") 
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -600,12 +603,26 @@ def test_server_message_pin(url):
     })
     channel_one_messages = channel_one_messages.json()
     assert channel_one_messages['messages'][0]['is_pinned'] is True
+    first_unpin = requests.post(f"{url}/message/unpin", json={
+        "token" : user_one["token"],
+        "message_id" : 1
+    })
+    first_unpin = first_unpin.json()
+    assert first_unpin == {}
+    channel_one_messages = requests.get(f"{url}/channel/messages", params={
+        "token" : user_one["token"],
+        "channel_id" : 1,
+        "start" : 0
+    })
+    channel_one_messages = channel_one_messages.json()
+    assert channel_one_messages['messages'][0]['is_pinned'] is False
     
 def test_server_user_profile_all_profile(url):
     """
     testing a positive case for user_profile, user_profile_setname, user_profile_setemail,
     user_profile_sethandle, user_profile_uploadphoto
     """
+    requests.delete(f"{url}/clear")     
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -717,7 +734,7 @@ def test_server_users_all(url):
     """
     testing a positive case for users_all
     """ 
-    
+    requests.delete(f"{url}/clear")     
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -746,7 +763,7 @@ def test_server_admin_permissions_change(url):
     user one makes user two admin, then user two removes user one
     works if test does not throw error
     """
-     
+    requests.delete(f"{url}/clear")      
     user_one = requests.post(f"{url}/auth/register", json={
     "email" : "first@person.com",
     "password" : "catdog",
@@ -771,7 +788,10 @@ def test_server_admin_permissions_change(url):
     assert remove_admin.json() == {}
 
 def test_server_search_single_message(url):
-     
+    """
+    testing a positive case for search 
+    """
+    requests.delete(f"{url}/clear")      
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -804,6 +824,10 @@ def test_server_search_single_message(url):
     assert search_result['messages'][0]['is_pinned'] == False
 
 def test_server_standup_start(url):
+    """
+    testing a positive case for standup_start 
+    """
+    requests.delete(f"{url}/clear")      
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -827,6 +851,10 @@ def test_server_standup_start(url):
     assert time_before <= message_standup['time_finish'] <= time_after
 
 def test_server_standup_active(url):
+    """
+    testing a positive case for standup_active 
+    """
+    requests.delete(f"{url}/clear")      
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -852,6 +880,10 @@ def test_server_standup_active(url):
     }
 
 def test_server_standup_send(url):
+    """
+    testing a positive case for standup_send 
+    """
+    requests.delete(f"{url}/clear")      
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
@@ -880,6 +912,7 @@ def test_server_standup_send(url):
     assert message_one == {}
     
 def test_server_clear(url):
+    requests.delete(f"{url}/clear")      
     user_one = requests.post(f"{url}/auth/register", json={
         "email" : "first@person.com",
         "password" : "catdog",
