@@ -42,11 +42,12 @@ authenticated token
 * message_edit/message_remove - must be a member of the channel with the message to use message_edit or message_remove, thus
     * owners of flockr cannot remove/edit a message if they are not at least a regular member of the channel, and
     * the user who sent the message cannot remove/edit the message if they have left the channel 
-    - raise an InputError if the user is not a member of the channel (based on the spec requirement for message_react) 
+    - raise an AccessError if the user is not a member of the channel (based on the spec requirement for message_pin) 
       regardless of whether the user is an owner of Flockr or a regular Flockr user
-* message_send/message_sendlater - raise an InputError if the input 'message' is an empty string
+* message_send/message_sendlater - return an empty dictionary if the input 'message' is an empty string
 * message_edit - 'time_created' is NOT updated when a message is edited 
 * message_edit - raise an InputError if the input 'message' is over 1000 characters
 * pinning messages - when message_send creates a message, by default is_pinned is False (so default status of a message is unpinned).
+* message_react - a user cannot have multiple reacts for one message eg. user one cannot react to message with message_id 1 with both react_id 1 and react_id 2 (if hypothetically a react_id of 2 is a valid react_id)
 
 

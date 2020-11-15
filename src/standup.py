@@ -47,10 +47,10 @@ def standup_start(token, channel_id, length):
 
 def message_to_be_sent(token, channel_id):
     '''
-    this is a helper function, which is ran after interval seconds have passed.
+    this is a helper function, which is run after interval seconds have passed.
     '''
-    if channel[channel_id]['standuplist'] != '':
-        message_send(token, channel_id, channel[channel_id]['standuplist'])
+    
+    message_send(token, channel_id, channel[channel_id]['standuplist'])
 
     channel[channel_id]['standup'] = False
     channel[channel_id]['standuptime'] = None

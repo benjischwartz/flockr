@@ -63,7 +63,6 @@ def email_given_jwt(token):
     except Exception:
         return None
 
-
 def standup_list_given_active_channel_id(channel_id):
     """
     Given the channel_id
@@ -87,3 +86,4 @@ def standup_given_active_channel_id(channel_id):
     """
 
     return channel[channel_id]['standup']
+
