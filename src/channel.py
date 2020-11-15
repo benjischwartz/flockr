@@ -6,6 +6,7 @@ from auth import auth_register
 from channels import channels_create
 from other import clear
 from time import time
+from data_persistence import data_store
 
 
 def channel_invite(token, channel_id, u_id):
@@ -52,6 +53,7 @@ def channel_invite(token, channel_id, u_id):
     # add member with u_id as a member of the channel
     channel[channel_id]['all_members'][u_id] = True
     
+    data_store()
     return {}
 
 def channel_details(token, channel_id):
@@ -276,7 +278,8 @@ def channel_leave(token, channel_id):
     # if the user is an owner, remove them from the list
     if token_u_id in channel[channel_id]['owner_members']:
         channel[channel_id]['owner_members'].pop(token_u_id)
-        
+
+    data_store()  
     return {}
 
 def channel_join(token, channel_id):
@@ -317,6 +320,7 @@ def channel_join(token, channel_id):
     
     channel[channel_id]['all_members'][token_u_id] = True
     
+    data_store()
     return {}
 
 def channel_addowner(token, channel_id, u_id):
@@ -364,6 +368,7 @@ def channel_addowner(token, channel_id, u_id):
     # in the case of adding a user who is not a member of the channel
     channel[channel_id]['all_members'][u_id] = True
 
+    data_store()
     return {}
 
 def channel_removeowner(token, channel_id, u_id):
@@ -407,5 +412,6 @@ def channel_removeowner(token, channel_id, u_id):
     # removing owner from the list of owner members
     channel[channel_id]['owner_members'].pop(u_id)
 
+    data_store()
     return {}
 

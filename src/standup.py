@@ -7,6 +7,7 @@ import user
 import other
 from message import message_send
 from data import users, channel
+from data_persistence import data_store
 from check_token import user_id_given_token, email_given_jwt
 from error import AccessError, InputError
 from datetime import timedelta, datetime
@@ -41,6 +42,7 @@ def standup_start(token, channel_id, length):
     timer = Timer(int(length), message_to_be_sent, [token, channel_id])
     timer.start()
 
+    data_store()
     return {
         'time_finish': final_time
     }
@@ -113,5 +115,6 @@ def standup_send(token, channel_id, message):
     else:
         channel[channel_id]['standuplist'] += '\n' + final_message
 
+    data_store()
     return {
     }

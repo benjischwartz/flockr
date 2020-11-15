@@ -1,11 +1,10 @@
 from data import users, channel
+from data_persistence import data_store
 from error import InputError, AccessError
 from check_token import user_id_given_token, email_given_jwt
 import re
 import requests
-#from werkzeug import secure_filename
 import os
-#import cv2
 import urllib
 import uuid
 from PIL import Image
@@ -89,6 +88,7 @@ def user_profile_setname(token, name_first, name_last):
     users[email]['name_first'] = name_first
     users[email]['name_last'] = name_last
 
+    data_store()
     return {
     }
 
@@ -122,6 +122,7 @@ def user_profile_setemail(token, email):
     old_email = email_given_jwt(token)
     users[email] = users.pop(old_email)
 
+    data_store()
     return {
     }
 
@@ -155,6 +156,7 @@ def user_profile_sethandle(token, handle_str):
     email = email_given_jwt(token)
     users[email]['handle'] = handle_str
     
+    data_store()
     return {
     }
 
@@ -230,6 +232,7 @@ def user_profile_uploadphoto(token, img_url, server_url, x_start, y_start, x_end
     cropped = img.crop((x_start,y_start, x_end, y_end))
     cropped.save(save_url)
 
+    data_store()
     return {
     }
     

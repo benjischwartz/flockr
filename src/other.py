@@ -1,4 +1,5 @@
 from data import users, tokens, channel, highest_ids, codes
+from data_persistence import data_store
 from check_token import user_id_given_token
 from user import user_profile
 from error import InputError, AccessError
@@ -16,6 +17,7 @@ def clear():
     channel.clear()
     highest_ids.clear()
     codes.clear()
+    data_store()
     return {}
 
 def users_all(token):
