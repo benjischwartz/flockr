@@ -159,7 +159,7 @@ def channel_messages(token, channel_id, start):
                         {
                             'react_id' : 1
                             'u_ids' : [2, 3]
-                            'is_this_user_reacted' : False
+                            'is_this_user_reacted' : _____
                         }
                     ],
                 }
@@ -202,6 +202,9 @@ def channel_messages(token, channel_id, start):
     # find the details of each message in the channel up to start + 50
     for message in reversed(channel[channel_id]['messages']):
         if num_message >= start and message['time_created'] <= time():
+            # for each react in a message, based on the data, determine if 
+            # the user calling the channel_messages has reacted with the react_id
+            # and form the appropriate react list 
             react_list = []
             for react in message['reacts']:
                 if token_u_id in react['u_ids']:
