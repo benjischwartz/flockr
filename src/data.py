@@ -39,11 +39,10 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #           'u_id': 1,
     #           'message': 'Hello world',
     #           'time_created': 1582426789,
-    #           'reacts': [
-    #                   { "react_id" : 1 },
-    #                   { "u_ids : [1, 3, 4, 5]},
-    #                   { "is_this_user_reacted" : False}
-    #               ]
+    #           'reacts': [{
+    #                   "react_id" : 1,
+    #                   "u_ids : [1, 2, 3, 4, 5]
+    #               }]
     #           'is_pinned' : False
     #       },
     #       {
@@ -51,10 +50,12 @@ channel = { # 'channel_id' are the int values themselves, per channel
     #           'u_id': 1,
     #           'message': 'Hello again',
     #           'time_created': 1582426799,
-    #       },
-    #       'standup' : True,
-    #       'standuptime' : 1582426799,
-    #       'standuplist' : '',
+    #           'reacts': [
+    #                   { "react_id" : 1 },
+    #                   { "u_ids : [1, 3, 4, 5]},
+    #                   { "is_this_user_reacted" : False}
+    #               ]
+    #           'is_pinned' : False
     #       }
     # }
 }
