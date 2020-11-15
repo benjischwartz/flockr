@@ -8,6 +8,7 @@ from check_token import jwt_given_email
 from datetime import datetime, timedelta
 from flask_mail import Mail, Message
 from check_reset_code import code_given_email, email_given_code
+from unittest import assertTrue
 
 # Use this fixture to get the URL of the server.
 @pytest.fixture
@@ -824,9 +825,7 @@ def test_standup_start(url):
     })
     message_standup = message_standup.json()
     now = time_before + timedelta(seconds=10)
-    assert message_standup == {
-        'time_finish' : int(now.timestamp())
-    }
+    assertTrue(-2 <= (int(message_standup['time_finish']) - int(now.timestamp())) <= 2)
 
 def test_standup_active(url):
     user_one = requests.post(f"{url}/auth/register", json={
