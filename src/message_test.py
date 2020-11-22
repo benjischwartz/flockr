@@ -569,6 +569,8 @@ def test_message_edit_invalid_flockr_owner():
         message_edit(user_one['token'],rand_message['message_id'], 'Hello World')
 
 
+# You could add more tests to really check that the message was sent, perhaps using some timer to force the tests
+# to wait for however long necessary
 
 # tests for message_sendlater
 

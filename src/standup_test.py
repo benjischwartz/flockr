@@ -166,7 +166,9 @@ def test_standup_send_positive():
     message = 'hi'
     standup_start(user_one['token'], channel_one['channel_id'], 10)
     standup_send(user_one['token'], channel_one['channel_id'], message)
-    
+
+    # Helper functions are generally considered part of the internal implementation i.e. they are not included
+    # in the public interface, this would make this test not blackbox
     assert standup_list_given_active_channel_id(channel_one["channel_id"]) == 'FirstUser: hi'
     standup_send(user_one['token'], channel_one['channel_id'], message)
     assert standup_list_given_active_channel_id(channel_one["channel_id"]) == 'FirstUser: hi\nFirstUser: hi'
